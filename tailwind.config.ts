@@ -9,8 +9,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        primary: "var(--color-primary)",
+        secondary: "var(--color-secondary)",
+        tertiary: "var(--color-tertiary)",
+        bg: "var(--bg)",
+        text: "var(--text)",
+      },
+      borderRadius: {
+        custom: "var(--border-radius)",
+      },
+      fontFamily: {
+        custom: "var(--font)",
       },
     },
   },
