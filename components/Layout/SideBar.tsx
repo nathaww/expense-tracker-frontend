@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSidebar } from "@/context/SideBarContext";
 import { BsActivity } from "react-icons/bs";
 import { FaBookmark, FaHome, FaRegBookmark } from "react-icons/fa";
 import { IoSettingsOutline, IoSettingsSharp } from "react-icons/io5";
