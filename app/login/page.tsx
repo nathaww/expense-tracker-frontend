@@ -20,9 +20,10 @@ const validationSchema = Yup.object({
 export default function LoginPage() {
   const router = useRouter();
   const loginMutation = useMutation(loginUser, {
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log(data)
       toast.success("Login successful!");
-      router.replace("/dashboard");
+      router.push("/");
     },
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Login failed!");
@@ -41,8 +42,8 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-primary">
-      <div className="bg-bg p-8 rounded-md shadow-lg w-full max-w-md">
+    <div className="flex justify-center items-center min-h-screen w-full bg-primary">
+      <div className="bg-bg p-8 rounded-[var(--borderRadius)] shadow-lg w-full max-w-md">
         <h2 className="text-2xl text-text font-semibold mb-6">Login</h2>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">

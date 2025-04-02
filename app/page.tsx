@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <div className="h-screen w-full bg-bg">
-
+      <p>dashboard</p>
     </div>
   );
 }

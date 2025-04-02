@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import NavBar from "@/components/Layout/NavBar";
 import Footer from "@/components/Layout/Footer";
 import SideBar from "@/components/Layout/SideBar";
-import QueryClientWrapper from "./QueryClientWrapper";
+import QueryClientWrapper from "../components/Layout/QueryClientWrapper";
 import { Toaster } from "react-hot-toast";
 import { cookies } from "next/headers";
 
@@ -30,7 +30,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const authToken = cookies().get("authToken");
+  const authToken = cookies().get("authToken")?.value;
+  console.log(authToken)
   return (
     <ThemeProvider>
       <QueryClientWrapper>
@@ -44,12 +45,12 @@ export default function RootLayout({
                 style: {
                   background: "var(--bg)",
                   color: "var(--text)",
-                  borderRadius: "var(--border-radius)",
+                  borderRadius: "var(--borderRadius)",
                   fontFamily: "var(--font)",
                 },
               }}
             />
-            {authToken ? ( // Only show layout if user is authenticated
+            {authToken ? (
               <>
                 <SideBar />
                 <div className="w-full h-full">
@@ -59,7 +60,7 @@ export default function RootLayout({
                 </div>
               </>
             ) : (
-              <div className="w-full h-full">{children}</div> // Only show login page
+              <div className="w-full h-full">{children}</div>
             )}
           </body>
         </html>
