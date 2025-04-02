@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
   useEffect(() => {
     const cookies = document.cookie;
@@ -16,7 +16,7 @@ const useAuth = () => {
     }
   }, []);
 
-  return isAuthenticated;
+  return isAuthenticated as boolean;
 };
 
 export default useAuth;

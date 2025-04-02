@@ -6,6 +6,7 @@ import { toast } from "react-hot-toast";
 import { loginUser } from "./_requests";
 import { useRouter } from "next/navigation";
 import { useMutation } from "react-query";
+import { VscLoading } from "react-icons/vsc";
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -21,7 +22,7 @@ export default function LoginPage() {
   const loginMutation = useMutation(loginUser, {
     onSuccess: () => {
       toast.success("Login successful!");
-      router.push("/dashboard");
+      router.replace("/dashboard");
     },
     onError: (error) => {
       toast.error(error?.response?.data?.message || "Login failed!");
@@ -40,14 +41,14 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-bg">
-      <div className="bg-white p-8 rounded-md shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-6">Login</h2>
+    <div className="flex justify-center items-center min-h-screen bg-primary">
+      <div className="bg-bg p-8 rounded-md shadow-lg w-full max-w-md">
+        <h2 className="text-2xl text-text font-semibold mb-6">Login</h2>
         <form onSubmit={formik.handleSubmit}>
           <div className="mb-4">
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-text"
             >
               Email
             </label>
@@ -55,20 +56,20 @@ export default function LoginPage() {
               type="email"
               id="email"
               name="email"
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border text-bg border-gray-300 rounded-md"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.email}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-sm">{formik.errors.email}</div>
+              <div className="text-red-500 text-sm mt-2">{formik.errors.email}</div>
             )}
           </div>
 
           <div className="mb-4">
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-text"
             >
               Password
             </label>
@@ -76,13 +77,13 @@ export default function LoginPage() {
               type="password"
               id="password"
               name="password"
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border text-bg border-gray-300 rounded-md"
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.password}
             />
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-sm">
+              <div className="text-red-500 text-sm mt-2">
                 {formik.errors.password}
               </div>
             )}
@@ -90,12 +91,12 @@ export default function LoginPage() {
 
           <button
             type="submit"
-            className={`w-full py-2 bg-blue-600 text-white rounded-md ${
+            className={`w-full py-2 bg-primary text-bg rounded-md ${
               loginMutation.isLoading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={loginMutation.isLoading}
           >
-            {loginMutation.isLoading ? "Logging in..." : "Login"}
+            {loginMutation.isLoading ? <VscLoading className="animate-spin mx-auto"/> : "Login"}
           </button>
         </form>
       </div>

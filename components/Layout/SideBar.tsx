@@ -37,10 +37,13 @@ const nav = [
 
 const SideBar = () => {
   const [isOpen, setIsOpen] = useState(true);
+
   return (
     <aside
       className={` relative h-screen flex flex-col justify-between bg-bg drop-shadow-lg dark:bg-primaryDark will-change-transform transition-all px-1 pb-1 pt-4 origin-left ${
-        isOpen ? "w-[15%] translate-x-1 scale-x-1" : "w-auto translate-x-1 scale-x-1"
+        isOpen
+          ? "w-[15%] translate-x-1 scale-x-1"
+          : "w-auto translate-x-1 scale-x-1"
       }`}
     >
       <div>

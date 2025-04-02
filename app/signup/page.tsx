@@ -11,6 +11,7 @@ const validationSchema = Yup.object({
   email: Yup.string()
     .email("Invalid email format")
     .required("Email is required"),
+  name: Yup.string().required("Name is required"),
   password: Yup.string()
     .min(6, "Password must be at least 6 characters")
     .required("Password is required"),
@@ -31,6 +32,7 @@ export default function SignUpPage() {
   const formik = useFormik({
     initialValues: {
       email: "",
+      name: "",
       password: "",
     },
     validationSchema,
@@ -61,7 +63,28 @@ export default function SignUpPage() {
               value={formik.values.email}
             />
             {formik.touched.email && formik.errors.email && (
-              <div className="text-red-500 text-sm">{formik.errors.email}</div>
+              <div className="text-red-500 text-sm mt-2">{formik.errors.email}</div>
+            )}
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="name"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              className="w-full p-2 border border-gray-300 rounded-md"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.name}
+            />
+            {formik.touched.name && formik.errors.name && (
+              <div className="text-red-500 text-sm mt-2">{formik.errors.name}</div>
             )}
           </div>
 
@@ -82,7 +105,7 @@ export default function SignUpPage() {
               value={formik.values.password}
             />
             {formik.touched.password && formik.errors.password && (
-              <div className="text-red-500 text-sm">
+              <div className="text-red-500 text-sm mt-2">
                 {formik.errors.password}
               </div>
             )}
