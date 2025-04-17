@@ -8,10 +8,11 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { useAuth } from "@/providers/AuthProvider";
+import { FaMoneyBillWave } from "react-icons/fa";
 
 const loginSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-  password: Yup.string().min(6, "Too Short!").required("Required"),
+  email: Yup.string().email("Invalid email").required("E-mail is Required"),
+  password: Yup.string().min(6, "Too Short!").required("Password is Required"),
 });
 
 export default function LoginPage() {
@@ -39,17 +40,21 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
-      <div className="max-w-md w-full space-y-8 p-8 bg-[var(--bg)] text-[var(--text)] rounded-[var(--border-radius)] shadow-xl border border-[var(--color-primary)]">
-        <h2 className="text-center text-3xl font-extrabold">
-          Sign in to your account
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bgSecondary)] text-[var(--text)] transition-colors duration-300">
+      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] text-[var(--text)] shadow-xl rounded-[var(--border-radius)]">
+        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
+          <FaMoneyBillWave className="w-8 h-8" />
+          Expense tracker
+        </h1>
+        <h2 className="text-center text-2xl md:text-4xl font-extrabold">
+          Sign in
         </h2>
 
         <a
           href="/register"
           className="block text-center text-sm underline text-[var(--color-primary)] hover:opacity-80"
         >
-          Sign up
+          Don't have an account? Sign up
         </a>
 
         <Formik
@@ -62,7 +67,7 @@ export default function LoginPage() {
               <Field
                 name="email"
                 type="email"
-                className="block w-full px-3 py-2 border border-[var(--color-secondary)] bg-transparent rounded-[var(--border-radius)] placeholder-gray-400 text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] sm:text-sm"
+                className="input"
                 placeholder="Email address"
                 autoComplete="email"
               />
@@ -73,7 +78,7 @@ export default function LoginPage() {
               <Field
                 name="password"
                 type="password"
-                className="block w-full px-3 py-2 border border-[var(--color-secondary)] bg-transparent rounded-[var(--border-radius)] placeholder-gray-400 text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] sm:text-sm"
+                className="input"
                 placeholder="Password"
                 autoComplete="current-password"
               />
@@ -84,13 +89,27 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="w-full py-2 px-4 border border-transparent text-sm font-medium rounded-[var(--border-radius)] text-white bg-[var(--color-primary)] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-secondary)] disabled:opacity-50 transition active:scale-95"
+                className="w-full py-4 px-4 text-sm md:text-lg font-medium rounded-[var(--border-radius)] text-white bg-[var(--color-secondary)] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-secondary)] disabled:opacity-50 transition active:scale-95"
               >
                 {isPending ? "Signing in..." : "Sign in"}
               </button>
             </Form>
           )}
         </Formik>
+        <div className="inline-flex items-center justify-center gap-10 w-full">
+          <a
+            href="/forgot-password"
+            className="block text-center underline text-sm text-[var(--color-primary)] hover:opacity-80"
+          >
+            Forgot password?
+          </a>
+          <a
+            href="/verify-email"
+            className="block text-center text-sm text-[var(--color-primary)] hover:opacity-80"
+          >
+            Verify email
+          </a>
+        </div>
       </div>
     </div>
   );

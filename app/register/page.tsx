@@ -8,11 +8,12 @@ import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { authRequests } from "../login/_requests";
 import { RegisterResponse } from "../login/_model";
+import { FaMoneyBillWave } from "react-icons/fa";
 
 const registerSchema = Yup.object().shape({
-  email: Yup.string().email("Invalid email").required("Required"),
-  name: Yup.string().required("Required"),
-  password: Yup.string().min(6, "Too Short!").required("Required"),
+  email: Yup.string().email("Invalid email").required("E-mail is Required"),
+  name: Yup.string().required("Name is Required"),
+  password: Yup.string().min(6, "Too Short!").required("Password is Required"),
 });
 
 export default function RegisterPage() {
@@ -35,14 +36,24 @@ export default function RegisterPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
-        <h2 className="text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bgSecondary)]">
+      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] rounded-xl shadow-lg">
+        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
+          <FaMoneyBillWave className="w-8 h-8" />
+          Expense tracker
+        </h1>
+        <h2 className="text-center text-2xl md:text-4xl font-extrabold text-[var(--text)]">
+          Sign up
         </h2>
+        <a
+          href="/login"
+          className="block text-center text-sm underline text-[var(--color-primary)] hover:opacity-80"
+        >
+          Already have an account? Sign in
+        </a>
 
         <Formik
-          initialValues={{ email: "", name:"", password: "" }}
+          initialValues={{ email: "", name: "", password: "" }}
           validationSchema={registerSchema}
           onSubmit={(values) => register(values)}
         >
@@ -51,7 +62,7 @@ export default function RegisterPage() {
               <Field
                 name="email"
                 type="email"
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="input"
                 placeholder="Email address"
                 autoComplete="email"
               />
@@ -62,7 +73,7 @@ export default function RegisterPage() {
               <Field
                 name="name"
                 type="text"
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="input"
                 placeholder="Full Name"
                 autoComplete="full-name"
               />
@@ -73,7 +84,7 @@ export default function RegisterPage() {
               <Field
                 name="password"
                 type="password"
-                className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="input"
                 placeholder="Password"
                 autoComplete="new-password"
               />
@@ -84,13 +95,19 @@ export default function RegisterPage() {
               <button
                 type="submit"
                 disabled={isPending}
-                className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+                className="w-full py-4 px-4 text-sm md:text-lg font-medium rounded-[var(--border-radius)] text-white bg-[var(--color-secondary)] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-secondary)] disabled:opacity-50 transition active:scale-95"
               >
                 {isPending ? "Registering..." : "Register"}
               </button>
             </Form>
           )}
         </Formik>
+        <a
+          href="/verify-email"
+          className="block text-center text-sm underline text-[var(--color-primary)] hover:opacity-80"
+        >
+          Verify email
+        </a>
       </div>
     </div>
   );

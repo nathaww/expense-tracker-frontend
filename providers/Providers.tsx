@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/theme/ThemeProvider";
 import { usePathname, useRouter } from "next/navigation";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
+import Loader from "@/components/UI/Loader";
 
 const publicRoutes = [
   "/",
@@ -21,14 +22,23 @@ export default function Providers({ children }: PropsWithChildren) {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
   const isPublicRoute = publicRoutes.includes(pathname);
 
   useEffect(() => {
-    if (!isAuthenticated && !isPublicRoute) {
-      router.replace("/login");
-    } else if (isAuthenticated && isPublicRoute) {
-      router.replace("/dashboard");
-    }
+    const checkAuth = async () => {
+      try {
+        if (!isAuthenticated && !isPublicRoute) {
+          router.replace("/login");
+        } else if (isAuthenticated && isPublicRoute) {
+          router.replace("/dashboard");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
   }, [isAuthenticated, router, isPublicRoute]);
 
   const [queryClient] = useState(
@@ -43,18 +53,22 @@ export default function Providers({ children }: PropsWithChildren) {
       })
   );
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <Toaster position="bottom-right" richColors duration={2000} />
-        {isAuthenticated ? (
-          <>
+        {isAuthenticated && !isPublicRoute ? (
+          <div className="min-h-screen flex flex-col">
             <Navbar />
-            {children}
+            <main className="flex-grow px-4 py-8">{children}</main>
             <Footer />
-          </>
+          </div>
         ) : (
-          <>{children}</>
+          children
         )}
       </QueryClientProvider>
     </ThemeProvider>

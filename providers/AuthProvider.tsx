@@ -1,20 +1,86 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useCallback, useState } from 'react';
 import { User } from '@/app/login/_model';
+import { authRequests } from '@/app/login/_requests';
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
   logout: () => void;
+  getAccessToken: () => Promise<string | null>;
+}
+
+interface JWTPayload {
+  exp: number;
+  sub: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+const REFRESH_BUFFER = 60 * 1000; // 1 minute before expiration
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    setUser(null);
+    setIsAuthenticated(false);
+  }, []);
+
+  const refreshTokenAndUpdateUser = useCallback(async () => {
+    if (isRefreshing) return null;
+    
+    try {
+      setIsRefreshing(true);
+      const refreshToken = localStorage.getItem('refreshToken');
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
+
+      const response = await authRequests.refreshToken(refreshToken);
+      localStorage.setItem('accessToken', response.accessToken);
+      localStorage.setItem('refreshToken', response.refreshToken);
+      localStorage.setItem('user', JSON.stringify(response.user));
+      setUser(response.user);
+      setIsAuthenticated(true);
+      return response.accessToken;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout();
+      return null;
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [isRefreshing, logout]);
+
+  const getAccessToken = useCallback(async () => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return null;
+
+    try {
+      const decoded = jwtDecode<JWTPayload>(accessToken);
+      const expirationTime = decoded.exp * 1000; // Convert to milliseconds
+      const currentTime = Date.now();
+
+      // If token is expired or will expire soon, refresh it
+      if (expirationTime - currentTime <= REFRESH_BUFFER) {
+        return refreshTokenAndUpdateUser();
+      }
+
+      return accessToken;
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return refreshTokenAndUpdateUser();
+    }
+  }, [refreshTokenAndUpdateUser]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -22,33 +88,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
       setIsAuthenticated(true);
+      getAccessToken(); // Initial token check
     }
-
-    const handleStorageChange = () => {
-      const updatedUser = localStorage.getItem('user');
-      if (updatedUser) {
-        setUser(JSON.parse(updatedUser));
-        setIsAuthenticated(true);
-      } else {
-        setUser(null);
-        setIsAuthenticated(false);
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('user');
-    setUser(null);
-    setIsAuthenticated(false);
-  };
+  }, [getAccessToken]);
 
   return (
     <AuthContext.Provider
@@ -60,6 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         },
         isAuthenticated,
         logout,
+        getAccessToken,
       }}
     >
       {children}

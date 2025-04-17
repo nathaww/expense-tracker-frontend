@@ -5,8 +5,8 @@ const Navbar = () => {
   const { isAuthenticated, logout } = useAuth();
 
   return (
-    <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
-      <div className="text-lg font-bold">Expense Tracker</div>
+    <nav className="flex justify-between items-center p-4 bg-[var(--bgSecondary)] text-white">
+      <div className="text-lg font-bold text-[var(--text)]">Expense Tracker</div>
       {isAuthenticated && (
         <button
           onClick={logout}
