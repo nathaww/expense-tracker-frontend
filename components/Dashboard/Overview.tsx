@@ -24,7 +24,7 @@ const OverviewCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ scale: 1.02 }}
-      className="p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] shadow-lg"
+      className="p-6 rounded-[var(--border-radius)] border border-[var(--text)] bg-[var(--bg)] shadow-md"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[var(--text)]">{title}</h3>
@@ -53,7 +53,7 @@ export default function Overview() {
 
   if (isError || !overview) {
     return (
-      <div className="p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)]">
+      <div className="p-6 rounded-[var(--border-radius)] border border-[var(--text)] bg-[var(--bgSecondary)]">
         <p className="text-[var(--text)]">Failed to load overview data</p>
       </div>
     );

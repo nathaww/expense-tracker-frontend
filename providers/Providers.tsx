@@ -8,6 +8,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
 import Loader from "@/components/UI/Loader";
+import { Nav } from "@/components/Layout/Sidebar";
 
 const publicRoutes = [
   "/",
@@ -21,25 +22,8 @@ const publicRoutes = [
 export default function Providers({ children }: PropsWithChildren) {
   const router = useRouter();
   const pathname = usePathname();
-  const { isAuthenticated } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated, isInitialized } = useAuth();
   const isPublicRoute = publicRoutes.includes(pathname);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        if (!isAuthenticated && !isPublicRoute) {
-          router.replace("/login");
-        } else if (isAuthenticated && isPublicRoute) {
-          router.replace("/dashboard");
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, [isAuthenticated, router, isPublicRoute]);
 
   const [queryClient] = useState(
     () =>
@@ -53,7 +37,17 @@ export default function Providers({ children }: PropsWithChildren) {
       })
   );
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!isInitialized) return;
+    
+    if (!isAuthenticated && !isPublicRoute) {
+      router.replace("/login");
+    } else if (isAuthenticated && isPublicRoute) {
+      router.replace("/dashboard");
+    }
+  }, [isAuthenticated, isInitialized, router, isPublicRoute]);
+
+  if (!isInitialized) {
     return <Loader />;
   }
 
@@ -62,10 +56,13 @@ export default function Providers({ children }: PropsWithChildren) {
       <QueryClientProvider client={queryClient}>
         <Toaster position="bottom-right" richColors duration={2000} />
         {isAuthenticated && !isPublicRoute ? (
-          <div className="min-h-screen flex flex-col">
-            <Navbar />
-            <main className="flex-grow px-4 py-8">{children}</main>
-            <Footer />
+          <div className="min-h-screen flex">
+            <Nav />
+            <main className="w-full">
+              <Navbar />
+              {children}
+              <Footer />
+            </main>
           </div>
         ) : (
           children

@@ -36,8 +36,8 @@ export default function RegisterPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bgSecondary)]">
-      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] rounded-xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
+      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--text)] shadow-lg">
         <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
           <FaMoneyBillWave className="w-8 h-8" />
           Expense tracker

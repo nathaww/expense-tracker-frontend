@@ -44,7 +44,7 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] shadow-lg"
+      className="p-6 rounded-[var(--border-radius)] border border-[var(--text)] bg-[var(--bgSecondary)] shadow-md"
     >
       <h3 className="text-lg font-semibold text-[var(--text)] mb-4">{title}</h3>
       <div className="h-[300px] w-full">
@@ -116,7 +116,7 @@ export default function Trends() {
 
   if (isError || !trends) {
     return (
-      <div className="p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)]">
+      <div className="p-6 rounded-[var(--border-radius)] border border-[var(--text)] bg-[var(--bgSecondary)]">
         <p className="text-[var(--text)]">Failed to load trends data</p>
       </div>
     );

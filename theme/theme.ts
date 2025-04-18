@@ -1,4 +1,4 @@
-export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury";
+export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple";
 
 interface ThemeDefinition {
   primary: string;
@@ -82,7 +82,7 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     borderRadius: "1rem",
     font: "Times New Roman, serif",
   },
-  darkPurple: {
+  purple: {
     primary: "#6b21a8",             // deep purple (Tailwind purple-800)
     secondary: "#9333ea",           // vivid purple (Tailwind purple-600)
     tertiary: "#c084fc",            // soft lavender (Tailwind purple-300)

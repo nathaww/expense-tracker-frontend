@@ -9,6 +9,7 @@ interface AuthContextType {
   user: User | null;
   setUser: (user: User | null) => void;
   isAuthenticated: boolean;
+  isInitialized: boolean;
   logout: () => void;
   getAccessToken: () => Promise<string | null>;
 }
@@ -26,6 +27,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const logout = useCallback(() => {
     localStorage.removeItem('accessToken');
@@ -67,10 +69,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const decoded = jwtDecode<JWTPayload>(accessToken);
-      const expirationTime = decoded.exp * 1000; // Convert to milliseconds
+      const expirationTime = decoded.exp * 1000;
       const currentTime = Date.now();
 
-      // If token is expired or will expire soon, refresh it
       if (expirationTime - currentTime <= REFRESH_BUFFER) {
         return refreshTokenAndUpdateUser();
       }
@@ -83,14 +84,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [refreshTokenAndUpdateUser]);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      setUser(parsedUser);
-      setIsAuthenticated(true);
-      getAccessToken(); // Initial token check
-    }
-  }, [getAccessToken]);
+    const initializeAuth = async () => {
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const parsedUser = JSON.parse(storedUser);
+          setUser(parsedUser);
+          setIsAuthenticated(true);
+          await getAccessToken(); // Initial token check
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        logout();
+      } finally {
+        setIsInitialized(true);
+      }
+    };
+
+    initializeAuth();
+  }, [getAccessToken, logout]);
 
   return (
     <AuthContext.Provider
@@ -101,6 +113,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsAuthenticated(!!newUser);
         },
         isAuthenticated,
+        isInitialized,
         logout,
         getAccessToken,
       }}

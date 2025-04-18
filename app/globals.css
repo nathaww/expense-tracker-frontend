@@ -24,5 +24,5 @@ body {
 
 .input {
   @apply w-full px-3 py-3 border rounded-[var(--border-radius)] bg-transparent placeholder-[var(--text)] text-[var(--text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] md:text-lg;
-  border-color: var(--color-secondary);
+  border-color: lightgray;
 }
