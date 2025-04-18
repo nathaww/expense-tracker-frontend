@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { expenseRequests } from "./_requests";
-import Loader from "@/components/UI/Loader";
 
 interface AnimatedFieldProps extends React.HTMLAttributes<HTMLElement> {
   shouldAnimate: boolean;
