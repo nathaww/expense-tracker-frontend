@@ -39,7 +39,7 @@ export default function Providers({ children }: PropsWithChildren) {
 
   useEffect(() => {
     if (!isInitialized) return;
-    
+
     if (!isAuthenticated && !isPublicRoute) {
       router.replace("/login");
     } else if (isAuthenticated && isPublicRoute) {
@@ -48,7 +48,11 @@ export default function Providers({ children }: PropsWithChildren) {
   }, [isAuthenticated, isInitialized, router, isPublicRoute]);
 
   if (!isInitialized) {
-    return <Loader />;
+    return (
+      <ThemeProvider>
+        <Loader />;
+      </ThemeProvider>
+    );
   }
 
   return (

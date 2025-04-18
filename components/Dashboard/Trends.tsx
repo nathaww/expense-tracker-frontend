@@ -45,8 +45,7 @@ const CustomTooltip = ({
           </p>
         </div>
       );
-    } catch (error) {
-      console.error("Invalid date in tooltip:", label);
+    } catch {
       return null;
     }
   }

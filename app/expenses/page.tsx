@@ -117,14 +117,6 @@ const ExpensesPage = () => {
 
   const regularFormRef = React.useRef<FormikProps<ExpenseFormValues>>(null);
 
-  if (categoriesLoading || moneySourcesLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader />
-      </div>
-    );
-  }
-
   return (
     <div className="container mx-auto p-8 min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -263,7 +255,7 @@ const ExpensesPage = () => {
                         value=""
                         className="bg-[var(--bg)] text-[var(--text)]"
                       >
-                        Select a category
+                        {categoriesLoading ? "Loading..." : "Select Category"}
                       </option>
                       {categories?.map((category) => (
                         <option
@@ -300,7 +292,9 @@ const ExpensesPage = () => {
                         value=""
                         className="bg-[var(--bg)] text-[var(--text)]"
                       >
-                        Select a money source
+                        {moneySourcesLoading
+                          ? "Loading..."
+                          : "Select a money source"}
                       </option>
                       {moneySources?.data?.map((source) => (
                         <option
