@@ -2,7 +2,8 @@ import axios from 'axios';
 import { AuthResponse } from './app/login/_model';
 import { jwtDecode } from 'jwt-decode';
 
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const isProduction = process.env.NODE_ENV === 'production';
+const baseURL = isProduction ? '/api' : process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const axiosInstance = axios.create({
   baseURL,
