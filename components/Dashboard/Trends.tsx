@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useQuery } from '@tanstack/react-query';
-import { dashboardRequests, TrendData } from '@/app/dashboard/_requests';
-import { motion } from 'framer-motion';
-import { formatCurrency } from '../utils/formatCurrency';
+import { useQuery } from "@tanstack/react-query";
+import { dashboardRequests, TrendData } from "@/app/dashboard/_requests";
+import { motion } from "framer-motion";
+import { formatCurrency } from "../utils/formatCurrency";
 import {
   ResponsiveContainer,
   AreaChart,
@@ -13,48 +13,71 @@ import {
   CartesianGrid,
   Tooltip,
   TooltipProps,
-} from 'recharts';
-import { format } from 'date-fns';
-import { useTheme } from '@/theme/ThemeProvider';
-import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
+} from "recharts";
+import { format, parseISO } from "date-fns";
+import { useTheme } from "@/theme/ThemeProvider";
+import {
+  NameType,
+  ValueType,
+} from "recharts/types/component/DefaultTooltipContent";
 
-const CustomTooltip = ({ 
-  active, 
-  payload, 
-  label 
+const formatDate = (dateString: string) => {
+  try {
+    return format(parseISO(dateString), "MMM d");
+  } catch {
+    return dateString;
+  }
+};
+
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
 }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
-    return (
-      <div className="bg-[var(--bg)] p-4 rounded-[var(--border-radius)] shadow-lg border border-[var(--color-secondary)] text-[var(--text)]">
-        <p className="text-sm font-semibold">{format(new Date(label), 'MMM d, yyyy')}</p>
-        <p className="text-[var(--color-primary)]">
-          {formatCurrency(payload[0].value as number)}
-        </p>
-      </div>
-    );
+    try {
+      const formattedDate = format(parseISO(label as string), "MMM d, yyyy");
+      return (
+        <div className="bg-[var(--bg)] p-4 rounded-[var(--border-radius)] shadow-lg border border-[var(--color-secondary)] text-[var(--text)]">
+          <p className="text-sm font-semibold">{formattedDate}</p>
+          <p className="text-[var(--color-primary)]">
+            {formatCurrency(payload[0].value as number)}
+          </p>
+        </div>
+      );
+    } catch (error) {
+      console.error("Invalid date in tooltip:", label);
+      return null;
+    }
   }
   return null;
 };
 
 const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
   const { theme } = useTheme();
-  const isDark = theme === 'dark';
+  const isDark = theme === "dark";
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 rounded-[var(--border-radius)] border border-[var(--text)] bg-[var(--bgSecondary)] shadow-md"
+      className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
     >
       <h3 className="text-lg font-semibold text-[var(--text)] mb-4">{title}</h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+            margin={{ top: 10, right: 0, left: 10, bottom: 0 }}
           >
             <defs>
-              <linearGradient id={`gradient${title}`} x1="0" y1="0" x2="0" y2="1">
+              <linearGradient
+                id={`gradient${title}`}
+                x1="0"
+                y1="0"
+                x2="0"
+                y2="1"
+              >
                 <stop
                   offset="5%"
                   stopColor="var(--color-secondary)"
@@ -69,11 +92,11 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke={isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}
+              stroke={isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"}
             />
             <XAxis
               dataKey="date"
-              tickFormatter={(date) => format(new Date(date), 'MMM d')}
+              tickFormatter={formatDate}
               stroke="var(--text)"
             />
             <YAxis
@@ -96,8 +119,12 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
 };
 
 export default function Trends() {
-  const { data: trends, isLoading, isError } = useQuery({
-    queryKey: ['dashboard-trends'],
+  const {
+    data: trends,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["dashboard-trends"],
     queryFn: dashboardRequests.getTrends,
   });
 
@@ -116,7 +143,7 @@ export default function Trends() {
 
   if (isError || !trends) {
     return (
-      <div className="p-6 rounded-[var(--border-radius)] border border-[var(--text)] bg-[var(--bgSecondary)]">
+      <div className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bgSecondary)]">
         <p className="text-[var(--text)]">Failed to load trends data</p>
       </div>
     );

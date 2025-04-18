@@ -1,4 +1,4 @@
-export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple";
+export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple" | "haftom";
 
 interface ThemeDefinition {
   primary: string;
@@ -7,19 +7,20 @@ interface ThemeDefinition {
   background: string;
   backgroundSecondary: string;
   text: string;
+  borderColor: string;
   borderRadius: string;
   font: string;
 }
-
 export const themes: Record<ThemeName, ThemeDefinition> = {
   light: {
     primary: "#6366f1",
     secondary: "#a5b4fc",
     tertiary: "#e0e7ff",
     background: "#f9fafb",
-    backgroundSecondary: "#e5e7eb", // Tailwind gray-200
+    backgroundSecondary: "#e5e7eb",
     text: "#111827",
-    borderRadius: "1rem",
+    borderColor: "#cbd5e1",
+    borderRadius: "0.5rem",
     font: "Arial, sans-serif",
   },
   dark: {
@@ -27,8 +28,9 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     secondary: "#1f2937",
     tertiary: "#374151",
     background: "#0f172a",
-    backgroundSecondary: "#1e293b", // dark blue-gray
+    backgroundSecondary: "#1e293b",
     text: "#f1f5f9",
+    borderColor: "#334155",
     borderRadius: "0.5rem",
     font: "Arial, sans-serif",
   },
@@ -37,8 +39,9 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     secondary: "#a9746e",
     tertiary: "#c8b6a6",
     background: "#f3ede3",
-    backgroundSecondary: "#d6c9b8", // muted latte tone
+    backgroundSecondary: "#d6c9b8",
     text: "#3b2f2f",
+    borderColor: "#a58f87",
     borderRadius: "0.75rem",
     font: "Georgia, serif",
   },
@@ -47,8 +50,9 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     secondary: "#000000",
     tertiary: "#ffffff",
     background: "#1e1e1e",
-    backgroundSecondary: "#2e2e2e", // slightly lighter dark
+    backgroundSecondary: "#2e2e2e",
     text: "#ff7518",
+    borderColor: "#ffae6f",
     borderRadius: "1rem",
     font: "Courier New, monospace",
   },
@@ -57,9 +61,10 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     secondary: "#4682b4",
     tertiary: "#5dade2",
     background: "#e6f0fa",
-    backgroundSecondary: "#DAE7F1", // soft cool blue
+    backgroundSecondary: "#c8dceb",
     text: "#0a192f",
-    borderRadius: "1rem",
+    borderColor: "#b1c9da",
+    borderRadius: "0.25rem",
     font: "Verdana, sans-serif",
   },
   forest: {
@@ -67,8 +72,9 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     secondary: "#4caf50",
     tertiary: "#a8d5ba",
     background: "#f4fbf6",
-    backgroundSecondary: "#d2e6dc", // soft leafy green
+    backgroundSecondary: "#d2e6dc",
     text: "#103c2d",
+    borderColor: "#a7cbbf",
     borderRadius: "0.25rem",
     font: "Tahoma, sans-serif",
   },
@@ -77,19 +83,32 @@ export const themes: Record<ThemeName, ThemeDefinition> = {
     secondary: "#a67c52",
     tertiary: "#000000",
     background: "#f5f5f5",
-    backgroundSecondary: "#e0e0e0", // silver tone
+    backgroundSecondary: "#e0e0e0",
     text: "#1a1a1a",
+    borderColor: "#b3b3b3",
     borderRadius: "1rem",
     font: "Times New Roman, serif",
   },
   purple: {
-    primary: "#6b21a8",             // deep purple (Tailwind purple-800)
-    secondary: "#9333ea",           // vivid purple (Tailwind purple-600)
-    tertiary: "#c084fc",            // soft lavender (Tailwind purple-300)
-    background: "#1e1b2e",          // dark purple-gray
-    backgroundSecondary: "#2a223a", // slightly lighter than bg
-    text: "#f3e8ff",                // soft light lavender
+    primary: "#6b21a8",
+    secondary: "#9333ea",
+    tertiary: "#c084fc",
+    background: "#1e1b2e",
+    backgroundSecondary: "#2a223a",
+    text: "#f3e8ff",
+    borderColor: "#a78bfa",
     borderRadius: "0.75rem",
     font: "'Segoe UI', sans-serif",
-  }
+  },
+  haftom: {
+    primary: "#A4D28D",
+    secondary: "#BCF2A1",
+    tertiary: "#c084fc",
+    background: "#161D16",
+    backgroundSecondary: "#1A231A",
+    text: "#f2f2f2",
+    borderColor: "#2B3B2B",
+    borderRadius: "0.5rem",
+    font: "'Segoe UI', sans-serif",
+  },
 };

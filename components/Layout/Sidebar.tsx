@@ -28,7 +28,7 @@ export const Nav = () => {
   return (
     <motion.nav
       layout
-      className="sticky top-0 h-screen shrink-0 border-r border-[var(--text)] bg-[var(--bg)] p-2 pt-8"
+      className="sticky top-0 h-screen shrink-0 border-r border-[var(--border-color)] bg-[var(--bg)] p-2 pt-8"
       style={{
         width: open ? "225px" : "fit-content",
       }}
@@ -120,7 +120,7 @@ const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
     <motion.button
       layout
       onClick={() => setOpen((pv) => !pv)}
-      className="absolute bottom-0 left-0 right-0 border-t border-[var(--text)] transition-colors hover:bg-[var(--color-secondary)]"
+      className="absolute bottom-0 left-0 right-0 border-t border-[var(--border-color)] transition-colors hover:bg-[var(--color-secondary)]"
     >
       <div className="flex items-center p-2">
         <motion.div

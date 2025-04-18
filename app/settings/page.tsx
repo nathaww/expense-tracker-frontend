@@ -36,7 +36,7 @@ const Settings = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="bg-[var(--bgSecondary)] rounded-[var(--border-radius)] p-6 mb-8"
+        className="bg-[var(--bgSecondary)] border border-[var(--border-color)] rounded-[var(--border-radius)] p-6 mb-8"
       >
         <h2 className="text-xl font-semibold mb-4 text-[var(--text)]">Theme</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -70,7 +70,7 @@ const Settings = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="bg-[var(--bgSecondary)] rounded-[var(--border-radius)] p-6"
+        className="bg-[var(--bgSecondary)] border border-[var(--border-color)] rounded-[var(--border-radius)] p-6"
       >
         <h2 className="text-xl font-semibold mb-4 text-[var(--text)]">Account</h2>
         <motion.button

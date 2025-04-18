@@ -37,9 +37,9 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     root.style.setProperty("--bgSecondary", selectedTheme.backgroundSecondary);
     root.style.setProperty("--text", selectedTheme.text);
     root.style.setProperty("--border-radius", selectedTheme.borderRadius);
+    root.style.setProperty("--border-color", selectedTheme.borderColor);
     root.style.setProperty("--font", selectedTheme.font);
   }, [theme]);
-  
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>

@@ -54,7 +54,7 @@ export default function Providers({ children }: PropsWithChildren) {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <Toaster position="bottom-right" richColors duration={2000} />
+        <Toaster position="bottom-right" richColors duration={4000} />
         {isAuthenticated && !isPublicRoute ? (
           <div className="min-h-screen flex">
             <Nav />
