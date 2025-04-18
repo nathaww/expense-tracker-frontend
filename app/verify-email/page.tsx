@@ -64,11 +64,7 @@ export default function RequestEmailPage() {
                 <p className="text-red-500 text-xs mt-1">{errors.email}</p>
               )}
 
-              <button
-                type="submit"
-                disabled={isPending}
-                className="w-full py-4 px-4 text-sm md:text-lg font-medium rounded-[var(--border-radius)] text-white bg-[var(--color-secondary)] hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-secondary)] disabled:opacity-50 transition active:scale-95"
-              >
+              <button type="submit" disabled={isPending} className="btn">
                 {isPending ? "Sending Email..." : "Send Verification Email"}
               </button>
             </Form>
