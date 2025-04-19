@@ -81,7 +81,7 @@ export default function Overview() {
       />
       <OverviewCard
         title="Budget Utilization"
-        value={`${overview.budgetUtilization}%`}
+        value={`${overview.budgetUtilization.toFixed(2)}%`}
         icon={FaPercentage}
         delay={0.3}
       />

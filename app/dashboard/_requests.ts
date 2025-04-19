@@ -1,4 +1,4 @@
-import { makeReq } from '@/makeReq';
+import api from "../lib/Axios";
 
 export interface DashboardOverview {
   totalExpenses: number;
@@ -19,12 +19,12 @@ export interface DashboardTrends {
 
 export const dashboardRequests = {
   getOverview: async (): Promise<DashboardOverview> => {
-    const res = await makeReq.get<DashboardOverview>('/dashboard/overview');
+    const res = await api.get<DashboardOverview>('/dashboard/overview');
     return res.data;
   },
   
   getTrends: async (): Promise<DashboardTrends> => {
-    const res = await makeReq.get<DashboardTrends>('/dashboard/trends');
+    const res = await api.get<DashboardTrends>('/dashboard/trends');
     return res.data;
   },
 };

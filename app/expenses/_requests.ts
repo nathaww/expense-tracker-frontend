@@ -1,4 +1,5 @@
-import { makeReq } from "@/makeReq";
+import api from "../lib/Axios";
+
 
 export interface Category {
   id: string;
@@ -52,22 +53,22 @@ export interface ExpenseFromText {
 
 export const expenseRequests = {
   getCategories: async (): Promise<Category[]> => {
-    const res = await makeReq.get<Category[]>("/categories");
+    const res = await api.get<Category[]>("/categories");
     return res.data;
   },
 
   getMoneySources: async (): Promise<MoneySourceApiResponse> => {
-    const res = await makeReq.get<MoneySourceApiResponse>("/money-sources");
+    const res = await api.get<MoneySourceApiResponse>("/money-sources");
     return res.data;
   },
 
   createExpense: async (data: PostCategory) => {
-    const res = await makeReq.post("/expenses", data);
+    const res = await api.post("/expenses", data);
     return res.data;
   },
 
   createFromText: async (text: string): Promise<ExpenseFromText> => {
-    const res = await makeReq.post<ExpenseFromText>('/expenses/from-text', { text });
+    const res = await api.post<ExpenseFromText>('/expenses/from-text', { text });
     return res.data;
   }
 };
