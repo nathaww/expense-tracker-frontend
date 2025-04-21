@@ -59,7 +59,7 @@ export default function VerifyCodePage() {
                 <p className="text-red-500 text-xs mt-1">{errors.code}</p>
               )}
 
-              <button type="submit" disabled={isPending} className="btn">
+              <button type="submit" disabled={isPending} className="btn w-full">
                 {isPending ? "Verifying..." : "Verify Email"}
               </button>
             </Form>

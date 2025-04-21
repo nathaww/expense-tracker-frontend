@@ -35,7 +35,6 @@ export default function LoginPage() {
       toast.error(
         error?.response?.data?.message || error?.message || "Login failed"
       );
-      console.log(error);
     },
   });
 
@@ -86,7 +85,7 @@ export default function LoginPage() {
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
 
-              <button type="submit" disabled={isPending} className="btn">
+              <button type="submit" disabled={isPending} className="btn w-full">
                 {isPending ? "Signing in..." : "Sign in"}
               </button>
             </Form>

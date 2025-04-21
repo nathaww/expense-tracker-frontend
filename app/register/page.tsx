@@ -92,7 +92,7 @@ export default function RegisterPage() {
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
 
-              <button type="submit" disabled={isPending} className="btn">
+              <button type="submit" disabled={isPending} className="btn w-full">
                 {isPending ? "Registering..." : "Register"}
               </button>
             </Form>

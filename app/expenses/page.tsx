@@ -160,7 +160,7 @@ const ExpensesPage = () => {
                   <button
                     type="submit"
                     disabled={isCreatingFromText}
-                    className="btn"
+                    className="btn w-full"
                   >
                     {isCreatingFromText ? "Processing..." : "Process Text"}
                   </button>
@@ -335,7 +335,7 @@ const ExpensesPage = () => {
                     )}
                   </div>
 
-                  <button type="submit" disabled={isCreating} className="btn">
+                  <button type="submit" disabled={isCreating} className="btn w-full">
                     {isCreating ? "Creating..." : "Create Expense"}
                   </button>
                 </Form>

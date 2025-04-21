@@ -64,7 +64,7 @@ export default function RequestEmailPage() {
                 <p className="text-red-500 text-xs mt-1">{errors.email}</p>
               )}
 
-              <button type="submit" disabled={isPending} className="btn">
+              <button type="submit" disabled={isPending} className="btn w-full">
                 {isPending ? "Sending Email..." : "Send Verification Email"}
               </button>
             </Form>
