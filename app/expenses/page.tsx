@@ -1,351 +1,266 @@
 "use client";
 
-import React from "react";
-import { Formik, Form, Field, useField, FormikProps } from "formik";
-import * as Yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 import { expenseRequests } from "./_requests";
+import { formatCurrency } from "@/components/utils/formatCurrency";
+import { useState, useEffect, useMemo } from "react";
+import { format } from "date-fns";
+import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
+import { toast } from "sonner";
+import Link from "next/link";
+import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
+import debounce from "lodash/debounce";
 
-interface AnimatedFieldProps extends React.HTMLAttributes<HTMLElement> {
-  shouldAnimate: boolean;
-  as?: "textarea" | "select" | undefined;
-  type?: string;
-  id: string;
-  name: string;
-  className?: string;
-  placeholder?: string;
-  rows?: number;
-  children?: React.ReactNode;
-}
+export default function ExpensesPage() {
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const queryClient = useQueryClient();
 
-const AnimatedField = ({ shouldAnimate, ...props }: AnimatedFieldProps) => {
-  const [field] = useField(props);
-
-  return (
-    <div
-      className={
-        shouldAnimate
-          ? "animate-pulse-long bg-[var(--color-primary)] bg-opacity-5 rounded-[var(--border-radius)]"
-          : ""
-      }
-    >
-      {props.as === "textarea" ? (
-        <textarea {...field} {...props} className={props.className} />
-      ) : props.as === "select" ? (
-        <select {...field} {...props} className={props.className}>
-          {props.children}
-        </select>
-      ) : (
-        <input {...field} {...props} className={props.className} />
-      )}
-    </div>
+  // Create a memoized debounced function
+  const debouncedSetSearch = useMemo(
+    () => debounce((value: string) => {
+      setSearch(value);
+      setPage(1);
+    }, 500),
+    []
   );
-};
 
-interface ExpenseFormValues {
-  amount: number;
-  date: string;
-  notes: string;
-  categoryId: string;
-  moneySourceId: string;
-}
+  // Cleanup the debounced function on unmount
+  useEffect(() => {
+    return () => {
+      debouncedSetSearch.cancel();
+    };
+  }, [debouncedSetSearch]);
 
-const expenseSchema = Yup.object().shape({
-  amount: Yup.number()
-    .required("Amount is required")
-    .positive("Amount must be positive"),
-  date: Yup.date().required("Date is required"),
-  notes: Yup.string().required("Notes are required"),
-  categoryId: Yup.string().required("Category is required"),
-  moneySourceId: Yup.string().required("Money source is required"),
-});
+  // Handle search input changes
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchInput(e.target.value);
+    debouncedSetSearch(e.target.value);
+  };
 
-const textExpenseSchema = Yup.object().shape({
-  text: Yup.string().required("Text is required"),
-});
-
-const ExpensesPage = () => {
-  const [animateFields, setAnimateFields] = React.useState(false);
-
-  const { data: categories, isLoading: categoriesLoading } = useQuery({
-    queryKey: ["categories"],
-    queryFn: expenseRequests.getCategories,
+  const { data: expensesResponse, isLoading } = useQuery({
+    queryKey: ["expenses", page, search],
+    queryFn: () => expenseRequests.getExpenses(page, search),
   });
 
-  const { data: moneySources, isLoading: moneySourcesLoading } = useQuery({
-    queryKey: ["moneySources"],
-    queryFn: expenseRequests.getMoneySources,
-  });
-
-  const { mutate: createExpense, isPending: isCreating } = useMutation({
-    mutationFn: expenseRequests.createExpense,
+  const { mutate: deleteExpense, isPending: isDeleting } = useMutation({
+    mutationFn: expenseRequests.deleteExpense,
     onSuccess: () => {
-      toast.success("Expense created successfully");
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success("Expense deleted successfully");
+      setIsDeleteModalOpen(false);
+      setSelectedExpenseId(null);
     },
     onError: () => {
-      toast.error("Failed to create expense");
+      toast.error("Failed to delete expense");
     },
   });
 
-  const { mutate: createFromText, isPending: isCreatingFromText } = useMutation(
-    {
-      mutationFn: expenseRequests.createFromText,
-      onSuccess: (data) => {
-        if (regularFormRef.current) {
-          regularFormRef.current.setValues({
-            amount: data.amount,
-            date: new Date(data.date).toISOString().split("T")[0],
-            notes: data.notes,
-            categoryId: data.categoryId,
-            moneySourceId: data.moneySourceId,
-          });
-          setAnimateFields(true);
-
-          setTimeout(() => {
-            setAnimateFields(false);
-          }, 6000);
-        }
-        toast.success("Text processed successfully");
-      },
-      onError: () => {
-        toast.error("Failed to process text");
-      },
-    }
-  );
-
-  const regularFormRef = React.useRef<FormikProps<ExpenseFormValues>>(null);
+  const handleDelete = (id: string) => {
+    setSelectedExpenseId(id);
+    setIsDeleteModalOpen(true);
+  };
 
   return (
     <div className="container mx-auto p-8 min-h-screen">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Text-based Form */}
-        <div>
-          <h1 className="text-3xl font-bold mb-8 text-[var(--text)]">
-            From Text
-          </h1>
-          <div className="bg-[var(--bgSecondary)] p-6 rounded-[var(--border-radius)] border border-[var(--border-color)]">
-            <Formik
-              initialValues={{ text: "" }}
-              validationSchema={textExpenseSchema}
-              onSubmit={(values, { resetForm }) => {
-                createFromText(values.text);
-                resetForm();
-              }}
-            >
-              {({ errors, touched }) => (
-                <Form className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="text"
-                      className="block text-[var(--text)] mb-2"
-                    >
-                      Enter expense details
-                    </label>
-                    <Field
-                      as="textarea"
-                      id="text"
-                      name="text"
-                      rows={4}
-                      className="input w-full resize-none"
-                      placeholder="Example: Choafan Rice with Chicken 320 cash"
-                    />
-                    {errors.text && touched.text && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.text}
-                      </div>
-                    )}
-                  </div>
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-bold text-[var(--text)]">Expenses</h1>
 
-                  <button
-                    type="submit"
-                    disabled={isCreatingFromText}
-                    className="btn w-full"
-                  >
-                    {isCreatingFromText ? "Processing..." : "Process Text"}
-                  </button>
-                </Form>
-              )}
-            </Formik>
-          </div>
-        </div>
-
-        {/* Regular Form */}
-        <div>
-          <h1 className="text-3xl font-bold mb-8 text-[var(--text)]">
+        <Link href="/expenses/add">
+          <button className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--border-radius)] hover:opacity-90 cursor-pointer flex items-center gap-2 transition-all active:scale-95">
+            <FaPlus size={14} />
             Add Expense
-          </h1>
-          <div className="bg-[var(--bgSecondary)] p-6 rounded-[var(--border-radius)] border border-[var(--border-color)]">
-            <Formik
-              innerRef={regularFormRef}
-              initialValues={{
-                amount: 0,
-                date: new Date().toISOString().split("T")[0],
-                notes: "",
-                categoryId: "",
-                moneySourceId: "",
-              }}
-              validationSchema={expenseSchema}
-              onSubmit={(values, { resetForm }) => {
-                createExpense(values);
-                resetForm();
-              }}
-            >
-              {({ errors, touched }) => (
-                <Form className="space-y-6">
-                  <div>
-                    <label
-                      htmlFor="amount"
-                      className="block text-[var(--text)] mb-2"
-                    >
-                      Amount
-                    </label>
-                    <AnimatedField
-                      type="number"
-                      id="amount"
-                      name="amount"
-                      className="input w-full"
-                      placeholder="Enter amount"
-                      shouldAnimate={animateFields}
-                    />
-                    {errors.amount && touched.amount && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.amount}
-                      </div>
-                    )}
-                  </div>
+          </button>
+        </Link>
+      </div>
 
-                  <div>
-                    <label
-                      htmlFor="date"
-                      className="block text-[var(--text)] mb-2"
-                    >
-                      Date
-                    </label>
-                    <AnimatedField
-                      type="date"
-                      id="date"
-                      name="date"
-                      className="input w-full"
-                      shouldAnimate={animateFields}
-                    />
-                    {errors.date && touched.date && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.date}
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="categoryId"
-                      className="block text-[var(--text)] mb-2"
-                    >
-                      Category
-                    </label>
-                    <AnimatedField
-                      as="select"
-                      id="categoryId"
-                      name="categoryId"
-                      className="input w-full appearance-none bg-[var(--bg)] text-[var(--text)]"
-                      shouldAnimate={animateFields}
-                    >
-                      <option
-                        value=""
-                        className="bg-[var(--bg)] text-[var(--text)]"
-                      >
-                        {categoriesLoading ? "Loading..." : "Select Category"}
-                      </option>
-                      {categories?.map((category) => (
-                        <option
-                          key={category.id}
-                          value={category.id}
-                          className="bg-[var(--bg)] text-[var(--text)]"
-                        >
-                          {category.icon} {category.name}
-                        </option>
-                      ))}
-                    </AnimatedField>
-                    {errors.categoryId && touched.categoryId && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.categoryId}
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="moneySourceId"
-                      className="block text-[var(--text)] mb-2"
-                    >
-                      Money Source
-                    </label>
-                    <AnimatedField
-                      as="select"
-                      id="moneySourceId"
-                      name="moneySourceId"
-                      className="input w-full appearance-none bg-[var(--bg)] text-[var(--text)]"
-                      shouldAnimate={animateFields}
-                    >
-                      <option
-                        value=""
-                        className="bg-[var(--bg)] text-[var(--text)]"
-                      >
-                        {moneySourcesLoading
-                          ? "Loading..."
-                          : "Select a money source"}
-                      </option>
-                      {moneySources?.data?.map((source) => (
-                        <option
-                          key={source.id}
-                          value={source.id}
-                          className="bg-[var(--bg)] text-[var(--text)]"
-                        >
-                          {source.name} ({source.currency})
-                        </option>
-                      ))}
-                    </AnimatedField>
-                    {errors.moneySourceId && touched.moneySourceId && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.moneySourceId}
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label
-                      htmlFor="notes"
-                      className="block text-[var(--text)] mb-2"
-                    >
-                      Notes
-                    </label>
-                    <AnimatedField
-                      as="textarea"
-                      id="notes"
-                      name="notes"
-                      rows={4}
-                      className="input w-full resize-none"
-                      placeholder="Enter notes"
-                      shouldAnimate={animateFields}
-                    />
-                    {errors.notes && touched.notes && (
-                      <div className="text-red-500 text-sm mt-1">
-                        {errors.notes}
-                      </div>
-                    )}
-                  </div>
-
-                  <button type="submit" disabled={isCreating} className="btn w-full">
-                    {isCreating ? "Creating..." : "Create Expense"}
-                  </button>
-                </Form>
-              )}
-            </Formik>
+      <div className="bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden">
+        <div className="p-4 border-b border-[var(--border-color)]">
+          <div className="relative flex items-center">
+            <FaSearch className="text-[var(--text)] opacity-50" />
+            <input
+              type="text"
+              value={searchInput}
+              onChange={handleSearchChange}
+              placeholder="Search expenses..."
+              className="input ps-12"
+            />
           </div>
         </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-[var(--bgSecondary)]">
+              <tr>
+                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                  Category
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                  Notes
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                  Amount
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                  Money Source
+                </th>
+                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <AnimatePresence mode="popLayout">
+                {expensesResponse?.data.map((expense) => (
+                  <motion.tr
+                    key={expense.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, y: 1 }}
+                    exit={{ opacity: 0, y: -0.9 }}
+                    className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text)]">
+                      {format(new Date(expense.date), "MMM d, yyyy")}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <div className="flex items-center gap-2">
+                        <span>{expense.category.icon}</span>
+                        <span className="text-[var(--text)]">
+                          {expense.category.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-[var(--text)]">
+                      {expense.notes}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <div className="flex flex-col">
+                        <span className="text-[var(--text)]">
+                          {formatCurrency(expense.amount)} {expense.moneySource.currency}
+                        </span>
+                        <span className="text-xs opacity-60">
+                          {formatCurrency(expense.amountInPreferredCurrency)} USD
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text)]">
+                      {expense.moneySource.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      <button
+                        onClick={() => handleDelete(expense.id)}
+                        className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-all active:scale-95 cursor-pointer"
+                      >
+                        <FaTrash size={14} />
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))}
+              </AnimatePresence>
+              {isLoading && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-4 text-center">
+                    <div className="flex justify-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)]"></div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+              {!isLoading && expensesResponse?.data.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="px-6 py-4 text-center text-[var(--text)]">
+                    No expenses found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        {expensesResponse && expensesResponse.totalPages > 1 && (
+          <div className="flex justify-between items-center px-6 py-4 border-t border-[var(--border-color)]">
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-[var(--text)]">
+                Page {page} of {expensesResponse.totalPages}
+              </span>
+              <span className="text-sm text-[var(--text)]">
+                ({expensesResponse.data.length} of {expensesResponse.totalCount} expenses)
+              </span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+              >
+                Previous
+              </button>
+              {page > 2 && (
+                <button
+                  onClick={() => setPage(1)}
+                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+                >
+                  1
+                </button>
+              )}
+              {page > 3 && <span className="px-2 py-2 text-[var(--text)]">...</span>}
+              {page > 1 && (
+                <button
+                  onClick={() => setPage(page - 1)}
+                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+                >
+                  {page - 1}
+                </button>
+              )}
+              <button
+                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--border-radius)]"
+              >
+                {page}
+              </button>
+              {page < expensesResponse.totalPages && (
+                <button
+                  onClick={() => setPage(page + 1)}
+                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+                >
+                  {page + 1}
+                </button>
+              )}
+              {page < expensesResponse.totalPages - 2 && <span className="px-2 py-2 text-[var(--text)]">...</span>}
+              {page < expensesResponse.totalPages - 1 && (
+                <button
+                  onClick={() => setPage(expensesResponse.totalPages)}
+                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+                >
+                  {expensesResponse.totalPages}
+                </button>
+              )}
+              <button
+                onClick={() => setPage((p) => p + 1)}
+                disabled={page >= expensesResponse.totalPages}
+                className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+              >
+                Next
+              </button>
+            </div>
+          </div>
+        )}
       </div>
+
+      <DeleteConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => selectedExpenseId && deleteExpense(selectedExpenseId)}
+        title="Delete Expense"
+        message="Are you sure you want to delete this expense? This action cannot be undone."
+        isDeleting={isDeleting}
+      />
     </div>
   );
-};
-
-export default ExpensesPage;
+}
