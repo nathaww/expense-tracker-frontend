@@ -13,7 +13,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setThemeState] = useState<ThemeName>('light');
+  const [theme, setThemeState] = useState<ThemeName>('haftom');
   const [customTheme, setCustomTheme] = useState<ThemeDefinition | null>(null);
 
   useEffect(() => {

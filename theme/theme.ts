@@ -1,4 +1,4 @@
-export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple" | "haftom" | "custom";
+export type ThemeName = "haftom" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple" | "light" | "custom";
 
 export interface ThemeDefinition {
   primary: string;
