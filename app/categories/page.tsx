@@ -73,10 +73,7 @@ const CategoryCard = ({
         className="group relative bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden"
       >
         <div 
-          className="absolute inset-0 opacity-10 bg-gradient-to-br transition-opacity duration-300 group-hover:opacity-20"
-          style={{ 
-            backgroundColor: category.color || 'var(--color-primary)'
-          }} 
+          className="absolute inset-0 opacity-10 bg-[var(--bgSecondary)] transition-opacity duration-300 group-hover:opacity-20"
         />
         
         <div className="relative p-6">

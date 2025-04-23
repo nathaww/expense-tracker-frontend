@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FiChevronsRight, FiDollarSign, FiHome } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { BsFillGearFill } from "react-icons/bs";
@@ -18,19 +18,40 @@ interface OptionProps {
 interface ToggleCloseProps {
   open: boolean;
   setOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
+  isMobile: boolean;
 }
 
 export const Nav = () => {
   const [open, setOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
   const [selected, setSelected] = useState(pathname);
+
+  useEffect(() => {
+    // Check if we're on mobile and update state
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+      setOpen(window.innerWidth >= 768);
+    };
+
+    // Initial check
+    checkMobile();
+
+    // Add event listener for window resize
+    window.addEventListener('resize', checkMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <motion.nav
       layout
       className="sticky top-0 h-screen shrink-0 border-r border-[var(--border-color)] bg-[var(--bg)] p-2 pt-8"
-      style={{
+      initial={false}
+      animate={{ 
         width: open ? "225px" : "fit-content",
+        transition: { duration: 0.3, ease: "easeInOut" }
       }}
     >
       <div>
@@ -76,7 +97,7 @@ export const Nav = () => {
         />
       </div>
 
-      <ToggleClose open={open} setOpen={setOpen} />
+      <ToggleClose open={open} setOpen={setOpen} isMobile={isMobile} />
     </motion.nav>
   );
 };
@@ -115,7 +136,9 @@ const Option = ({ Icon, title, href, selected, setSelected, open }: OptionProps)
   );
 };
 
-const ToggleClose = ({ open, setOpen }: ToggleCloseProps) => {
+const ToggleClose = ({ open, setOpen, isMobile }: ToggleCloseProps) => {
+  if (isMobile) return null;
+
   return (
     <motion.button
       layout

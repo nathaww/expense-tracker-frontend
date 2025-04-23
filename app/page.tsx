@@ -47,7 +47,7 @@ const LandingPage = () => {
             Easy to Use
           </div>
           <div className="border border-[var(--border-color)] transition-all hover:scale-95 hover:bg-[var(--color-secondary)] flex items-end justify-start p-1 text-2xl font-semibold">
-            8
+            12
             <br />
             <span className="text-xs font-normal">Unique Themes</span>
           </div>

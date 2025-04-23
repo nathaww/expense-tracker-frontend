@@ -55,7 +55,7 @@ export const AddMoneySourceModal = () => {
         <motion.button
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--border-radius)] hover:opacity-90 cursor-pointer flex items-center gap-2 transition-all active:scale-95"
+          className="px-2 md:px-4 py-2 bg-[var(--color-primary)] text-[var(--text)] text-sm text md:text-lg rounded-[var(--border-radius)] hover:opacity-90 cursor-pointer flex items-center gap-2 transition-all active:scale-95"
         >
           <FaPlus size={14} />
           Add Money Source

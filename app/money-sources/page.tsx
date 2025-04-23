@@ -118,7 +118,7 @@ const Card = ({ source, index }: { source: MoneySource; index: number }) => {
             >
               <p className="text-white/75 text-sm mb-1">Balance</p>
               <p className="font-mono text-lg text-white">
-                {formatCurrency(source.balance)} {source.currency}
+                {source.balance} {source.currency}
               </p>
             </motion.div>
 
@@ -128,22 +128,10 @@ const Card = ({ source, index }: { source: MoneySource; index: number }) => {
             >
               <p className="text-white/75 text-sm mb-1">Budget</p>
               <p className="font-mono text-lg text-white">
-                {formatCurrency(source.budget)} {source.currency}
+                {source.budget} {source.currency}
               </p>
             </motion.div>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-sm text-white/75 bg-white/10 p-3 rounded-lg backdrop-blur-sm"
-          >
-            In preferred currency:
-            <span className="ml-2 font-mono text-white">
-              {formatCurrency(source.balanceInPreferredCurrency)} USD
-            </span>
-          </motion.div>
         </div>
       </motion.div>
 

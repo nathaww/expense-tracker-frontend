@@ -1,4 +1,17 @@
-export type ThemeName = "haftom" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple" | "light" | "custom";
+export type ThemeName =
+  | "haftom"
+  | "dark"
+  | "coffee"
+  | "halloween"
+  | "aqua"
+  | "forest"
+  | "luxury"
+  | "purple"
+  | "light"
+  | "crimson"
+  | "deepBlue"
+  | "christmas"
+  | "custom";
 
 export interface ThemeDefinition {
   primary: string;
@@ -14,15 +27,15 @@ export interface ThemeDefinition {
 
 // Custom theme storage
 export const saveCustomTheme = (theme: ThemeDefinition) => {
-  localStorage.setItem('customTheme', JSON.stringify(theme));
+  localStorage.setItem("customTheme", JSON.stringify(theme));
 };
 
 export const getCustomTheme = (): ThemeDefinition | null => {
-  const saved = localStorage.getItem('customTheme');
+  const saved = localStorage.getItem("customTheme");
   return saved ? JSON.parse(saved) : null;
 };
 
-export const themes: Record<Exclude<ThemeName, 'custom'>, ThemeDefinition> = {
+export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
   light: {
     primary: "#6366f1",
     secondary: "#a5b4fc",
@@ -122,4 +135,38 @@ export const themes: Record<Exclude<ThemeName, 'custom'>, ThemeDefinition> = {
     borderRadius: "0.5rem",
     font: "'Segoe UI', sans-serif",
   },
+  crimson: {
+    primary: "#AD2021",
+    secondary: "#8B0000",
+    tertiary: "#FA8072",
+    background: "#1A0B0B",
+    backgroundSecondary: "#2E1111",
+    text: "#FFE4E1",
+    borderColor: "#462424",
+    borderRadius: "0.5rem",
+    font: "'Segoe UI', sans-serif",
+  },
+  christmas: {
+    primary: "#008000",
+    secondary: "#FF0000",
+    tertiary: "#FFD700",
+    background: "#0F1A0F",
+    backgroundSecondary: "#1F2F1F",
+    text: "#FFFFFF",
+    borderColor: "#A9BFA9",
+    borderRadius: "0.5rem",
+    font: "'Segoe UI', sans-serif",
+  },
+  deepBlue: {
+    primary: "#0D47A1",
+    secondary: "#1565C0",
+    tertiary: "#42A5F5",
+    background: "#0A0F1A",
+    backgroundSecondary: "#121B2A",
+    text: "#E3F2FD",
+    borderColor: "#5C6F91",
+    borderRadius: "0.5rem",
+    font: "'Segoe UI', sans-serif",
+  },
+  
 };

@@ -65,7 +65,7 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
     >
       <h2 className="text-xl font-semibold mb-6 text-[var(--text)]">Profile</h2>
       
-      <div className="flex items-start gap-8">
+      <div className="flex flex-col md:flex-row items-start gap-8">
         <div className="relative">
           <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[var(--color-secondary)]">
             {profile.profilePicture ? (
@@ -137,7 +137,7 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
                   )}
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 md:gap-4">
                   <button
                     type="submit"
                     disabled={isUpdating}
