@@ -80,38 +80,38 @@ export default function ExpensesPage() {
 
       <div className="bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden">
         <div className="p-4 border-b border-[var(--border-color)]">
-          <div className="relative flex items-center">
-            <FaSearch className="text-[var(--text)] opacity-50" />
+          <div className="relative">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text)] opacity-50" />
             <input
               type="text"
               value={searchInput}
               onChange={handleSearchChange}
               placeholder="Search expenses..."
-              className="input ps-12"
+              className="input pl-10 w-full"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border-collapse">
             <thead className="bg-[var(--bgSecondary)]">
               <tr>
-                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                <th className="w-[15%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Date
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                <th className="w-[20%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Category
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                <th className="w-[25%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Notes
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                <th className="w-[20%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Amount
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                <th className="w-[15%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Money Source
                 </th>
-                <th className="px-6 py-3 text-left text-sm font-medium text-[var(--text)]">
+                <th className="w-[5%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Actions
                 </th>
               </tr>
@@ -121,28 +121,28 @@ export default function ExpensesPage() {
                 {expensesResponse?.data.map((expense) => (
                   <motion.tr
                     key={expense.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 1 }}
-                    exit={{ opacity: 0, y: -0.9 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
                     className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text)]">
+                    <td className="px-6 py-4 text-sm text-[var(--text)]">
                       {format(new Date(expense.date), "MMM d, yyyy")}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 text-sm">
                       <div className="flex items-center gap-2">
-                        <span>{expense.category.icon}</span>
+                        <span className="text-xl">{expense.category.icon}</span>
                         <span className="text-[var(--text)]">
                           {expense.category.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      {expense.notes}
+                      <div className="line-clamp-2">{expense.notes}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    <td className="px-6 py-4 text-sm">
                       <div className="flex flex-col">
-                        <span className="text-[var(--text)]">
+                        <span className="text-[var(--text)] font-medium">
                           {formatCurrency(expense.amount)} {expense.moneySource.currency}
                         </span>
                         <span className="text-xs opacity-60">
@@ -150,16 +150,18 @@ export default function ExpensesPage() {
                         </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text)]">
+                    <td className="px-6 py-4 text-sm text-[var(--text)]">
                       {expense.moneySource.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <button
-                        onClick={() => handleDelete(expense.id)}
-                        className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-all active:scale-95 cursor-pointer"
-                      >
-                        <FaTrash size={14} />
-                      </button>
+                    <td className="px-6 py-4 text-sm">
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() => handleDelete(expense.id)}
+                          className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-all active:scale-95 cursor-pointer"
+                        >
+                          <FaTrash size={14} />
+                        </button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))}

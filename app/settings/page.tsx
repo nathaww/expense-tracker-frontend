@@ -1,16 +1,36 @@
 "use client";
 import { motion } from "framer-motion";
-import { themes, ThemeName } from "@/theme/theme";
-import { useTheme } from "@/theme/ThemeProvider";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import Loader from "@/components/UI/Loader";
+import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
+import { userRequests } from "./_requests";
+import { toast } from "sonner";
+import { ProfileSection } from "@/components/Settings/ProfileSection";
+import { ThemeSection } from "@/components/Settings/ThemeSection";
 
 const Settings = () => {
-  const { theme, setTheme } = useTheme();
   const { logout, isAuthenticated } = useAuth();
   const router = useRouter();
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  const { data: profile } = useQuery({
+    queryKey: ["profile"],
+    queryFn: userRequests.getProfile,
+  });
+
+  const { mutate: deleteAccount, isPending: isDeleting } = useMutation({
+    mutationFn: userRequests.deleteAccount,
+    onSuccess: () => {
+      logout();
+      toast.success("Account deleted successfully");
+    },
+    onError: () => {
+      toast.error("Failed to delete account");
+    },
+  });
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -18,7 +38,7 @@ const Settings = () => {
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || !profile) {
     return <Loader />;
   }
 
@@ -32,56 +52,21 @@ const Settings = () => {
         Settings
       </motion.h1>
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="bg-[var(--bgSecondary)] border border-[var(--border-color)] rounded-[var(--border-radius)] p-6 mb-8"
-      >
-        <h2 className="text-xl font-semibold mb-4 text-[var(--text)]">Theme</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {(Object.keys(themes) as ThemeName[]).map((themeName) => (
-            <motion.button
-              key={themeName}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setTheme(themeName)}
-              className={`p-4 rounded-[var(--border-radius)] transition-all ${
-                theme === themeName 
-                  ? "ring-2 ring-[var(--color-primary)] bg-[var(--color-secondary)]" 
-                  : "bg-[var(--bg)] hover:bg-[var(--color-secondary)]"
-              }`}
-            >
-              <div className="flex flex-col items-center gap-2">
-                <div 
-                  className="w-8 h-8 rounded-full" 
-                  style={{ backgroundColor: themes[themeName].primary }}
-                />
-                <span className="text-[var(--text)] capitalize">
-                  {themeName}
-                </span>
-              </div>
-            </motion.button>
-          ))}
-        </div>
-      </motion.div>
+      <ProfileSection 
+        profile={profile} 
+        onDeleteAccount={() => setIsDeleteOpen(true)} 
+      />
+      
+      <ThemeSection />
 
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        className="bg-[var(--bgSecondary)] rounded-[var(--border-radius)] p-6"
-      >
-        <h2 className="text-xl font-semibold mb-4 text-[var(--text)]">Account</h2>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={logout}
-          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-[var(--border-radius)] transition-all"
-        >
-          Logout
-        </motion.button>
-      </motion.div>
+      <DeleteConfirmationModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={deleteAccount}
+        title="Delete Account"
+        message="Are you sure you want to delete your account? This action cannot be undone."
+        isDeleting={isDeleting}
+      />
     </div>
   );
 };

@@ -1,22 +1,29 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { themes, ThemeName } from "./theme";
+import { themes, ThemeName, getCustomTheme, ThemeDefinition } from "./theme";
 
 interface ThemeContextType {
   theme: ThemeName;
   setTheme: (theme: ThemeName) => void;
+  customTheme: ThemeDefinition | null;
+  setCustomTheme: (theme: ThemeDefinition) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [theme, setThemeState] = useState<ThemeName>('light');
+  const [customTheme, setCustomTheme] = useState<ThemeDefinition | null>(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as ThemeName;
     if (savedTheme) {
       setThemeState(savedTheme);
+    }
+    const savedCustomTheme = getCustomTheme();
+    if (savedCustomTheme) {
+      setCustomTheme(savedCustomTheme);
     }
   }, []);
 
@@ -26,7 +33,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    const selectedTheme = themes[theme];
+    const selectedTheme = theme === 'custom' ? customTheme : themes[theme as Exclude<ThemeName, 'custom'>];
     if (!selectedTheme) return;
   
     const root = document.documentElement;
@@ -39,10 +46,10 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     root.style.setProperty("--border-radius", selectedTheme.borderRadius);
     root.style.setProperty("--border-color", selectedTheme.borderColor);
     root.style.setProperty("--font", selectedTheme.font);
-  }, [theme]);
+  }, [theme, customTheme]);
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme, customTheme, setCustomTheme }}>
       {children}
     </ThemeContext.Provider>
   );

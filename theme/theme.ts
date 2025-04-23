@@ -1,6 +1,6 @@
-export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple" | "haftom";
+export type ThemeName = "light" | "dark" | "coffee" | "halloween" | "aqua" | "forest" | "luxury" | "purple" | "haftom" | "custom";
 
-interface ThemeDefinition {
+export interface ThemeDefinition {
   primary: string;
   secondary: string;
   tertiary: string;
@@ -11,7 +11,18 @@ interface ThemeDefinition {
   borderRadius: string;
   font: string;
 }
-export const themes: Record<ThemeName, ThemeDefinition> = {
+
+// Custom theme storage
+export const saveCustomTheme = (theme: ThemeDefinition) => {
+  localStorage.setItem('customTheme', JSON.stringify(theme));
+};
+
+export const getCustomTheme = (): ThemeDefinition | null => {
+  const saved = localStorage.getItem('customTheme');
+  return saved ? JSON.parse(saved) : null;
+};
+
+export const themes: Record<Exclude<ThemeName, 'custom'>, ThemeDefinition> = {
   light: {
     primary: "#6366f1",
     secondary: "#a5b4fc",

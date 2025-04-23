@@ -223,11 +223,11 @@ const CategoriesPage = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(3)].map((_, i) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="animate-pulse bg-[var(--bgSecondary)] h-32 rounded-[var(--border-radius)]"
+              className="animate-pulse bg-[var(--bgSecondary)] h-36 rounded-[var(--border-radius)]"
             />
           ))}
         </div>
