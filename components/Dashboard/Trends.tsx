@@ -15,7 +15,6 @@ import {
   TooltipProps,
 } from "recharts";
 import { format, parseISO } from "date-fns";
-import { useTheme } from "@/theme/ThemeProvider";
 import {
   NameType,
   ValueType,
@@ -53,9 +52,6 @@ const CustomTooltip = ({
 };
 
 const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -67,7 +63,7 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 0, left: 10, bottom: 0 }}
+            margin={{ top: 10, right: 10, left: 15, bottom: 0 }}
           >
             <defs>
               <linearGradient
@@ -91,7 +87,7 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
             </defs>
             <CartesianGrid
               strokeDasharray="3 3"
-              stroke={isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"}
+              stroke="var(--border-color)"
             />
             <XAxis
               dataKey="date"
@@ -106,9 +102,9 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
             <Area
               type="monotone"
               dataKey="amount"
-              stroke="var(--color-secondary)"
+              stroke="var(--text)"
               fillOpacity={1}
-              fill={`url(#gradient${title})`}
+              fill={`var(--color-secondary)`}
             />
           </AreaChart>
         </ResponsiveContainer>

@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://expense-tracker-backend-csxl.onrender.com";
 
 const api: AxiosInstance = axios.create({ baseURL });
 
@@ -75,8 +75,12 @@ api.interceptors.response.use(
           }
         );
 
-        const newAccessToken = data.accessToken;
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken, user } = data;
+        
+        // Update tokens and user data in localStorage
         localStorage.setItem("accessToken", newAccessToken);
+        localStorage.setItem("refreshToken", newRefreshToken);
+        localStorage.setItem("user", JSON.stringify(user));
 
         api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
         processQueue(null, newAccessToken);
@@ -87,6 +91,10 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch (err) {
+        // If refresh token fails, clear all auth data
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
         processQueue(err, null);
         return Promise.reject(err);
       } finally {

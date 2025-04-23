@@ -32,6 +32,7 @@ const CategoryCard = ({
   const queryClient = useQueryClient();
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const { mutate: deleteCategory, isPending: isDeleting } = useMutation({
     mutationFn: () => categoryRequests.deleteCategory(category.id),
@@ -66,35 +67,69 @@ const CategoryCard = ({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        className="bg-[var(--bg)] p-6 rounded-[var(--border-radius)] border border-[var(--border-color)]"
+        whileHover={{ scale: 1.02 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className="group relative bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden"
       >
-        <div className="flex justify-between items-start">
-          <div className="flex flex-col items-start">
-            <span className="text-4xl mb-4">{category.icon}</span>
-            <h3 className="text-[var(--text)] text-xl font-bold">
-              {category.name}
-            </h3>
+        <div 
+          className="absolute inset-0 opacity-10 bg-gradient-to-br transition-opacity duration-300 group-hover:opacity-20"
+          style={{ 
+            backgroundColor: category.color || 'var(--color-primary)'
+          }} 
+        />
+        
+        <div className="relative p-6">
+          <div className="flex justify-between items-start mb-4">
+            <motion.span 
+              className="text-5xl"
+              animate={{ rotate: isHovered ? [0, -10, 10, 0] : 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {category.icon}
+            </motion.span>
+            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsUpdateOpen(true)}
+                className="p-2 bg-[var(--color-secondary)] text-white rounded-full transition-all"
+              >
+                <FaPencilAlt className="w-4 h-4" />
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setIsDeleteOpen(true)}
+                className="p-2 bg-red-500 text-white rounded-full transition-all"
+              >
+                <FaTrash className="w-4 h-4" />
+              </motion.button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setIsUpdateOpen(true)}
-              className="p-2 bg-[var(--bgSecondary)] hover:bg-[var(--bgSecondary)]/80 rounded-full transition-all active:scale-95"
+
+          <h3 className="text-[var(--text)] text-xl font-bold mb-2">
+            {category.name}
+          </h3>
+
+          {category.isDefault && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white text-sm rounded-full"
             >
-              <FaPencilAlt className="w-4 h-4 text-[var(--text)]" />
-            </button>
-            <button
-              onClick={() => setIsDeleteOpen(true)}
-              className="p-2 bg-[var(--bgSecondary)] hover:bg-[var(--bgSecondary)]/80 rounded-full transition-all active:scale-95"
-            >
-              <FaTrash className="w-4 h-4 text-[var(--text)]" />
-            </button>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+              </span>
+              Default
+            </motion.div>
+          )}
+          
+          <div className="mt-4 text-sm text-[var(--text)] opacity-70">
+            Created {new Date(category.createdAt).toLocaleDateString()}
           </div>
         </div>
-        {category.isDefault && (
-          <span className="mt-4 inline-block px-2 py-1 bg-[var(--color-primary)] text-white text-sm rounded-full">
-            Default
-          </span>
-        )}
       </motion.div>
 
       <Dialog.Root open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>

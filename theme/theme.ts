@@ -113,7 +113,7 @@ export const themes: Record<Exclude<ThemeName, 'custom'>, ThemeDefinition> = {
   },
   haftom: {
     primary: "#A4D28D",
-    secondary: "#BCF2A1",
+    secondary: "#7DA16B",
     tertiary: "#c084fc",
     background: "#161D16",
     backgroundSecondary: "#1A231A",

@@ -68,34 +68,50 @@ export default function ExpensesPage() {
   return (
     <div className="container mx-auto p-8 min-h-screen">
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-[var(--text)]">Expenses</h1>
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl font-bold text-[var(--text)]"
+        >
+          Expenses
+        </motion.h1>
 
         <Link href="/expenses/add">
-          <button className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--border-radius)] hover:opacity-90 cursor-pointer flex items-center gap-2 transition-all active:scale-95">
+          <motion.button
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="px-4 py-2 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-[var(--border-radius)] cursor-pointer flex items-center gap-2 transition-all"
+          >
             <FaPlus size={14} />
             Add Expense
-          </button>
+          </motion.button>
         </Link>
       </div>
 
-      <div className="bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden">
-        <div className="p-4 border-b border-[var(--border-color)]">
-          <div className="relative">
-            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text)] opacity-50" />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden shadow-lg"
+      >
+        <div className="p-4 border-b border-[var(--border-color)] bg-[var(--bgSecondary)]">
+          <div className="relative max-w-md">
             <input
               type="text"
               value={searchInput}
               onChange={handleSearchChange}
               placeholder="Search expenses..."
-              className="input pl-10 w-full"
+              className="input w-full pr-4 transition-all duration-200 focus:shadow-lg"
             />
+            <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text)] opacity-50 pointer-events-none" />
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">
-            <thead className="bg-[var(--bgSecondary)]">
-              <tr>
+            <thead>
+              <tr className="bg-[var(--bgSecondary)] transition-colors">
                 <th className="w-[15%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Date
                 </th>
@@ -111,7 +127,7 @@ export default function ExpensesPage() {
                 <th className="w-[15%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Money Source
                 </th>
-                <th className="w-[5%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
+                <th className="w-[5%] px-6 py-4 text-center text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Actions
                 </th>
               </tr>
@@ -124,43 +140,64 @@ export default function ExpensesPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -20 }}
-                    className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
+                    whileHover={{ backgroundColor: "var(--bgSecondary)" }}
+                    className="border-b border-[var(--border-color)] transition-all"
                   >
                     <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      {format(new Date(expense.date), "MMM d, yyyy")}
+                      <motion.div whileHover={{ x: 5 }} className="transition-all">
+                        {format(new Date(expense.date), "MMM d, yyyy")}
+                      </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <div className="flex items-center gap-2">
+                      <motion.div 
+                        className="flex items-center gap-2"
+                        whileHover={{ scale: 1.05 }}
+                      >
                         <span className="text-xl">{expense.category.icon}</span>
                         <span className="text-[var(--text)]">
                           {expense.category.name}
                         </span>
-                      </div>
+                      </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      <div className="line-clamp-2">{expense.notes}</div>
+                      <motion.div 
+                        className="line-clamp-2"
+                        whileHover={{ lineClamp: 'none' }}
+                      >
+                        {expense.notes}
+                      </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <div className="flex flex-col">
+                      <motion.div 
+                        className="flex flex-col"
+                        whileHover={{ scale: 1.05 }}
+                      >
                         <span className="text-[var(--text)] font-medium">
                           {formatCurrency(expense.amount)} {expense.moneySource.currency}
                         </span>
                         <span className="text-xs opacity-60">
                           {formatCurrency(expense.amountInPreferredCurrency)} USD
                         </span>
-                      </div>
+                      </motion.div>
                     </td>
-                    <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      {expense.moneySource.name}
+                    <td className="px-6 py-4 text-sm">
+                      <motion.div 
+                        whileHover={{ scale: 1.05 }}
+                        className="text-[var(--text)]"
+                      >
+                        {expense.moneySource.name}
+                      </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm">
                       <div className="flex justify-center">
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.1, backgroundColor: "rgb(239 68 68 / 0.2)" }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={() => handleDelete(expense.id)}
-                          className="p-2 hover:bg-red-500/10 text-red-500 rounded-full transition-all active:scale-95 cursor-pointer"
+                          className="p-2 text-red-500 rounded-full transition-colors"
                         >
                           <FaTrash size={14} />
-                        </button>
+                        </motion.button>
                       </div>
                     </td>
                   </motion.tr>
@@ -168,17 +205,29 @@ export default function ExpensesPage() {
               </AnimatePresence>
               {isLoading && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center">
-                    <div className="flex justify-center">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)]"></div>
+                  <td colSpan={6} className="px-6 py-8 text-center">
+                    <div className="flex justify-center items-center space-x-2">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--color-primary)]"></div>
+                      <span className="text-[var(--text)] opacity-70">Loading expenses...</span>
                     </div>
                   </td>
                 </tr>
               )}
               {!isLoading && expensesResponse?.data.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-4 text-center text-[var(--text)]">
-                    No expenses found
+                  <td colSpan={6} className="px-6 py-8 text-center">
+                    <div className="flex flex-col items-center space-y-2">
+                      <p className="text-[var(--text)] opacity-70">No expenses found</p>
+                      <Link href="/expenses/add">
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full"
+                        >
+                          Add your first expense
+                        </motion.button>
+                      </Link>
+                    </div>
                   </td>
                 </tr>
               )}
@@ -187,73 +236,42 @@ export default function ExpensesPage() {
         </div>
 
         {expensesResponse && expensesResponse.totalPages > 1 && (
-          <div className="flex justify-between items-center px-6 py-4 border-t border-[var(--border-color)]">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-between items-center px-6 py-4 border-t border-[var(--border-color)] bg-[var(--bgSecondary)]"
+          >
             <div className="flex items-center gap-4">
               <span className="text-sm text-[var(--text)]">
                 Page {page} of {expensesResponse.totalPages}
               </span>
-              <span className="text-sm text-[var(--text)]">
+              <span className="text-sm text-[var(--text-secondary)]">
                 ({expensesResponse.data.length} of {expensesResponse.totalCount} expenses)
               </span>
             </div>
             <div className="flex gap-2">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+                className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors"
               >
                 Previous
-              </button>
-              {page > 2 && (
-                <button
-                  onClick={() => setPage(1)}
-                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
-                >
-                  1
-                </button>
-              )}
-              {page > 3 && <span className="px-2 py-2 text-[var(--text)]">...</span>}
-              {page > 1 && (
-                <button
-                  onClick={() => setPage(page - 1)}
-                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
-                >
-                  {page - 1}
-                </button>
-              )}
-              <button
-                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-[var(--border-radius)]"
-              >
-                {page}
-              </button>
-              {page < expensesResponse.totalPages && (
-                <button
-                  onClick={() => setPage(page + 1)}
-                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
-                >
-                  {page + 1}
-                </button>
-              )}
-              {page < expensesResponse.totalPages - 2 && <span className="px-2 py-2 text-[var(--text)]">...</span>}
-              {page < expensesResponse.totalPages - 1 && (
-                <button
-                  onClick={() => setPage(expensesResponse.totalPages)}
-                  className="px-4 py-2 bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
-                >
-                  {expensesResponse.totalPages}
-                </button>
-              )}
-              <button
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setPage((p) => p + 1)}
-                disabled={page >= expensesResponse.totalPages}
-                className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)]"
+                disabled={page >= (expensesResponse?.totalPages || 1)}
+                className="px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors"
               >
                 Next
-              </button>
+              </motion.button>
             </div>
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
 
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}

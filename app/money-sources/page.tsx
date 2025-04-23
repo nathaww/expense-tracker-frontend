@@ -27,6 +27,7 @@ const Card = ({ source, index }: { source: MoneySource; index: number }) => {
   const Icon = getIconComponent(source.icon);
   const queryClient = useQueryClient();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   const { mutate: deleteMoneySource, isPending: isDeleting } = useMutation({
     mutationFn: () => moneySourceRequests.deleteMoneySource(source.id),
@@ -46,62 +47,103 @@ const Card = ({ source, index }: { source: MoneySource; index: number }) => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.1 }}
-        className="relative w-full p-6 h-64 rounded-[var(--border-radius)] overflow-hidden group"
-        style={{
-          backgroundImage: `linear-gradient(to right, var(--color-primary), var(--color-secondary))`,
-          backgroundSize: '200% 100%',
-          backgroundPosition: 'left bottom',
-          transition: 'background-position 0.5s ease-in-out',
-        }}
-        whileHover={{
-          backgroundPosition: ['left bottom', 'right bottom']
-        }}
+        whileHover={{ scale: 1.02 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className="relative w-full p-6 h-auto rounded-[var(--border-radius)] overflow-hidden group bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)]"
       >
-        <div className="absolute top-0 left-0 w-full h-full bg-white opacity-[0.03]" />
+        <motion.div 
+          className="absolute inset-0 bg-black/10"
+          initial={false}
+          animate={{ opacity: isHovered ? 0.2 : 0.1 }}
+          transition={{ duration: 0.3 }}
+        />
         
         <div className="relative z-10">
-          <div className="flex justify-between items-center mb-8">
-            <Icon className="text-white text-3xl" />
+          <div className="flex justify-between items-start mb-6">
+            <motion.div
+              animate={{ 
+                rotate: isHovered ? [0, -10, 10, 0] : 0,
+                scale: isHovered ? 1.1 : 1
+              }}
+              transition={{ duration: 0.5 }}
+              className="p-3 bg-white/10 rounded-full"
+            >
+              <Icon className="text-white text-2xl" />
+            </motion.div>
+
             <div className="flex items-center gap-2">
               <UpdateMoneySourceModal moneySource={source} />
               <motion.button
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
-                className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all active:scale-95"
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all"
                 onClick={() => setIsDeleteOpen(true)}
               >
                 <FaTrash className="w-4 h-4 text-white" />
               </motion.button>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <motion.h3 
+              className="text-white text-xl font-bold mb-2"
+              animate={{ x: isHovered ? 10 : 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {source.name}
               {source.isDefault && (
-                <span className="text-white font-mono ml-2">DEFAULT</span>
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="ml-2 inline-flex items-center gap-1 px-2 py-1 bg-white/20 text-white text-xs rounded-full"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                  </span>
+                  Default
+                </motion.span>
               )}
-            </div>
-          </div>
-
-          <h3 className="text-white text-xl font-bold mb-4">{source.name}</h3>
-        
-          <div className="grid grid-cols-2 gap-4 text-white/90">
-            <div>
-              <p className="text-sm opacity-75">Balance</p>
-              <p className="font-mono text-lg">
-                {formatCurrency(source.balance)} {source.currency}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm opacity-75">Budget</p>
-              <p className="font-mono text-lg">
-                {formatCurrency(source.budget)} {source.currency}
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-4">
-            <p className="text-sm text-white/75">
-              In preferred currency:
-              <span className="ml-2 font-mono">
-                {formatCurrency(source.balanceInPreferredCurrency)} USD
-              </span>
+            </motion.h3>
+            <p className="text-white/75 text-sm">
+              Created {new Date(source.createdAt).toLocaleDateString()}
             </p>
           </div>
+
+          <div className="grid grid-cols-2 gap-6 mb-4">
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="p-4 bg-white/10 rounded-lg backdrop-blur-sm"
+            >
+              <p className="text-white/75 text-sm mb-1">Balance</p>
+              <p className="font-mono text-lg text-white">
+                {formatCurrency(source.balance)} {source.currency}
+              </p>
+            </motion.div>
+
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="p-4 bg-white/10 rounded-lg backdrop-blur-sm"
+            >
+              <p className="text-white/75 text-sm mb-1">Budget</p>
+              <p className="font-mono text-lg text-white">
+                {formatCurrency(source.budget)} {source.currency}
+              </p>
+            </motion.div>
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-sm text-white/75 bg-white/10 p-3 rounded-lg backdrop-blur-sm"
+          >
+            In preferred currency:
+            <span className="ml-2 font-mono text-white">
+              {formatCurrency(source.balanceInPreferredCurrency)} USD
+            </span>
+          </motion.div>
         </div>
       </motion.div>
 
