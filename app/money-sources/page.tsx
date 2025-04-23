@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { FaWallet, FaUniversity, FaCreditCard, FaTrash } from "react-icons/fa";
-import { formatCurrency } from "@/components/utils/formatCurrency";
 import { moneySourceRequests, MoneySource } from "./_requests";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
