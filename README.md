@@ -1,4 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Expense Tracker Web Application
+
+A modern, feature-rich expense tracking application built with Next.js that helps users manage their finances efficiently with an intuitive interface and powerful features.
+
+## Features
+
+- **User Authentication**: Secure login, registration, and email verification system
+- **Dashboard Overview**: Get a quick snapshot of your financial status with total balance, expenses, and budget utilization
+- **Expense Management**: 
+  - Add, edit, and delete expenses
+  - Categorize expenses
+  - Add notes and dates
+  - Search and filter expenses
+  - Natural language expense entry (e.g., "Spent $50 on groceries yesterday")
+- **Money Sources**: 
+  - Manage multiple money sources (wallet, bank accounts, credit cards)
+  - Track balance and budget for each source
+  - Set default money source
+- **Categories**:
+  - Create custom expense categories
+  - Add emoji icons to categories
+  - Set default categories
+- **Theme Customization**:
+  - 12+ built-in themes
+  - Create custom themes with personalized colors
+  - Customize fonts and border radius
+- **Data Visualization**:
+  - Weekly and monthly expense trends
+  - Interactive charts and graphs
+  - Budget utilization tracking
+- **Responsive Design**: Works seamlessly on desktop, tablet, and mobile devices
+
+## Technologies Used
+
+- **Frontend**:
+  - Next.js 15 (React Framework)
+  - TypeScript
+  - TailwindCSS for styling
+  - Framer Motion for animations
+  - Radix UI for accessible components
+  - React Query for data fetching
+  - Formik & Yup for form handling
+  - Recharts for data visualization
+
+- **Key Features**:
+  - Server-side rendering
+  - Client-side navigation
+  - Type safety with TypeScript
+  - Responsive and animated UI
+  - Accessible components
+  - Efficient state management
+  - Real-time form validation
+
+## Demo Account
+
+You can use the following credentials to test the application:
+
+```
+Email: jane@example.com
+Password: password123
+```
 
 ## Getting Started
 
