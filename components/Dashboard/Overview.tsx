@@ -28,9 +28,9 @@ const OverviewCard = ({
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[var(--text)]">{title}</h3>
-        <Icon className="w-6 h-6 text-[var(--color-secondary)]" />
+        <Icon className="w-6 h-6 text-[var(--text)]/50" />
       </div>
-      <p className="text-2xl font-bold text-[var(--color-primary)]">{value}</p>
+      <p className="text-2xl font-bold text-[var(--text)]/60">{value}</p>
     </motion.div>
   );
 };

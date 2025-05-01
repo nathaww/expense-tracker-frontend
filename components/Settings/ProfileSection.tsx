@@ -31,8 +31,8 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
     onSuccess: (data) => {
       setUser({
         ...user!,
-        name: data.name,
-        email: data.email,
+        name: data?.name,
+        email: data?.email,
       });
       toast.success("Profile updated successfully");
     },
@@ -42,9 +42,9 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
   });
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event?.target?.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         toast.error("File size should be less than 5MB");
         return;
       }
@@ -68,10 +68,10 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
       <div className="flex flex-col md:flex-row items-start gap-8">
         <div className="relative">
           <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[var(--color-secondary)]">
-            {profile.profilePicture ? (
+            {profile?.profilePicture ? (
               <Image
-                src={profile.profilePicture}
-                alt={profile.name}
+                src={profile?.profilePicture}
+                alt={profile?.name}
                 fill
                 className="object-cover"
               />
@@ -80,7 +80,7 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
             )}
           </div>
           <button
-            onClick={() => fileInputRef.current?.click()}
+            onClick={() => fileInputRef?.current?.click()}
             className="absolute bottom-0 right-0 p-2 bg-[var(--color-primary)] text-white rounded-full hover:opacity-90 transition-opacity"
           >
             <FaCamera size={16} />
@@ -97,14 +97,14 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
         <div className="flex-1">
           <Formik
             initialValues={{
-              name: profile.name,
-              email: profile.email,
+              name: profile?.name,
+              email: profile?.email,
             }}
             validationSchema={profileSchema}
             onSubmit={(values) => {
               const updates: UpdateProfileInput = {};
-              if (values.name !== profile.name) updates.name = values.name;
-              if (values.email !== profile.email) updates.email = values.email;
+              if (values.name !== profile?.name) updates.name = values.name;
+              if (values.email !== profile?.email) updates.email = values.email;
               if (Object.keys(updates).length > 0) {
                 updateProfile(updates);
               }

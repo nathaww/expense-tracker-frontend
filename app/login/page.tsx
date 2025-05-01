@@ -51,7 +51,7 @@ export default function LoginPage() {
 
         <a
           href="/register"
-          className="block text-center text-sm underline text-[var(--color-primary)] hover:opacity-80"
+          className="block text-center text-sm underline text-[var(--text)] hover:opacity-80"
         >
           Don&lsquo;t have an account? Sign up
         </a>
@@ -94,13 +94,13 @@ export default function LoginPage() {
         <div className="inline-flex items-center justify-center gap-10 w-full">
           <a
             href="/forgot-password"
-            className="block text-center underline text-sm text-[var(--color-primary)] hover:opacity-80"
+            className="block text-center underline text-sm text-[var(--text)] hover:opacity-80"
           >
             Forgot password?
           </a>
           <a
             href="/verify-email"
-            className="block text-center text-sm text-[var(--color-primary)] hover:opacity-80"
+            className="block text-center text-sm text-[var(--text)] hover:opacity-80"
           >
             Verify email
           </a>

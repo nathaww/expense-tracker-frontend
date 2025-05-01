@@ -62,6 +62,7 @@ export const AddThemeModal = () => {
 
           <Formik
             initialValues={{
+              name: "",
               primary: "#6366f1",
               secondary: "#a5b4fc",
               tertiary: "#e0e7ff",
@@ -78,6 +79,14 @@ export const AddThemeModal = () => {
             {({ errors, touched }) => (
               <Form className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
+                  <div className="lg:col-span-3 sm:col-span-2">
+                    <label className="block text-[var(--text)] mb-2 text-sm md:text-base">Theme Name</label>
+                    <Field name="name" type="text" className="input w-full" placeholder="Enter theme name" />
+                    {errors.name && touched.name && (
+                      <div className="text-red-500 text-xs md:text-sm mt-1">{errors.name}</div>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block text-[var(--text)] mb-2 text-sm md:text-base">Primary Color</label>
                     <Field name="primary" type="color" className="w-full h-8 md:h-10 rounded-[var(--border-radius)]" />

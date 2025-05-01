@@ -17,6 +17,31 @@ export interface DashboardTrends {
   weeklyTrends: TrendData[];
 }
 
+export interface BudgetComparisonItem {
+  moneySource: string;
+  budget: number;
+  actual: number;
+  variance: number;
+  variancePercentage: number;
+}
+
+export interface BudgetComparison {
+  comparisons: BudgetComparisonItem[];
+  totalBudget: number;
+  totalActual: number;
+  totalVariance: number;
+}
+
+export interface CategoryBreakdownItem {
+  category: string;
+  amount: number;
+  percentage: number;
+}
+
+export interface ExpenseComposition {
+  categoryBreakdown: CategoryBreakdownItem[];
+}
+
 export const dashboardRequests = {
   getOverview: async (): Promise<DashboardOverview> => {
     const res = await api.get<DashboardOverview>('/dashboard/overview');
@@ -25,6 +50,16 @@ export const dashboardRequests = {
   
   getTrends: async (): Promise<DashboardTrends> => {
     const res = await api.get<DashboardTrends>('/dashboard/trends');
+    return res.data;
+  },
+
+  getBudgetComparison: async (): Promise<BudgetComparison> => {
+    const res = await api.get<BudgetComparison>('/dashboard/budget-comparison');
+    return res.data;
+  },
+
+  getExpenseComposition: async (): Promise<ExpenseComposition> => {
+    const res = await api.get<ExpenseComposition>('/dashboard/expense-composition');
     return res.data;
   },
 };

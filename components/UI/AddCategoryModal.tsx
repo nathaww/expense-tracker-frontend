@@ -53,7 +53,7 @@ export const AddCategoryModal = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           whileHover={{ scale: 1.05 }}
-          className="px-2 md:px-4 py-2 text-sm md:text-lg bg-[var(--color-primary)] text-white rounded-[var(--border-radius)] flex items-center gap-2 hover:opacity-90 transition-opacity"
+          className="px-2 md:px-4 py-2 text-sm md:text-lg bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white rounded-[var(--border-radius)] flex items-center gap-2 hover:opacity-90 transition-opacity"
         >
           <FaPlus size={14} />
           Add Category

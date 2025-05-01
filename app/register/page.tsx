@@ -47,7 +47,7 @@ export default function RegisterPage() {
         </h2>
         <a
           href="/login"
-          className="block text-center text-sm underline text-[var(--color-primary)] hover:opacity-80"
+          className="block text-center text-sm underline text-[var(--text)] hover:opacity-80"
         >
           Already have an account? Sign in
         </a>
@@ -100,7 +100,7 @@ export default function RegisterPage() {
         </Formik>
         <a
           href="/verify-email"
-          className="block text-center text-sm underline text-[var(--color-primary)] hover:opacity-80"
+          className="block text-center text-sm underline text-[var(--text)] hover:opacity-80"
         >
           Verify email
         </a>
