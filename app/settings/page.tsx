@@ -59,6 +59,7 @@ const Settings = () => {
       
       <ThemeSection />
 
+
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}

@@ -17,7 +17,20 @@ const generateRandomColors = (count: number) => {
   return colors;
 };
 
-const CategoryTable = ({ data }: { data: CategoryBreakdownItem[] }) => {
+interface ExpenseCompositionProps {
+  currencyType: string;
+  hideAmount: boolean;
+}
+
+const CategoryTable = ({ 
+  data,
+  currencyType,
+  hideAmount
+}: { 
+  data: CategoryBreakdownItem[];
+  currencyType: string;
+  hideAmount: boolean;
+}) => {
   return (
     <div className="overflow-auto max-h-[300px] mt-4">
       <table className="w-full text-sm">
@@ -37,7 +50,7 @@ const CategoryTable = ({ data }: { data: CategoryBreakdownItem[] }) => {
               }`}
             >
               <td className="py-2 px-3 font-medium">{item.category}</td>
-              <td className="py-2 px-3">{formatCurrency(item.amount)}</td>
+              <td className="py-2 px-3">{formatCurrency(item.amount, currencyType, hideAmount)}</td>
               <td className="py-2 px-3">{item.percentage.toFixed(1)}%</td>
             </tr>
           ))}
@@ -47,7 +60,7 @@ const CategoryTable = ({ data }: { data: CategoryBreakdownItem[] }) => {
   );
 };
 
-export default function ExpenseComposition() {
+export default function ExpenseComposition({ currencyType, hideAmount }: ExpenseCompositionProps) {
   const {
     data: composition,
     isLoading,
@@ -112,7 +125,7 @@ export default function ExpenseComposition() {
               (c) => c.category === label
             );
             const percentage = item ? item.percentage.toFixed(1) : "0.0";
-            return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+            return `${label}: ${formatCurrency(value, currencyType, hideAmount)} (${percentage}%)`;
           },
         },
       },
@@ -141,13 +154,17 @@ export default function ExpenseComposition() {
         </div>
         
         <div className="w-full lg:w-1/2">
-          <CategoryTable data={composition.categoryBreakdown} />
+          <CategoryTable 
+            data={composition.categoryBreakdown} 
+            currencyType={currencyType} 
+            hideAmount={hideAmount}
+          />
           
           <div className="mt-4 p-4 bg-[var(--bgSecondary)] rounded-[var(--border-radius)]">
             <h4 className="font-semibold mb-2 text-[var(--text)]">Summary</h4>
             <div className="flex justify-between items-center">
               <span className="text-sm text-[var(--text)]/60">Total Expenses</span>
-              <span className="font-bold">{formatCurrency(totalAmount)}</span>
+              <span className="font-bold">{formatCurrency(totalAmount, currencyType, hideAmount)}</span>
             </div>
           </div>
         </div>

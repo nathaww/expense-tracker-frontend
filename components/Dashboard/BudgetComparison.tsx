@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from "chart.js";
 import { formatCurrency } from "../utils/formatCurrency";
+import React, { useEffect } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -17,7 +18,15 @@ const generateRandomColors = (count: number) => {
     return colors;
 };
 
-const ComparisonTable = ({ data }: { data: BudgetComparisonItem[] }) => {
+const ComparisonTable = ({ 
+    data, 
+    currencyType, 
+    hideAmount 
+}: { 
+    data: BudgetComparisonItem[]; 
+    currencyType: string;
+    hideAmount: boolean;
+}) => {
     return (
         <div className="overflow-auto max-h-[250px] mt-4">
             <table className="w-full text-sm">
@@ -34,13 +43,14 @@ const ComparisonTable = ({ data }: { data: BudgetComparisonItem[] }) => {
                     {data.map((item, index) => (
                         <tr
                             key={index}
-                            className={`border-b border-[var(--border-color)] ${index % 2 === 0 ? "bg-[var(--bg)]" : "bg-[var(--bgSecondary)]"
-                                }`}
+                            className={`border-b border-[var(--border-color)] ${
+                                index % 2 === 0 ? "bg-[var(--bg)]" : "bg-[var(--bgSecondary)]"
+                            }`}
                         >
                             <td className="py-2 px-3 font-medium">{item.moneySource}</td>
-                            <td className="py-2 px-3">{formatCurrency(item.budget)}</td>
-                            <td className="py-2 px-3">{formatCurrency(item.actual)}</td>
-                            <td className="py-2 px-3">{formatCurrency(item.variance)}</td>
+                            <td className="py-2 px-3">{formatCurrency(item.budget, currencyType, hideAmount)}</td>
+                            <td className="py-2 px-3">{formatCurrency(item.actual, currencyType, hideAmount)}</td>
+                            <td className="py-2 px-3">{formatCurrency(item.variance, currencyType, hideAmount)}</td>
                             <td className="py-2 px-3">{item.variancePercentage.toFixed(1)}%</td>
                         </tr>
                     ))}
@@ -50,15 +60,40 @@ const ComparisonTable = ({ data }: { data: BudgetComparisonItem[] }) => {
     );
 };
 
-export default function BudgetComparison() {
+interface BudgetComparisonProps {
+  currencyType: string;
+  hideAmount: boolean;
+}
+
+export default function BudgetComparison({ currencyType, hideAmount }: BudgetComparisonProps) {
     const {
         data: comparison,
         isLoading,
         isError,
+        refetch
     } = useQuery({
         queryKey: ["dashboard-budget-comparison"],
         queryFn: dashboardRequests.getBudgetComparison,
     });
+
+    // Listen for currency and hide/show changes
+    useEffect(() => {
+        const handleCurrencyChange = () => {
+            refetch();
+        };
+        
+        const handleHideAmountsChange = () => {
+            refetch();
+        };
+        
+        window.addEventListener('currencychange', handleCurrencyChange);
+        window.addEventListener('hideamountschange', handleHideAmountsChange);
+        
+        return () => {
+            window.removeEventListener('currencychange', handleCurrencyChange);
+            window.removeEventListener('hideamountschange', handleHideAmountsChange);
+        };
+    }, [refetch]);
 
     // Get computed CSS values
     const textColor = typeof window !== 'undefined' ? 
@@ -112,7 +147,7 @@ export default function BudgetComparison() {
                         const label = context.label || "";
                         const value = Number(context.raw);
                         const percentage = ((Number(context.raw) / comparison.totalActual) * 100).toFixed(1);
-                        return `${label}: ${formatCurrency(value)} (${percentage}%)`;
+                        return `${label}: ${formatCurrency(value, currencyType, hideAmount)} (${percentage}%)`;
                     },
                 },
             },
@@ -135,22 +170,29 @@ export default function BudgetComparison() {
                 </div>
 
                 <div className="w-full lg:w-1/2">
-                    <ComparisonTable data={comparison.comparisons} />
+                    <ComparisonTable data={comparison.comparisons.map(item => ({
+                        ...item,
+                        budget: item.budget,
+                        actual: item.actual,
+                        variance: item.variance,
+                    }))} 
+                    currencyType={currencyType} 
+                    hideAmount={hideAmount} />
 
                     <div className="mt-4 p-4 bg-[var(--bgSecondary)] rounded-[var(--border-radius)]">
                         <h4 className="font-semibold mb-2 text-[var(--text)]">Summary</h4>
                         <div className="grid grid-cols-3 gap-4">
                             <div>
                                 <p className="text-xs text-[var(--text)]/60">Total Budget</p>
-                                <p className="font-bold">{formatCurrency(comparison.totalBudget)}</p>
+                                <p className="font-bold">{formatCurrency(comparison.totalBudget, currencyType, hideAmount)}</p>
                             </div>
                             <div>
                                 <p className="text-xs text-[var(--text)]/60">Total Actual</p>
-                                <p className="font-bold">{formatCurrency(comparison.totalActual)}</p>
+                                <p className="font-bold">{formatCurrency(comparison.totalActual, currencyType, hideAmount)}</p>
                             </div>
                             <div>
                                 <p className="text-xs text-[var(--text)]/60">Variance</p>
-                                <p className="font-bold">{formatCurrency(comparison.totalVariance)}</p>
+                                <p className="font-bold">{formatCurrency(comparison.totalVariance, currencyType, hideAmount)}</p>
                             </div>
                         </div>
                     </div>

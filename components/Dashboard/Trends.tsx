@@ -20,6 +20,11 @@ import {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 
+interface TrendsProps {
+  currencyType: string;
+  hideAmount: boolean;
+}
+
 const formatDate = (dateString: string) => {
   try {
     return format(parseISO(dateString), "MMM d");
@@ -32,7 +37,9 @@ const CustomTooltip = ({
   active,
   payload,
   label,
-}: TooltipProps<ValueType, NameType>) => {
+  currencyType,
+  hideAmount,
+}: TooltipProps<ValueType, NameType> & { currencyType: string; hideAmount: boolean }) => {
   if (active && payload && payload.length) {
     try {
       const formattedDate = format(parseISO(label as string), "MMM d, yyyy");
@@ -40,7 +47,7 @@ const CustomTooltip = ({
         <div className="bg-[var(--bg)] p-4 rounded-[var(--border-radius)] shadow-lg border border-[var(--color-secondary)] text-[var(--text)]">
           <p className="text-sm font-semibold">{formattedDate}</p>
           <p className="text-[var(--color-primary)]">
-            {formatCurrency(payload[0].value as number)}
+            {formatCurrency(payload[0].value as number, currencyType, hideAmount)}
           </p>
         </div>
       );
@@ -51,7 +58,17 @@ const CustomTooltip = ({
   return null;
 };
 
-const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
+const TrendChart = ({ 
+  data, 
+  title,
+  currencyType,
+  hideAmount
+}: { 
+  data: TrendData[]; 
+  title: string;
+  currencyType: string;
+  hideAmount: boolean;
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -95,10 +112,10 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
               stroke="var(--text)"
             />
             <YAxis
-              tickFormatter={(value) => formatCurrency(value)}
+              tickFormatter={(value) => formatCurrency(value, currencyType, hideAmount)}
               stroke="var(--text)"
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={(props) => <CustomTooltip {...props} currencyType={currencyType} hideAmount={hideAmount} />} />
             <Area
               type="monotone"
               dataKey="amount"
@@ -113,7 +130,7 @@ const TrendChart = ({ data, title }: { data: TrendData[]; title: string }) => {
   );
 };
 
-export default function Trends() {
+export default function Trends({ currencyType, hideAmount }: TrendsProps) {
   const {
     data: trends,
     isLoading,
@@ -146,8 +163,18 @@ export default function Trends() {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <TrendChart data={trends.weeklyTrends} title="Weekly Expenses" />
-      <TrendChart data={trends.monthlyTrends} title="Monthly Expenses" />
+      <TrendChart 
+        data={trends.weeklyTrends} 
+        title="Weekly Expenses"
+        currencyType={currencyType}
+        hideAmount={hideAmount} 
+      />
+      <TrendChart 
+        data={trends.monthlyTrends} 
+        title="Monthly Expenses"
+        currencyType={currencyType}
+        hideAmount={hideAmount} 
+      />
     </div>
   );
 }

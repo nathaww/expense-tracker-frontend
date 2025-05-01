@@ -17,6 +17,22 @@ export interface UpdateProfileInput {
   profilePicture?: File;
 }
 
+export interface AppSettings {
+  id: string;
+  preferredCurrency: "USD" | "ETB";
+  hideAmounts: boolean;
+  themePreference: "system" | "light" | "dark";
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateAppSettingsInput {
+  preferredCurrency?: "USD" | "ETB";
+  hideAmounts?: boolean;
+  themePreference?: "system" | "light" | "dark";
+}
+
 export const userRequests = {
   getProfile: async (): Promise<UserProfile> => {
     const response: AxiosResponse<UserProfile> = await axiosInstance.get('/users');
@@ -39,5 +55,36 @@ export const userRequests = {
 
   deleteAccount: async (): Promise<void> => {
     await axiosInstance.delete('/users');
+  },
+};
+
+export const appSettingsRequests = {
+  getAppSettings: async (): Promise<AppSettings> => {
+    try {
+      const response: AxiosResponse<AppSettings> = await axiosInstance.get('/app-settings');
+      return response.data;
+    } catch (error) {
+      console.error("Failed to fetch app settings:", error);
+      // Return default settings if API fails
+      return {
+        id: "default",
+        preferredCurrency: "USD",
+        hideAmounts: false,
+        themePreference: "system",
+        userId: "default",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+    }
+  },
+
+  updateAppSettings: async (data: UpdateAppSettingsInput): Promise<AppSettings> => {
+    try {
+      const response: AxiosResponse<AppSettings> = await axiosInstance.patch('/app-settings', data);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to update app settings:", error);
+      throw error;
+    }
   },
 };

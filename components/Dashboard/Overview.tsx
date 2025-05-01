@@ -6,6 +6,12 @@ import { useQuery } from '@tanstack/react-query';
 import { dashboardRequests } from '@/app/dashboard/_requests';
 import { formatCurrency } from '@/components/utils/formatCurrency';
 import { IconType } from 'react-icons';
+import React from 'react';
+
+interface OverviewProps {
+  currencyType: string;
+  hideAmount: boolean;
+}
 
 const OverviewCard = ({ 
   title, 
@@ -35,7 +41,7 @@ const OverviewCard = ({
   );
 };
 
-export default function Overview() {
+export default function Overview({ currencyType, hideAmount }: OverviewProps) {
   const { data: overview, isLoading, isError } = useQuery({
     queryKey: ['dashboard-overview'],
     queryFn: dashboardRequests.getOverview,
@@ -63,19 +69,19 @@ export default function Overview() {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <OverviewCard
         title="Total Balance"
-        value={formatCurrency(overview.totalBalance)}
+        value={formatCurrency(overview.totalBalance, currencyType, hideAmount)}
         icon={FaWallet}
         delay={0}
       />
       <OverviewCard
         title="Total Budget"
-        value={formatCurrency(overview.totalBudget)}
+        value={formatCurrency(overview.totalBudget, currencyType, hideAmount)}
         icon={FaPiggyBank}
         delay={0.1}
       />
       <OverviewCard
         title="Total Expenses"
-        value={formatCurrency(overview.totalExpenses)}
+        value={formatCurrency(overview.totalExpenses, currencyType, hideAmount)}
         icon={FaChartLine}
         delay={0.2}
       />
