@@ -6,10 +6,11 @@ import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Loader from "@/components/UI/Loader";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
-import { userRequests } from "./_requests";
+import { userRequests, appSettingsRequests } from "./_requests";
 import { toast } from "sonner";
 import { ProfileSection } from "@/components/Settings/ProfileSection";
 import { ThemeSection } from "@/components/Settings/ThemeSection";
+import { CurrencySection } from "@/components/Settings/CurrencySection";
 
 const Settings = () => {
   const { logout, isAuthenticated } = useAuth();
@@ -19,6 +20,11 @@ const Settings = () => {
   const { data: profile } = useQuery({
     queryKey: ["profile"],
     queryFn: userRequests.getProfile,
+  });
+
+  const { data: settings, isLoading: isLoadingSettings } = useQuery({
+    queryKey: ["app-settings"],
+    queryFn: appSettingsRequests.getAppSettings,
   });
 
   const { mutate: deleteAccount, isPending: isDeleting } = useMutation({
@@ -38,7 +44,7 @@ const Settings = () => {
     }
   }, [isAuthenticated, router]);
 
-  if (!isAuthenticated || !profile) {
+  if (!isAuthenticated || !profile || !settings || isLoadingSettings) {
     return <Loader />;
   }
 
@@ -57,8 +63,9 @@ const Settings = () => {
         onDeleteAccount={() => setIsDeleteOpen(true)} 
       />
       
+      <CurrencySection settings={settings} />
+      
       <ThemeSection />
-
 
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}

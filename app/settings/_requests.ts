@@ -19,18 +19,16 @@ export interface UpdateProfileInput {
 
 export interface AppSettings {
   id: string;
-  preferredCurrency: "USD" | "ETB";
+  preferredCurrency: string
   hideAmounts: boolean;
-  themePreference: "system" | "light" | "dark";
   userId: string;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface UpdateAppSettingsInput {
-  preferredCurrency?: "USD" | "ETB";
+  preferredCurrency?: string
   hideAmounts?: boolean;
-  themePreference?: "system" | "light" | "dark";
 }
 
 export const userRequests = {
@@ -65,12 +63,10 @@ export const appSettingsRequests = {
       return response.data;
     } catch (error) {
       console.error("Failed to fetch app settings:", error);
-      // Return default settings if API fails
       return {
         id: "default",
         preferredCurrency: "USD",
         hideAmounts: false,
-        themePreference: "system",
         userId: "default",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()

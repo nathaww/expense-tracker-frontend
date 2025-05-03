@@ -3,7 +3,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { expenseRequests } from "./_requests";
-import { formatCurrency } from "@/components/utils/formatCurrency";
 import { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
@@ -11,16 +10,17 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
 import debounce from "lodash/debounce";
+import { useAppSettings } from "@/providers/AppSettingsProvider";
 
 export default function ExpensesPage() {
+  const {preferredCurrency} = useAppSettings();
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const queryClient = useQueryClient();
 
-  // Create a memoized debounced function
   const debouncedSetSearch = useMemo(
     () => debounce((value: string) => {
       setSearch(value);
@@ -29,14 +29,13 @@ export default function ExpensesPage() {
     []
   );
 
-  // Cleanup the debounced function on unmount
   useEffect(() => {
     return () => {
       debouncedSetSearch.cancel();
     };
   }, [debouncedSetSearch]);
 
-  // Handle search input changes
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
     debouncedSetSearch(e.target.value);
@@ -149,7 +148,7 @@ export default function ExpensesPage() {
                       </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <motion.div 
+                      <motion.div
                         className="flex items-center gap-2"
                         whileHover={{ scale: 1.05 }}
                       >
@@ -160,7 +159,7 @@ export default function ExpensesPage() {
                       </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      <motion.div 
+                      <motion.div
                         className="line-clamp-2"
                         whileHover={{ lineClamp: 'none' }}
                       >
@@ -168,20 +167,20 @@ export default function ExpensesPage() {
                       </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <motion.div 
+                      <motion.div
                         className="flex flex-col"
                         whileHover={{ scale: 1.05 }}
                       >
                         <span className="text-[var(--text)] font-medium">
-                          {formatCurrency(expense.amount)} {expense.moneySource.currency}
+                          {expense.amount} {expense.moneySource.currency}
                         </span>
                         <span className="text-xs opacity-60">
-                          {formatCurrency(expense.amountInPreferredCurrency)} USD
+                          {expense.amountInPreferredCurrency && expense.amountInPreferredCurrency.toFixed(2) + " " + preferredCurrency}
                         </span>
                       </motion.div>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <motion.div 
+                      <motion.div
                         whileHover={{ scale: 1.05 }}
                         className="text-[var(--text)]"
                       >
@@ -236,7 +235,7 @@ export default function ExpensesPage() {
         </div>
 
         {expensesResponse && expensesResponse.totalPages > 1 && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="flex justify-between items-center px-6 py-4 border-t border-[var(--border-color)] bg-[var(--bgSecondary)]"

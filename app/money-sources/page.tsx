@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { FaWallet, FaUniversity, FaCreditCard, FaTrash } from "react-icons/fa";
 import { moneySourceRequests, MoneySource } from "./_requests";
+import { appSettingsRequests } from "../settings/_requests";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import { useEffect, useState } from "react";
@@ -22,11 +23,12 @@ const getIconComponent = (icon: string) => {
   return icons[icon as keyof typeof icons] || FaCreditCard;
 };
 
-const Card = ({ source, index }: { source: MoneySource; index: number }) => {
+const Card = ({ source, index, preferredCurrency }: { source: MoneySource; index: number; preferredCurrency: string }) => {
   const Icon = getIconComponent(source.icon);
   const queryClient = useQueryClient();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const showPreferredCurrency = source.currency !== preferredCurrency;
 
   const { mutate: deleteMoneySource, isPending: isDeleting } = useMutation({
     mutationFn: () => moneySourceRequests.deleteMoneySource(source.id),
@@ -119,6 +121,11 @@ const Card = ({ source, index }: { source: MoneySource; index: number }) => {
               <p className="font-mono text-lg text-white">
                 {source.balance} {source.currency}
               </p>
+              {showPreferredCurrency && (
+                <p className="font-mono text-sm text-white/70 mt-1">
+                  {source.balanceInPreferredCurrency.toFixed(2)} {preferredCurrency}
+                </p>
+              )}
             </motion.div>
 
             <motion.div 
@@ -129,6 +136,11 @@ const Card = ({ source, index }: { source: MoneySource; index: number }) => {
               <p className="font-mono text-lg text-white">
                 {source.budget} {source.currency}
               </p>
+              {showPreferredCurrency && (
+                <p className="font-mono text-sm text-white/70 mt-1">
+                  {source.budgetInPreferredCurrency.toFixed(2)} {preferredCurrency}
+                </p>
+              )}
             </motion.div>
           </div>
         </div>
@@ -151,6 +163,11 @@ const MoneySourcesPage = () => {
     queryKey: ["money-sources"],
     queryFn: moneySourceRequests.getMoneySources,
   });
+  
+  const { data: appSettings, isLoading: isLoadingSettings } = useQuery({
+    queryKey: ["app-settings"],
+    queryFn: appSettingsRequests.getAppSettings,
+  });
 
   const { isAuthenticated } = useAuth();
   const router = useRouter();
@@ -165,7 +182,7 @@ const MoneySourcesPage = () => {
     return <Loader />;
   }
 
-  if (isLoading) {
+  if (isLoading || isLoadingSettings) {
     return (
       <div className="min-h-screen p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -199,7 +216,12 @@ const MoneySourcesPage = () => {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {moneySourcesResponse?.data?.map((source, index) => (
-          <Card key={source.id} source={source} index={index} />
+          <Card 
+            key={source.id} 
+            source={source} 
+            index={index} 
+            preferredCurrency={appSettings?.preferredCurrency || "USD"} 
+          />
         ))}
       </motion.div>
 

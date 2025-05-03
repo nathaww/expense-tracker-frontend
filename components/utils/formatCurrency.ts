@@ -1,4 +1,3 @@
-// Currency configuration with locale and currency code
 interface CurrencyConfig {
   locale: string;
   currency: string;

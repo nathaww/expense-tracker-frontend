@@ -3,7 +3,7 @@
 import React from "react";
 import { Formik, Form, Field, useField, FormikProps } from "formik";
 import * as Yup from "yup";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { expenseRequests } from "../_requests";
 import { useRouter } from "next/navigation";
@@ -69,8 +69,9 @@ const textExpenseSchema = Yup.object().shape({
 });
 
 export default function AddExpensePage() {
-  const [animateFields, setAnimateFields] = React.useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [animateFields, setAnimateFields] = React.useState(false);
 
   const { data: categories, isLoading: categoriesLoading } = useQuery({
     queryKey: ["categories"],
@@ -85,6 +86,7 @@ export default function AddExpensePage() {
   const { mutate: createExpense, isPending: isCreating } = useMutation({
     mutationFn: expenseRequests.createExpense,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
       toast.success("Expense created successfully");
       router.push('/expenses');
     },
