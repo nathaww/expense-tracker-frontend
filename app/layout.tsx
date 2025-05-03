@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Expense Tracker for hacker",
-  description: "Tracker you monthly expenses with ease",
+  description: "Tracker you monthly expenses with ease. The best expense tracker for hackers.",
 };
 
 export default function RootLayout({

@@ -4,12 +4,39 @@ import axios, {
   AxiosRequestConfig,
   AxiosResponse,
 } from "axios";
+import { toast } from "sonner";
 
 const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://expense-tracker-backend-csxl.onrender.com";
 
 const api: AxiosInstance = axios.create({ baseURL });
 
 let isRefreshing = false;
+
+// Define public routes where token refresh should be skipped
+const publicRoutes = [
+  "/",
+  "/register",
+  "/login",
+  "/verify-email",
+  "/verify-code",
+  "/forgot-password",
+];
+
+// Define type for API error response
+interface ApiErrorResponse {
+  message?: string;
+  error?: string;
+  statusCode?: number;
+}
+
+// Function to check if current path is a public route
+const isPublicRoute = (): boolean => {
+  if (typeof window !== 'undefined') {
+    const path = window.location.pathname;
+    return publicRoutes.some(route => path === route);
+  }
+  return false;
+};
 
 type FailedRequest = {
   resolve: (value?: unknown) => void;
@@ -42,12 +69,13 @@ api.interceptors.request.use((config) => {
 // Handle expired token response
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
-  async (error: AxiosError) => {
+  async (error: AxiosError<ApiErrorResponse>) => {
     const originalRequest = error.config as AxiosRequestConfig & {
       _retry?: boolean;
     };
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    // Skip token refresh for public routes or if user isn't authenticated
+    if (error.response?.status === 401 && !originalRequest._retry && !isPublicRoute()) {
       originalRequest._retry = true;
 
       if (isRefreshing) {
@@ -60,13 +88,24 @@ api.interceptors.response.use(
             }
             return api(originalRequest);
           })
-          .catch((err) => Promise.reject(err));
+          .catch((err) => {
+            // Show toast notification instead of throwing error
+            const errorMessage = err instanceof Error ? err.message : 'An error occurred';
+            toast.error(errorMessage);
+            return Promise.reject(err);
+          });
       }
 
       isRefreshing = true;
 
       try {
         const refreshToken = localStorage.getItem("refreshToken");
+        
+        // If no refresh token exists, don't attempt to refresh
+        if (!refreshToken) {
+          toast.error("Session expired. Please login again.");
+          throw new Error('No refresh token found');
+        }
 
         const { data } = await axios.post(
           `${baseURL}/auth/refresh-access-token`,
@@ -91,6 +130,19 @@ api.interceptors.response.use(
 
         return api(originalRequest);
       } catch (err) {
+        // Show toast notification instead of throwing error
+        let errorMessage = 'Authentication failed';
+        
+        if (err instanceof AxiosError) {
+          // Safely access message with type checking
+          const responseData = err.response?.data as ApiErrorResponse | undefined;
+          errorMessage = responseData?.message || responseData?.error || 'Authentication failed';
+        } else if (err instanceof Error) {
+          errorMessage = err.message;
+        }
+        
+        toast.error(errorMessage);
+        
         // If refresh token fails, clear all auth data
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
@@ -100,6 +152,29 @@ api.interceptors.response.use(
       } finally {
         isRefreshing = false;
       }
+    }
+
+    // Show toast for other errors
+    if (error.response) {
+      const status = error.response.status;
+      let message = 'An error occurred';
+      
+      // Type-safe access to error response data
+      const responseData = error.response.data as ApiErrorResponse | undefined;
+      if (responseData) {
+        message = responseData.message || responseData.error || 'An error occurred';
+      }
+
+      // Don't show auth errors for public routes
+      if (!(status === 401 && isPublicRoute())) {
+        toast.error(message);
+      }
+    } else if (error.request) {
+      // The request was made but no response was received
+      toast.error('No response from server. Please check your connection.');
+    } else {
+      // Something happened in setting up the request
+      toast.error('Error setting up request');
     }
 
     return Promise.reject(error);

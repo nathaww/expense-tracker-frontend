@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { FaMoneyBillWave } from "react-icons/fa";
+import Stars from "@/components/UI/Stars";
 
 const verifyCodeSchema = Yup.object().shape({
   code: Yup.string().required("Verification code is required"),
@@ -29,7 +30,7 @@ export default function VerifyCodePage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
-      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] text-[var(--text)] border border-[var(--border-color)] shadow-xl rounded-[var(--border-radius)]">
+      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] text-[var(--text)] border border-[var(--border-color)] shadow-xl rounded-[var(--border-radius)] z-10 relative">
         <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
           <FaMoneyBillWave className="w-8 h-8" />
           Expense tracker
@@ -73,6 +74,7 @@ export default function VerifyCodePage() {
           Didn&apos;t receive a code? Request again
         </a>
       </div>
+      <Stars />
     </div>
   );
 }

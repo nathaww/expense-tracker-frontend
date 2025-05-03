@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { useAuth } from "@/providers/AuthProvider";
 import { FaMoneyBillWave } from "react-icons/fa";
+import Stars from "@/components/UI/Stars";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("E-mail is Required"),
@@ -40,7 +41,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] text-[var(--text)] transition-colors duration-300">
-      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] border border-[var(--border-color)] text-[var(--text)] shadow-xl rounded-[var(--border-radius)]">
+      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] border border-[var(--border-color)] text-[var(--text)] shadow-xl rounded-[var(--border-radius)] z-10 relative">
         <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
           <FaMoneyBillWave className="w-8 h-8" />
           Expense tracker
@@ -106,6 +107,7 @@ export default function LoginPage() {
           </a>
         </div>
       </div>
+      <Stars />
     </div>
   );
 }

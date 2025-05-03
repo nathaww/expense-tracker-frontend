@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { 
   AppSettings, 
   UpdateAppSettingsInput, 
@@ -12,7 +12,7 @@ import {
   useQueryClient 
 } from '@tanstack/react-query';
 
-// Query key constants for app settings
+
 export const QUERY_KEYS = {
   appSettings: ['app-settings']
 };
@@ -27,7 +27,6 @@ interface AppSettingsContextType {
   refetch: () => Promise<void>;
 }
 
-// Default settings if API fails
 const DEFAULT_SETTINGS: AppSettings = {
   id: "default",
   preferredCurrency: "USD",
@@ -37,12 +36,44 @@ const DEFAULT_SETTINGS: AppSettings = {
   updatedAt: new Date().toISOString()
 };
 
+// Define public routes where app settings don't need to be fetched
+const publicRoutes = [
+  "/",
+  "/register",
+  "/login",
+  "/verify-email",
+  "/verify-code",
+  "/forgot-password",
+];
+
+// Function to check if current path is a public route
+const isPublicRoute = (): boolean => {
+  if (typeof window !== 'undefined') {
+    const path = window.location.pathname;
+    return publicRoutes.some(route => path === route);
+  }
+  return false;
+};
+
 const AppSettingsContext = createContext<AppSettingsContextType | undefined>(undefined);
 
 export function AppSettingsProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient();
+  const [isOnPublicRoute, setIsOnPublicRoute] = useState(true); 
+  
+  useEffect(() => {
+    const checkRoute = () => {
+      setIsOnPublicRoute(isPublicRoute());
+    };
+    checkRoute();
+    
+    window.addEventListener('popstate', checkRoute);
+    
+    return () => {
+      window.removeEventListener('popstate', checkRoute);
+    };
+  }, []);
 
-  // Fetch app settings with React Query
   const { 
     data: settings, 
     isLoading, 
@@ -51,18 +82,16 @@ export function AppSettingsProvider({ children }: { children: React.ReactNode })
   } = useQuery({
     queryKey: QUERY_KEYS.appSettings,
     queryFn: appSettingsRequests.getAppSettings,
+    enabled: !isOnPublicRoute, // Only fetch if NOT on a public route
   });
 
-  // Update app settings mutation
   const { mutateAsync: updateSettingsMutation } = useMutation({
     mutationFn: (data: UpdateAppSettingsInput) => appSettingsRequests.updateAppSettings(data),
     onSuccess: (updatedSettings) => {
-      // Update the cache with new settings
       queryClient.setQueryData(QUERY_KEYS.appSettings, updatedSettings);
     },
   });
 
-  // Update settings handler
   const updateSettings = async (newSettings: UpdateAppSettingsInput) => {
     try {
       await updateSettingsMutation(newSettings);
@@ -72,9 +101,10 @@ export function AppSettingsProvider({ children }: { children: React.ReactNode })
     }
   };
 
-  // Helper function to refetch app settings
   const refetchSettings = async () => {
-    await refetch();
+    if (!isOnPublicRoute) {
+      await refetch();
+    }
   };
 
   return (
@@ -102,7 +132,6 @@ export const useAppSettings = () => {
   return context;
 };
 
-// Helper hook to invalidate app settings from any component
 export const useInvalidateAppSettings = () => {
   const queryClient = useQueryClient();
   

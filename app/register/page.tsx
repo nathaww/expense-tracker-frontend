@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import { authRequests } from "../login/_requests";
 import { RegisterResponse } from "../login/_model";
 import { FaMoneyBillWave } from "react-icons/fa";
+import Stars from "@/components/UI/Stars";
 
 const registerSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("E-mail is Required"),
@@ -37,7 +38,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
-      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] shadow-lg">
+      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] shadow-lg z-10 relative">
         <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
           <FaMoneyBillWave className="w-8 h-8" />
           Expense tracker
@@ -105,6 +106,7 @@ export default function RegisterPage() {
           Verify email
         </a>
       </div>
+      <Stars/>
     </div>
   );
 }
