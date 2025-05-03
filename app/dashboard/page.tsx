@@ -21,7 +21,7 @@ export default function DashboardPage() {
 
       <Overview currencyType={preferredCurrency} hideAmount={hideAmounts} />
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 gap-8">
         <BudgetComparison currencyType={preferredCurrency} hideAmount={hideAmounts} />
         <ExpenseComposition currencyType={preferredCurrency} hideAmount={hideAmounts} />
       </div>
