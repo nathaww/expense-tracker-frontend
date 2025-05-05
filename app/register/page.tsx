@@ -37,18 +37,18 @@ export default function RegisterPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)]">
-      <div className="max-w-lg w-full space-y-8 p-8 bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] shadow-lg z-10 relative">
-        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-6">
-          <FaMoneyBillWave className="w-8 h-8" />
+    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] px-4 py-6">
+      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] shadow-lg z-10 relative">
+        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center text-lg md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-4 sm:mb-6">
+          <FaMoneyBillWave className="w-6 h-6 sm:w-8 sm:h-8" />
           Expense tracker
         </h1>
-        <h2 className="text-center text-2xl md:text-4xl font-extrabold text-[var(--text)]">
+        <h2 className="text-center text-xl sm:text-2xl md:text-4xl font-extrabold text-[var(--text)]">
           Sign up
         </h2>
         <a
           href="/login"
-          className="block text-center text-sm underline text-[var(--text)] hover:opacity-80"
+          className="block text-center text-xs sm:text-sm underline text-[var(--text)] hover:opacity-80"
         >
           Already have an account? Sign in
         </a>
@@ -59,11 +59,11 @@ export default function RegisterPage() {
           onSubmit={(values) => register(values)}
         >
           {({ errors, touched }) => (
-            <Form className="mt-8 space-y-6">
+            <Form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
               <Field
                 name="email"
                 type="email"
-                className="input"
+                className="input py-2 sm:py-3"
                 placeholder="Email address"
                 autoComplete="email"
               />
@@ -74,7 +74,7 @@ export default function RegisterPage() {
               <Field
                 name="name"
                 type="text"
-                className="input"
+                className="input py-2 sm:py-3"
                 placeholder="Full Name"
                 autoComplete="full-name"
               />
@@ -85,7 +85,7 @@ export default function RegisterPage() {
               <Field
                 name="password"
                 type="password"
-                className="input"
+                className="input py-2 sm:py-3"
                 placeholder="Password"
                 autoComplete="new-password"
               />
@@ -93,7 +93,7 @@ export default function RegisterPage() {
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
 
-              <button type="submit" disabled={isPending} className="btn w-full">
+              <button type="submit" disabled={isPending} className="btn w-full py-2 sm:py-3">
                 {isPending ? "Registering..." : "Register"}
               </button>
             </Form>
@@ -101,7 +101,7 @@ export default function RegisterPage() {
         </Formik>
         <a
           href="/verify-email"
-          className="block text-center text-sm underline text-[var(--text)] hover:opacity-80"
+          className="block text-center text-xs sm:text-sm underline text-[var(--text)] hover:opacity-80"
         >
           Verify email
         </a>

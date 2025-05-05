@@ -1,28 +1,33 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useMutation } from '@tanstack/react-query';
-import { appSettingsRequests } from '@/app/settings/_requests';
 
 interface DashboardControlsProps {
   hideAmounts: boolean;
   refetch: () => Promise<void>;
 }
 
-const DashboardControls: React.FC<DashboardControlsProps> = ({ hideAmounts, refetch }) => {
-
-  const { mutate: updateAppSettings } = useMutation({
-    mutationFn: appSettingsRequests.updateAppSettings,
-    onSuccess: () => {
-      refetch();
-    },
+const DashboardControls: React.FC<DashboardControlsProps> = ({ hideAmounts: initialHideAmounts, refetch }) => {
+  // Use local state instead of API call
+  const [hideAmounts, setHideAmounts] = useState(() => {
+    // Initialize from localStorage or use the prop value
+    if (typeof window !== 'undefined') {
+      const savedValue = localStorage.getItem('hideAmounts');
+      return savedValue !== null ? savedValue === 'true' : initialHideAmounts;
+    }
+    return initialHideAmounts;
   });
 
+  // Update localStorage when state changes
+  useEffect(() => {
+    localStorage.setItem('hideAmounts', hideAmounts.toString());
+  }, [hideAmounts]);
+
   const toggleHideAmounts = () => {
-    updateAppSettings({
-      hideAmounts: !hideAmounts
-    });
+    setHideAmounts(prevValue => !prevValue);
+    // Still call refetch to update any components that depend on this value
+    refetch();
   };
 
   return (
