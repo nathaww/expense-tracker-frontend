@@ -28,15 +28,15 @@ const ComparisonTable = ({
     hideAmount: boolean;
 }) => {
     return (
-        <div className="overflow-auto max-h-[250px] mt-4">
-            <table className="w-full text-sm">
+        <div className="overflow-x-auto max-h-[250px] mt-4">
+            <table className="w-full text-xs sm:text-sm">
                 <thead className="text-left">
                     <tr className="border-b border-[var(--border-color)]">
-                        <th className="py-2 px-3">Money Source</th>
-                        <th className="py-2 px-3">Budget</th>
-                        <th className="py-2 px-3">Actual</th>
-                        <th className="py-2 px-3">Variance</th>
-                        <th className="py-2 px-3">%</th>
+                        <th className="py-1 sm:py-2 px-1 sm:px-3">Money Source</th>
+                        <th className="py-1 sm:py-2 px-1 sm:px-3">Budget</th>
+                        <th className="py-1 sm:py-2 px-1 sm:px-3">Actual</th>
+                        <th className="py-1 sm:py-2 px-1 sm:px-3">Variance</th>
+                        <th className="py-1 sm:py-2 px-1 sm:px-3">%</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,11 +47,11 @@ const ComparisonTable = ({
                                 index % 2 === 0 ? "bg-[var(--bg)]" : "bg-[var(--bgSecondary)]"
                             }`}
                         >
-                            <td className="py-2 px-3 font-medium">{item.moneySource}</td>
-                            <td className="py-2 px-3">{formatCurrency(item.budget, currencyType, hideAmount)}</td>
-                            <td className="py-2 px-3">{formatCurrency(item.actual, currencyType, hideAmount)}</td>
-                            <td className="py-2 px-3">{formatCurrency(item.variance, currencyType, hideAmount)}</td>
-                            <td className="py-2 px-3">{item.variancePercentage.toFixed(1)}%</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3 font-medium whitespace-nowrap">{item.moneySource}</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.budget, currencyType, hideAmount)}</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.actual, currencyType, hideAmount)}</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.variance, currencyType, hideAmount)}</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3">{item.variancePercentage.toFixed(1)}%</td>
                         </tr>
                     ))}
                 </tbody>
@@ -128,16 +128,20 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
     };
 
     const pieOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
         plugins: {
             legend: {
               position: "bottom" as const,
               labels: {
                 color: textColor,
-                padding: 15,
+                padding: 10,
                 usePointStyle: true,
                 pointStyle: "circle",
+                boxWidth: 6,
+                boxHeight: 6,
                 font: {
-                  size: 12,
+                  size: 10,
                 },
               },
             },
@@ -158,13 +162,13 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
+            className="p-3 sm:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
         >
-            <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Budget vs Actual</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-[var(--text)] mb-2 sm:mb-4">Budget vs Actual</h3>
 
-            <div className="flex flex-col lg:flex-row gap-6 items-center">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">
                 <div className="w-full lg:w-1/2">
-                    <div className="h-[300px] flex items-center justify-center">
+                    <div className="h-[200px] sm:h-[250px] md:h-[300px] flex items-center justify-center">
                         <Pie data={pieData} options={pieOptions} />
                     </div>
                 </div>
@@ -179,20 +183,20 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
                     currencyType={currencyType} 
                     hideAmount={hideAmount} />
 
-                    <div className="mt-4 p-4 bg-[var(--bgSecondary)] rounded-[var(--border-radius)]">
-                        <h4 className="font-semibold mb-2 text-[var(--text)]">Summary</h4>
-                        <div className="grid grid-cols-3 gap-4">
-                            <div>
+                    <div className="mt-4 p-2 sm:p-4 bg-[var(--bgSecondary)] rounded-[var(--border-radius)]">
+                        <h4 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base text-[var(--text)]">Summary</h4>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+                            <div className="flex sm:block justify-between items-center">
                                 <p className="text-xs text-[var(--text)]/60">Total Budget</p>
-                                <p className="font-bold">{formatCurrency(comparison.totalBudget, currencyType, hideAmount)}</p>
+                                <p className="font-bold text-xs sm:text-sm">{formatCurrency(comparison.totalBudget, currencyType, hideAmount)}</p>
                             </div>
-                            <div>
+                            <div className="flex sm:block justify-between items-center">
                                 <p className="text-xs text-[var(--text)]/60">Total Actual</p>
-                                <p className="font-bold">{formatCurrency(comparison.totalActual, currencyType, hideAmount)}</p>
+                                <p className="font-bold text-xs sm:text-sm">{formatCurrency(comparison.totalActual, currencyType, hideAmount)}</p>
                             </div>
-                            <div>
+                            <div className="flex sm:block justify-between items-center">
                                 <p className="text-xs text-[var(--text)]/60">Variance</p>
-                                <p className="font-bold">{formatCurrency(comparison.totalVariance, currencyType, hideAmount)}</p>
+                                <p className="font-bold text-xs sm:text-sm">{formatCurrency(comparison.totalVariance, currencyType, hideAmount)}</p>
                             </div>
                         </div>
                     </div>

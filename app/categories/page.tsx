@@ -76,36 +76,36 @@ const CategoryCard = ({
           className="absolute inset-0 opacity-10 bg-[var(--bgSecondary)] transition-opacity duration-300 group-hover:opacity-20"
         />
         
-        <div className="relative p-6">
-          <div className="flex justify-between items-start mb-4">
+        <div className="relative p-4 sm:p-6">
+          <div className="flex justify-between items-start mb-3 sm:mb-4">
             <motion.span 
-              className="text-5xl"
+              className="text-4xl sm:text-5xl"
               animate={{ rotate: isHovered ? [0, -10, 10, 0] : 0 }}
               transition={{ duration: 0.5 }}
             >
               {category.icon}
             </motion.span>
-            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex items-center gap-1 sm:gap-2 opacity-70 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsUpdateOpen(true)}
-                className="p-2 bg-[var(--color-secondary)] text-white rounded-full transition-all"
+                className="p-1.5 sm:p-2 bg-[var(--color-secondary)] text-white rounded-full transition-all"
               >
-                <FaPencilAlt className="w-4 h-4" />
+                <FaPencilAlt className="w-3 h-3 sm:w-4 sm:h-4" />
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsDeleteOpen(true)}
-                className="p-2 bg-red-500 text-white rounded-full transition-all"
+                className="p-1.5 sm:p-2 bg-red-500 text-white rounded-full transition-all"
               >
-                <FaTrash className="w-4 h-4" />
+                <FaTrash className="w-3 h-3 sm:w-4 sm:h-4" />
               </motion.button>
             </div>
           </div>
 
-          <h3 className="text-[var(--text)] text-xl font-bold mb-2">
+          <h3 className="text-[var(--text)] text-lg sm:text-xl font-bold mb-1 sm:mb-2 line-clamp-1">
             {category.name}
           </h3>
 
@@ -113,17 +113,17 @@ const CategoryCard = ({
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--color-primary)] text-white text-sm rounded-full"
+              className="inline-flex items-center gap-1 px-2 sm:px-3 py-0.5 sm:py-1 bg-[var(--color-primary)] text-white text-xs sm:text-sm rounded-full"
             >
-              <span className="relative flex h-2 w-2">
+              <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-white"></span>
               </span>
               Default
             </motion.div>
           )}
           
-          <div className="mt-4 text-sm text-[var(--text)] opacity-70">
+          <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-[var(--text)] opacity-70">
             Created {new Date(category.createdAt).toLocaleDateString()}
           </div>
         </div>
@@ -132,13 +132,13 @@ const CategoryCard = ({
       <Dialog.Root open={isUpdateOpen} onOpenChange={setIsUpdateOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-20" />
-          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[var(--bg)] rounded-[var(--border-radius)] shadow-xl p-6 z-20">
-            <div className="flex justify-between items-center mb-6">
-              <Dialog.Title className="text-2xl font-bold text-[var(--text)]">
+          <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-full max-w-md bg-[var(--bg)] rounded-[var(--border-radius)] shadow-xl p-4 sm:p-6 z-20 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4 sm:mb-6">
+              <Dialog.Title className="text-xl sm:text-2xl font-bold text-[var(--text)]">
                 Update Category
               </Dialog.Title>
-              <Dialog.Close className="text-[var(--text)] hover:opacity-70">
-                <FaTrash />
+              <Dialog.Close className="text-[var(--text)] hover:opacity-70 p-1">
+                <FaTrash size={16} />
               </Dialog.Close>
             </div>
 
@@ -156,17 +156,17 @@ const CategoryCard = ({
                   <div>
                     <label
                       htmlFor="name"
-                      className="block text-[var(--text)] mb-2"
+                      className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base"
                     >
                       Name
                     </label>
                     <Field
                       name="name"
-                      className="input w-full"
+                      className="input w-full py-2 sm:py-3"
                       placeholder="Category name"
                     />
                     {errors.name && touched.name && (
-                      <div className="text-red-500 text-sm mt-1">
+                      <div className="text-red-500 text-xs sm:text-sm mt-1">
                         {errors.name}
                       </div>
                     )}
@@ -175,17 +175,17 @@ const CategoryCard = ({
                   <div>
                     <label
                       htmlFor="icon"
-                      className="block text-[var(--text)] mb-2"
+                      className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base"
                     >
                       Icon (emoji)
                     </label>
                     <Field
                       name="icon"
-                      className="input w-full"
+                      className="input w-full py-2 sm:py-3"
                       placeholder="Category icon (emoji)"
                     />
                     {errors.icon && touched.icon && (
-                      <div className="text-red-500 text-sm mt-1">
+                      <div className="text-red-500 text-xs sm:text-sm mt-1">
                         {errors.icon}
                       </div>
                     )}
@@ -197,20 +197,20 @@ const CategoryCard = ({
                       name="isDefault"
                       className="w-4 h-4 text-[var(--color-primary)]"
                     />
-                    <label htmlFor="isDefault" className="text-[var(--text)]">
+                    <label htmlFor="isDefault" className="text-[var(--text)] text-sm sm:text-base">
                       Set as default category
                     </label>
                   </div>
 
-                  <div className="flex gap-4 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-4">
                     <button
                       type="submit"
                       disabled={isUpdating}
-                      className="btn flex-1"
+                      className="btn flex-1 py-2 sm:py-3"
                     >
                       {isUpdating ? "Updating..." : "Update Category"}
                     </button>
-                    <Dialog.Close className="btnTransparent">
+                    <Dialog.Close className="btnTransparent py-2 sm:py-3">
                       Cancel
                     </Dialog.Close>
                   </div>
@@ -254,12 +254,12 @@ const CategoriesPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="min-h-screen p-4 sm:p-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {[...Array(4)].map((_, i) => (
             <div
               key={i}
-              className="animate-pulse bg-[var(--bgSecondary)] h-36 rounded-[var(--border-radius)]"
+              className="animate-pulse bg-[var(--bgSecondary)] h-32 sm:h-36 rounded-[var(--border-radius)]"
             />
           ))}
         </div>
@@ -268,12 +268,12 @@ const CategoriesPage = () => {
   }
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="flex justify-between items-center mb-8">
+    <div className="min-h-screen p-4 sm:p-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 sm:mb-8 sm:gap-0">
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-3xl font-bold text-[var(--text)]"
+          className="text-2xl sm:text-3xl font-bold text-[var(--text)]"
         >
           Categories
         </motion.h1>
@@ -283,7 +283,7 @@ const CategoriesPage = () => {
 
       <motion.div
         layout
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"
       >
         {categories?.map((category, index) => (
           <CategoryCard key={category.id} category={category} index={index} />
