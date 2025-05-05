@@ -20,8 +20,8 @@ export default function VerifyCodePage() {
   const { mutate: verifyCode, isPending } = useMutation({
     mutationFn: authRequests.verifyEmailCode,
     onSuccess: () => {
-      toast.success("Email verified successfully!");
-      router.replace("/dashboard");
+      toast.success("Email verified successfully! Please login.");
+      router.replace("/login");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || "Verification failed");

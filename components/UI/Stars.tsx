@@ -2,7 +2,7 @@
 
 const Stars = () => {
     return (
-        <div className="absolute inset-0 overflow-hidden transition-all will-change-transform">
+        <div className="absolute min-h-screen inset-0 overflow-hidden transition-all will-change-transform">
             {Array.from({ length: 250 }).map((_, index) => {
                 const size = Math.random() * 3 + 1; // Random size between 1px and 4px
                 const top = Math.random() * 100; // Random position between 0% and 100%

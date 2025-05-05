@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from "chart.js";
 import { formatCurrency } from "../utils/formatCurrency";
+import { FaInfoCircle } from 'react-icons/fa';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -144,7 +145,13 @@ export default function ExpenseComposition({ currencyType, hideAmount }: Expense
       animate={{ opacity: 1, y: 0 }}
       className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
     >
-      <h3 className="text-lg font-semibold text-[var(--text)] mb-4">Expense Composition</h3>
+      <h3 className="text-lg font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
+        Expense Composition
+        <FaInfoCircle
+          className="w-4 h-4 text-[var(--text)]/50 cursor-pointer"
+          title="Breaks down where your money goes by category (like food, transportation, entertainment). Shows both amounts and percentages to highlight your top spending areas."
+        />
+      </h3>
       
       <div className="flex flex-col lg:flex-row gap-6 items-center">
         <div className="w-full lg:w-1/2">

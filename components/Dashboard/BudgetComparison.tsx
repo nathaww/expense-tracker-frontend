@@ -7,6 +7,7 @@ import { Pie } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from "chart.js";
 import { formatCurrency } from "../utils/formatCurrency";
 import React, { useEffect } from "react";
+import { FaInfoCircle } from 'react-icons/fa';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -18,12 +19,12 @@ const generateRandomColors = (count: number) => {
     return colors;
 };
 
-const ComparisonTable = ({ 
-    data, 
-    currencyType, 
-    hideAmount 
-}: { 
-    data: BudgetComparisonItem[]; 
+const ComparisonTable = ({
+    data,
+    currencyType,
+    hideAmount
+}: {
+    data: BudgetComparisonItem[];
     currencyType: string;
     hideAmount: boolean;
 }) => {
@@ -43,9 +44,8 @@ const ComparisonTable = ({
                     {data.map((item, index) => (
                         <tr
                             key={index}
-                            className={`border-b border-[var(--border-color)] ${
-                                index % 2 === 0 ? "bg-[var(--bg)]" : "bg-[var(--bgSecondary)]"
-                            }`}
+                            className={`border-b border-[var(--border-color)] ${index % 2 === 0 ? "bg-[var(--bg)]" : "bg-[var(--bgSecondary)]"
+                                }`}
                         >
                             <td className="py-1 sm:py-2 px-1 sm:px-3 font-medium whitespace-nowrap">{item.moneySource}</td>
                             <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.budget, currencyType, hideAmount)}</td>
@@ -61,8 +61,8 @@ const ComparisonTable = ({
 };
 
 interface BudgetComparisonProps {
-  currencyType: string;
-  hideAmount: boolean;
+    currencyType: string;
+    hideAmount: boolean;
 }
 
 export default function BudgetComparison({ currencyType, hideAmount }: BudgetComparisonProps) {
@@ -81,14 +81,14 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
         const handleCurrencyChange = () => {
             refetch();
         };
-        
+
         const handleHideAmountsChange = () => {
             refetch();
         };
-        
+
         window.addEventListener('currencychange', handleCurrencyChange);
         window.addEventListener('hideamountschange', handleHideAmountsChange);
-        
+
         return () => {
             window.removeEventListener('currencychange', handleCurrencyChange);
             window.removeEventListener('hideamountschange', handleHideAmountsChange);
@@ -96,9 +96,9 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
     }, [refetch]);
 
     // Get computed CSS values
-    const textColor = typeof window !== 'undefined' ? 
+    const textColor = typeof window !== 'undefined' ?
         getComputedStyle(document.documentElement).getPropertyValue('--text').trim() : '#1f2937';
-    const bgColor = typeof window !== 'undefined' ? 
+    const bgColor = typeof window !== 'undefined' ?
         getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() : '#ffffff';
 
     if (isLoading) {
@@ -132,18 +132,18 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
         maintainAspectRatio: true,
         plugins: {
             legend: {
-              position: "bottom" as const,
-              labels: {
-                color: textColor,
-                padding: 10,
-                usePointStyle: true,
-                pointStyle: "circle",
-                boxWidth: 6,
-                boxHeight: 6,
-                font: {
-                  size: 10,
+                position: "bottom" as const,
+                labels: {
+                    color: textColor,
+                    padding: 10,
+                    usePointStyle: true,
+                    pointStyle: "circle",
+                    boxWidth: 6,
+                    boxHeight: 6,
+                    font: {
+                        size: 10,
+                    },
                 },
-              },
             },
             tooltip: {
                 callbacks: {
@@ -164,7 +164,14 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
             animate={{ opacity: 1, y: 0 }}
             className="p-3 sm:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
         >
-            <h3 className="text-base sm:text-lg font-semibold text-[var(--text)] mb-2 sm:mb-4">Budget vs Actual</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-[var(--text)] mb-2 sm:mb-4 flex items-center gap-2">
+                Budget vs Actual
+                <FaInfoCircle
+                    className="w-4 h-4 text-[var(--text)]/50 cursor-pointer"
+                    title={
+                        "Compares what you planned to spend (budget) against what you actually spent, Under budget (positive variance): You spent less than planned, Over budget (negative variance): You spent more than planned"}
+                />
+            </h3>
 
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">
                 <div className="w-full lg:w-1/2">
@@ -179,9 +186,9 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
                         budget: item.budget,
                         actual: item.actual,
                         variance: item.variance,
-                    }))} 
-                    currencyType={currencyType} 
-                    hideAmount={hideAmount} />
+                    }))}
+                        currencyType={currencyType}
+                        hideAmount={hideAmount} />
 
                     <div className="mt-4 p-2 sm:p-4 bg-[var(--bgSecondary)] rounded-[var(--border-radius)]">
                         <h4 className="font-semibold mb-1 sm:mb-2 text-sm sm:text-base text-[var(--text)]">Summary</h4>

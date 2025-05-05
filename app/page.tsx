@@ -35,68 +35,15 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen overflow-hidden">
-      {/* Hero Section with improved background using theme variables */}
       <div
-        className="relative min-h-screen flex flex-col justify-center items-center px-4 py-20 sm:py-32"
+        className=" h-full w-full flex flex-col justify-center items-center px-4 py-20 sm:py-32"
         style={{
           background: `radial-gradient(circle at top right, var(--color-primary), transparent 40%), 
-                       radial-gradient(circle at bottom left, var(--color-secondary), transparent 40%), 
                        var(--bg)`
         }}
       >
-        {/* Floating circles decoration */}
-        <div className="absolute inset-0 overflow-hidden">
-          {Array.from({ length: 20 }).map((_, index) => {
-            const size = Math.random() * 300 + 50;
-            const top = Math.random() * 100;
-            const left = Math.random() * 100;
-            const opacity = Math.random() * 0.05;
 
-            return (
-              <div
-                key={index}
-                className="absolute rounded-full"
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  top: `${top}%`,
-                  left: `${left}%`,
-                  opacity,
-                  filter: 'blur(50px)',
-                  backgroundColor: 'var(--text)'
-                }}
-              />
-            );
-          })}
-        </div>
-
-        {/* Stars background */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          {Array.from({ length: 150 }).map((_, index) => {
-            const size = Math.random() * 2 + 1;
-            const top = Math.random() * 100;
-            const left = Math.random() * 100;
-            const animationDuration = Math.random() * 3 + 2;
-            const animationDelay = Math.random() * 5;
-
-            return (
-              <div
-                key={index}
-                className="absolute rounded-full opacity-70"
-                style={{
-                  width: `${size}px`,
-                  height: `${size}px`,
-                  top: `${top}%`,
-                  left: `${left}%`,
-                  backgroundColor: 'var(--text)',
-                  animation: `custom-pulse ${animationDuration}s ${animationDelay}s infinite`,
-                }}
-              />
-            );
-          })}
-        </div>
-
-        <div className="relative z-10 flex flex-col items-center max-w-6xl mx-auto">
+        <div className=" z-10 flex flex-col items-center max-w-6xl mx-auto">
           {/* Badge */}
           <motion.span
             initial={{ opacity: 0, scale: 0.8 }}
@@ -108,7 +55,7 @@ const LandingPage = () => {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-primary)] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-primary)]"></span>
             </span>
-            Beta Now Live!
+            Alpha Now Live!
           </motion.span>
 
           {/* Heading */}
@@ -144,7 +91,7 @@ const LandingPage = () => {
               className="group relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-6 py-3 text-[var(--text)] font-medium hover:shadow-lg hover:shadow-[var(--color-primary)]/20 hover:scale-105 active:scale-95 transition-all duration-300"
             >
               Start for free
-              <FiArrowRight className="transition-transform group-hover:translate-x-1 group-hover:-rotate-12" />
+              <FiArrowRight className="transition-transform group-hover:translate-x-1 group-hover:-rotate-45" />
             </Link>
           </motion.div>
 
@@ -172,7 +119,7 @@ const LandingPage = () => {
       </div>
 
       {/* Background decoration */}
-      <div className="absolute -bottom-10 -right-10 w-64 h-64 rounded-full blur-3xl" style={{ backgroundColor: 'var(--color-primary)', opacity: '0.2' }}></div>
+      <div className="absolute bottom-10 -left-10 w-64 h-64 rounded-full blur-3xl" style={{ backgroundColor: 'var(--color-primary)', opacity: '0.2' }}></div>
       <div className="absolute -top-10 -left-10 w-64 h-64 rounded-full blur-3xl" style={{ backgroundColor: 'var(--color-secondary)', opacity: '0.2' }}></div>
 
       <Stars />

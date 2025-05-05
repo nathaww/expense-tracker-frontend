@@ -5,6 +5,7 @@ import { BsFillGearFill } from "react-icons/bs";
 import { BiMoney, BiPieChart } from "react-icons/bi";
 import { usePathname } from 'next/navigation';
 import { IconType } from 'react-icons';
+import { TbChartBar } from "react-icons/tb";
 
 interface OptionProps {
   Icon: IconType;
@@ -83,6 +84,14 @@ export const Nav = () => {
           Icon={BiPieChart}
           title="Categories"
           href="/categories"
+          selected={selected}
+          setSelected={setSelected}
+          open={open}
+        />
+        <Option
+          Icon={TbChartBar}
+          title="Benchmarking"
+          href="/benchmarking/spending-comparison"
           selected={selected}
           setSelected={setSelected}
           open={open}

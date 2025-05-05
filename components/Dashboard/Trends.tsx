@@ -19,6 +19,7 @@ import {
   NameType,
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
+import { FaInfoCircle } from 'react-icons/fa';
 
 interface TrendsProps {
   currencyType: string;
@@ -75,7 +76,13 @@ const TrendChart = ({
       animate={{ opacity: 1, y: 0 }}
       className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
     >
-      <h3 className="text-lg font-semibold text-[var(--text)] mb-4">{title}</h3>
+      <h3 className="text-lg font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
+        {title}
+        <FaInfoCircle
+          className="w-4 h-4 text-[var(--text)]/50 cursor-pointer"
+          title="Visualizes your spending patterns over time. See how your expenses change weekly and monthly to identify spending patterns."
+        />
+      </h3>
       <div className="h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart

@@ -23,13 +23,11 @@ export default function RegisterPage() {
   const { mutate: register, isPending } = useMutation({
     mutationFn: authRequests.register,
     onSuccess: async (response: RegisterResponse) => {
-      try {
-        await authRequests.requestEmailVerification(response.email);
-        router.replace("/verify-email");
-        toast.success("Registration successful! Please verify your email.");
-      } catch {
-        toast.error("Failed to send email verification.");
-      }
+
+      await authRequests.requestEmailVerification(response.email);
+      router.replace("/verify-code");
+      toast.success("Registration successful! Please verify your email.");
+
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || "Registration failed");
@@ -106,7 +104,7 @@ export default function RegisterPage() {
           Verify email
         </a>
       </div>
-      <Stars/>
+      <Stars />
     </div>
   );
 }

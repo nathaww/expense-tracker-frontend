@@ -1,16 +1,13 @@
 "use client";
 
+import { Field, Form, Formik } from "formik";
 import { motion } from "framer-motion";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { FaUserCircle, FaCamera } from "react-icons/fa";
 import { toast } from "sonner";
-import Image from "next/image";
-import { UserProfile, UpdateProfileInput } from "@/app/settings/_requests";
+import * as Yup from "yup";
+
+import { UpdateProfileInput, UserProfile, userRequests } from "@/app/settings/_requests";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
-import { userRequests } from "@/app/settings/_requests";
-import { useRef } from "react";
 
 const profileSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -24,7 +21,6 @@ interface ProfileSectionProps {
 
 export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps) => {
   const { user, setUser } = useAuth();
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutate: updateProfile, isPending: isUpdating } = useMutation({
     mutationFn: userRequests.updateProfile,
@@ -41,21 +37,6 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
     },
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event?.target?.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size should be less than 5MB");
-        return;
-      }
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please upload an image file");
-        return;
-      }
-      updateProfile({ profilePicture: file });
-    }
-  };
-
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -66,33 +47,6 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
       <h2 className="text-xl font-semibold mb-6 text-[var(--text)]">Profile</h2>
       
       <div className="flex flex-col md:flex-row items-start gap-8">
-        <div className="relative">
-          <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[var(--color-secondary)]">
-            {profile?.profilePicture ? (
-              <Image
-                src={profile?.profilePicture}
-                alt={profile?.name}
-                fill
-                className="object-cover"
-              />
-            ) : (
-              <FaUserCircle className="w-full h-full text-[var(--color-primary)]" />
-            )}
-          </div>
-          <button
-            onClick={() => fileInputRef?.current?.click()}
-            className="absolute bottom-0 right-0 p-2 bg-[var(--color-primary)] text-white rounded-full hover:opacity-90 transition-opacity"
-          >
-            <FaCamera size={16} />
-          </button>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-        </div>
 
         <div className="flex-1">
           <Formik
