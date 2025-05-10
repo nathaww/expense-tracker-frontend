@@ -38,14 +38,14 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
   });
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.1 }}
       className="bg-[var(--bgSecondary)] border border-[var(--border-color)] rounded-[var(--border-radius)] p-6 mb-8"
     >
       <h2 className="text-xl font-semibold mb-6 text-[var(--text)]">Profile</h2>
-      
+
       <div className="flex flex-col md:flex-row items-start gap-8">
 
         <div className="flex-1">

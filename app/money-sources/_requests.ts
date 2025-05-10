@@ -32,6 +32,7 @@ export interface MoneySource {
   isDefault: boolean;
   budget: number;
   budgetInPreferredCurrency: number;
+  cardStyle?: string; // Add card style ID
   expenses: Expense[];
   balanceHistories: BalanceHistory[];
   createdAt: string;
@@ -44,6 +45,20 @@ export interface MoneySourceApiResponse {
   pageSize: number;
   totalCount: number;
   totalPages: number;
+}
+
+export interface CardStyle {
+  styleId: string;
+  name: string;
+  background: string;
+  textColor: string;
+  cardNumberFont: string;
+  border: string;
+  shadow: string;
+  hasChip: boolean;
+  chipColor: string;
+  visaLogoVariant: string;
+  showBgImage: boolean;
 }
 
 export const moneySourceRequests = {
@@ -64,5 +79,11 @@ export const moneySourceRequests = {
 
   deleteMoneySource: async (id: string): Promise<void> => {
     await api.delete(`/money-sources/${id}`);
-  }
+  },
+
+  getCardStyles: async (): Promise<CardStyle[]> => {
+    const res = await api.get<CardStyle[]>('/money-sources/card-styles');
+    return res.data;
+  },
 };
+

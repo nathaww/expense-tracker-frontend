@@ -108,7 +108,7 @@ const Card = ({ source, index, preferredCurrency }: { source: MoneySource; index
               )}
             </motion.h3>
             <p className="text-white/75 text-xs sm:text-sm">
-              Created {new Date(source.createdAt).toLocaleDateString()}
+              Last Modified {new Date(source.updatedAt).toLocaleDateString()}
             </p>
           </div>
 

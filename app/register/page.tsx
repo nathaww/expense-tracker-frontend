@@ -36,7 +36,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] px-4 py-6">
-      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] shadow-lg z-10 relative">
+      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bgSecondary)] rounded-[var(--border-radius)] shadow-lg z-10 relative">
         <h1 className="inline-flex justify-center w-full items-center gap-2 text-center text-lg md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-4 sm:mb-6">
           <FaMoneyBillWave className="w-6 h-6 sm:w-8 sm:h-8" />
           Expense tracker

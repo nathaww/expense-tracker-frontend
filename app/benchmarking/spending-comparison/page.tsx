@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { SummaryStatistics } from '@/components/Benchmarking/SummaryStatistics';
 import React from 'react';
 import Loader from '@/components/UI/Loader';
-import { InsightsCard } from '@/components/Benchmarking/InsightsCard';
+import { InsightsCard } from '@/components/Benchmarking/InsightsCardNew';
 
 export default function SpendingComparisonPage() {
     const { data, isLoading, isError } = useQuery<SpendingComparison>({

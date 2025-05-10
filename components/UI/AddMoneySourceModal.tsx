@@ -4,12 +4,13 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { motion } from "framer-motion";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { moneySourceRequests } from "@/app/money-sources/_requests";
-import { FaPlus, FaTimes } from "react-icons/fa";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
+import { CardStyle, moneySourceRequests } from "@/app/money-sources/_requests";
+import { FaPlus, FaTimes, FaCreditCard } from "react-icons/fa";
 import { toast } from "sonner";
 import { useState } from "react";
 import { AxiosError } from "axios";
+
 
 const addMoneySourceSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -17,12 +18,18 @@ const addMoneySourceSchema = Yup.object().shape({
   currency: Yup.string().required("Currency is required"),
   icon: Yup.string().required("Icon is required"),
   budget: Yup.number().required("Budget is required"),
+  cardStyle: Yup.string().required("Card style is required"),
   isDefault: Yup.boolean(),
 });
 
 export const AddMoneySourceModal = () => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
+  const { data: cardStyles, isLoading } = useQuery({
+    queryKey: ["card-styles"],
+    queryFn: moneySourceRequests.getCardStyles,
+    enabled: isOpen,
+  });
 
   const { mutate: createMoneySource, isPending } = useMutation({
     mutationFn: (values: { 
@@ -31,6 +38,7 @@ export const AddMoneySourceModal = () => {
       currency: string;
       icon: string;
       budget: number;
+      cardStyle: string;
       isDefault: boolean;
     }) => moneySourceRequests.createMoneySource({
       ...values,
@@ -44,10 +52,58 @@ export const AddMoneySourceModal = () => {
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(
-        error?.response?.data?.message || error?.message || "Login failed"
+        error?.response?.data?.message || error?.message || "Failed to add money source"
       );
     },
-  });
+  });  
+
+  
+  const CardStylePreview = ({ style, formValues }: { 
+    style: CardStyle; 
+    formValues: {
+      name?: string;
+      currency?: string;
+    }
+  }) => {
+    return (
+      <div 
+        className={`relative w-full aspect-[1.58/1] rounded-xl overflow-hidden ${style.background} ${style.shadow} transition-all duration-300`}
+      >
+        {style.showBgImage && (
+          <div className="absolute inset-0 opacity-10">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+              <path fill="currentColor" d="M42.7,-62.9C53.9,-54.7,61.1,-40.6,65.7,-26.5C70.3,-12.4,72.2,1.6,69.8,15.3C67.3,29,60.5,42.3,49.9,50.3C39.3,58.2,24.9,60.8,10.5,63.5C-3.9,66.3,-18.3,69.2,-31.2,65.1C-44.1,61.1,-55.6,50.1,-63.2,37.1C-70.8,24.1,-74.5,9.1,-72.8,-4.8C-71,-18.6,-63.7,-31.4,-53.6,-40.3C-43.5,-49.3,-30.6,-54.4,-17.9,-61.6C-5.3,-68.8,7.1,-78.2,20,-77.4C32.9,-76.6,46.2,-65.5,54.4,-52.9Z" />
+            </svg>
+          </div>
+        )}
+        
+        <div className="absolute inset-0 p-4 flex flex-col justify-between">
+          <div className="flex justify-between items-start">
+            <div className={`font-bold ${style.textColor}`}>
+              {formValues.name || "Card Name"}
+            </div>
+            <div className={style.chipColor}>
+              {style.hasChip && (
+                <div className={`w-8 h-5 ${style.chipColor} rounded-md`}></div>
+              )}
+            </div>
+          </div>
+          
+          <div className="space-y-2">
+            <div className={`${style.cardNumberFont} ${style.textColor} text-lg tracking-wider`}>
+              •••• •••• •••• ••••
+            </div>
+            <div className="flex justify-between items-center">
+              <div className={`text-sm ${style.textColor} opacity-80`}>
+                {formValues.currency || "USD"}
+              </div>
+              <FaCreditCard className={style.textColor} size={20} />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -72,15 +128,14 @@ export const AddMoneySourceModal = () => {
             <Dialog.Close className="text-[var(--text)] hover:opacity-70 p-1">
               <FaTimes />
             </Dialog.Close>
-          </div>
-
-          <Formik
+          </div>          <Formik
             initialValues={{
               name: "",
               balance: 0,
               currency: "USD",
               icon: "wallet",
               budget: 0,
+              cardStyle: "futuristic-holographic", // Default card style
               isDefault: false,
             }}
             validationSchema={addMoneySourceSchema}
@@ -88,7 +143,7 @@ export const AddMoneySourceModal = () => {
               createMoneySource(values);
             }}
           >
-            {({ errors, touched }) => (
+            {({ errors, touched, values, setFieldValue }) => (
               <Form className="space-y-4 sm:space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base">
@@ -156,9 +211,7 @@ export const AddMoneySourceModal = () => {
                       <div className="text-red-500 text-xs sm:text-sm mt-1">{errors.currency}</div>
                     )}
                   </div>
-                </div>
-
-                <div>
+                </div>                <div>
                   <label htmlFor="budget" className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base">
                     Budget
                   </label>
@@ -172,6 +225,36 @@ export const AddMoneySourceModal = () => {
                     <div className="text-red-500 text-xs sm:text-sm mt-1">{errors.budget}</div>
                   )}
                 </div>
+                
+                {/* Card Style Selection */}
+                <div>
+                  <label htmlFor="cardStyle" className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base">
+                    Card Style
+                  </label>
+                  {isLoading ? (
+                    <div className="animate-pulse bg-gray-300 dark:bg-gray-700 h-40 rounded-lg"></div>
+                  ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {cardStyles?.map((style) => (
+                        <div
+                          key={style.styleId}
+                          className={`cursor-pointer rounded-lg transition-all duration-300 ${
+                            values.cardStyle === style.styleId ? "ring-2 ring-[var(--color-primary)]" : "hover:ring-1 hover:ring-[var(--color-primary)]"
+                          }`}
+                          onClick={() => {
+                            setFieldValue("cardStyle", style.styleId);
+                          }}
+                        >
+                          <CardStylePreview style={style} formValues={values} />
+                          <div className="text-center text-xs py-1">{style.name}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {errors.cardStyle && touched.cardStyle && (
+                    <div className="text-red-500 text-xs sm:text-sm mt-1">{errors.cardStyle}</div>
+                  )}
+                </div>
 
                 <div className="flex items-center gap-2">
                   <Field
@@ -181,8 +264,7 @@ export const AddMoneySourceModal = () => {
                   />
                   <label htmlFor="isDefault" className="text-[var(--text)] text-sm sm:text-base">
                     Set as default money source
-                  </label>
-                </div>
+                  </label>                </div>
 
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 mt-4">
                   <button

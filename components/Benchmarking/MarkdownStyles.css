@@ -1,0 +1,130 @@
+/* Markdown content styling */
+.markdown-content h1, 
+.markdown-content h2, 
+.markdown-content h3 {
+  @apply font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent mb-4;
+}
+
+.markdown-content h1 {
+  @apply text-2xl;
+}
+
+.markdown-content h2 {
+  @apply text-xl;
+}
+
+.markdown-content h3 {
+  @apply text-lg;
+}
+
+/* Handle emoji-led paragraphs with special styling */
+.markdown-content .emoji-heading {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  background: linear-gradient(to right, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.markdown-content .warning-note {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(254, 243, 199, 0.5);
+  border-left: 4px solid #f59e0b;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  color: #b45309;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.markdown-content .positive-note {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(220, 252, 231, 0.5);
+  border-left: 4px solid #10b981;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  color: #047857;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.markdown-content .advice-note {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(219, 234, 254, 0.5);
+  border-left: 4px solid #3b82f6;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  color: #1d4ed8;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.markdown-content p {
+  @apply mb-4 text-[var(--text)];
+}
+
+.markdown-content ul, 
+.markdown-content ol {
+  @apply mb-4 pl-6;
+}
+
+.markdown-content ul {
+  @apply list-disc;
+}
+
+.markdown-content ol {
+  @apply list-decimal;
+}
+
+.markdown-content li {
+  @apply mb-1;
+}
+
+.markdown-content a {
+  @apply text-[var(--color-primary)] underline;
+}
+
+.markdown-content blockquote {
+  @apply pl-4 border-l-4 border-[var(--color-primary)] italic;
+}
+
+.markdown-content code {
+  @apply bg-[var(--bgSecondary)] px-1 py-0.5 rounded font-mono text-sm;
+}
+
+.markdown-content pre {
+  @apply bg-[var(--bgSecondary)] p-4 rounded-[var(--border-radius)] overflow-x-auto mb-4;
+}
+
+.markdown-content pre code {
+  @apply bg-transparent p-0;
+}
+
+.markdown-content hr {
+  @apply my-4 border-[var(--border-color)];
+}
+
+.markdown-content table {
+  @apply w-full border-collapse mb-4;
+}
+
+.markdown-content th,
+.markdown-content td {
+  @apply border border-[var(--border-color)] p-2 text-[var(--text)];
+}
+
+.markdown-content th {
+  @apply bg-[var(--bgSecondary)];
+}

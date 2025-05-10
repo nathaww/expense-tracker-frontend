@@ -48,13 +48,13 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     font: "Arial, sans-serif",
   },
   dark: {
-    primary: "#111827",
-    secondary: "#1f2937",
-    tertiary: "#374151",
-    background: "#0f172a",
-    backgroundSecondary: "#1e293b",
-    text: "#f1f5f9",
-    borderColor: "#334155",
+    primary: "#000000",
+    secondary: "#0a0a0a",
+    tertiary: "#1a1a1a",
+    background: "#000000",
+    backgroundSecondary: "#0d0d0d",
+    text: "#e5e5e5",
+    borderColor: "#2e2e2e",
     borderRadius: "0.5rem",
     font: "Arial, sans-serif",
   },
@@ -168,5 +168,4 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderRadius: "0.5rem",
     font: "'Segoe UI', sans-serif",
   },
-  
 };

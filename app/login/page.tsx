@@ -41,7 +41,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] text-[var(--text)] transition-colors duration-300 px-4 py-6">
-      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bg)] border border-[var(--border-color)] text-[var(--text)] shadow-xl rounded-[var(--border-radius)] z-10 relative">
+      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bgSecondary)]  text-[var(--text)] shadow-xl rounded-[var(--border-radius)] z-10 relative">
         <h1 className="inline-flex justify-center w-full items-center gap-2 text-center text-lg md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-4 sm:mb-6">
           <FaMoneyBillWave className="w-6 h-6 sm:w-8 sm:h-8" />
           Expense tracker
