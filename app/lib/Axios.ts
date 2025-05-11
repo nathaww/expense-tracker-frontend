@@ -6,7 +6,7 @@ import axios, {
 } from "axios";
 import { toast } from "sonner";
 
-const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "https://expense-tracker-backend-csxl.onrender.com";
+const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://52.90.43.250";
 
 const api: AxiosInstance = axios.create({ baseURL });
 
