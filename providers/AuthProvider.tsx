@@ -36,7 +36,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(null);
     setIsAuthenticated(false);
   }, []);
-
   const refreshTokenAndUpdateUser = useCallback(async () => {
     if (isRefreshing) return null;
     
@@ -48,6 +47,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
 
       const response = await authRequests.refreshToken(refreshToken);
+      
+      // If we get here, the refresh was successful
       localStorage.setItem('accessToken', response.accessToken);
       localStorage.setItem('refreshToken', response.refreshToken);
       localStorage.setItem('user', JSON.stringify(response.user));
@@ -56,6 +57,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return response.accessToken;
     } catch (error) {
       console.error('Token refresh failed:', error);
+      // Only log out if there was an actual refresh attempt that failed
+      // (not if there was no refresh token to begin with)
       logout();
       return null;
     } finally {

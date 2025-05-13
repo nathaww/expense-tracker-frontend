@@ -28,4 +28,17 @@ export const authRequests = {
   verifyEmailCode: async (otp: string): Promise<void> => {
     await api.post('/auth/email-verification/verify', { otp });
   },
+
+  // Password reset functions
+  requestPasswordReset: async (email: string): Promise<void> => {
+    await api.post('/auth/password-reset/request', { email });
+  },
+
+  validatePasswordResetToken: async (token: string): Promise<void> => {
+    await api.post('/auth/password-reset/validate', { token });
+  },
+
+  resetPassword: async (token: string, password: string): Promise<void> => {
+    await api.post('/auth/password-reset/reset', { token, password });
+  }
 };

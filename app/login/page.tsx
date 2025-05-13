@@ -92,8 +92,7 @@ export default function LoginPage() {
             </Form>
           )}
         </Formik>
-        <div className="inline-flex flex-col sm:flex-row items-center justify-center sm:gap-10 w-full space-y-2 sm:space-y-0">
-          <a
+        <div className="inline-flex flex-col sm:flex-row items-center justify-center sm:gap-10 w-full space-y-2 sm:space-y-0">          <a
             href="/forgot-password"
             className="block text-center underline text-xs sm:text-sm text-[var(--text)] hover:opacity-80"
           >

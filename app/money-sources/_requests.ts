@@ -50,7 +50,7 @@ export interface MoneySourceApiResponse {
 export interface CardStyle {
   styleId: string;
   name: string;
-  background: string;
+  background: string | { [key: string]: string };
   textColor: string;
   cardNumberFont: string;
   border: string;

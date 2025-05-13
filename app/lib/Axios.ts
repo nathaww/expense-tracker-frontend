@@ -20,6 +20,7 @@ const publicRoutes = [
   "/verify-email",
   "/verify-code",
   "/forgot-password",
+  "/reset-password",
 ];
 
 // Define type for API error response
@@ -96,9 +97,7 @@ api.interceptors.response.use(
           });
       }
 
-      isRefreshing = true;
-
-      try {
+      isRefreshing = true;      try {
         const refreshToken = localStorage.getItem("refreshToken");
         
         // If no refresh token exists, don't attempt to refresh
@@ -107,12 +106,24 @@ api.interceptors.response.use(
           throw new Error('No refresh token found');
         }
 
+        // Explicitly create the request body with refreshToken
+        const requestBody = { refreshToken };
+
+        // Use a direct axios call instead of the api instance to avoid interceptors loop
         const { data } = await axios.post(
           `${baseURL}/auth/refresh-access-token`,
+          requestBody,
           {
-            refreshToken,
+            headers: {
+              'Content-Type': 'application/json'
+            }
           }
         );
+
+        // Make sure we have all the expected data from the response
+        if (!data.accessToken || !data.refreshToken || !data.user) {
+          throw new Error('Invalid response from refresh token endpoint');
+        }
 
         const { accessToken: newAccessToken, refreshToken: newRefreshToken, user } = data;
         
@@ -121,13 +132,18 @@ api.interceptors.response.use(
         localStorage.setItem("refreshToken", newRefreshToken);
         localStorage.setItem("user", JSON.stringify(user));
 
+        // Update the Authorization header for future requests
         api.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
+        
+        // Process any queued requests with the new token
         processQueue(null, newAccessToken);
 
+        // Update the current request with the new token
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         }
 
+        // Retry the original request with the new token
         return api(originalRequest);
       } catch (err) {
         // Show toast notification instead of throwing error
@@ -137,8 +153,10 @@ api.interceptors.response.use(
           // Safely access message with type checking
           const responseData = err.response?.data as ApiErrorResponse | undefined;
           errorMessage = responseData?.message || responseData?.error || 'Authentication failed';
+          console.error('Token refresh failed:', err.response?.data);
         } else if (err instanceof Error) {
           errorMessage = err.message;
+          console.error('Token refresh error:', err.message);
         }
         
         toast.error(errorMessage);
@@ -147,6 +165,12 @@ api.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
+        
+        // Redirect to login page
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login';
+        }
+        
         processQueue(err, null);
         return Promise.reject(err);
       } finally {

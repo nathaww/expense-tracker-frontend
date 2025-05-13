@@ -40,7 +40,42 @@ const Card = ({ source, index, preferredCurrency }: { source: MoneySource; index
     onError: () => {
       toast.error("Failed to delete money source");
     },
-  });
+  });  // Parse card style with proper logging
+  const cardStyle = source.cardStyle ? JSON.parse(source.cardStyle) : {};
+  console.log(`Card style for "${source.name}":`, source.cardStyle);
+ let backgroundStyle = {};
+  if (cardStyle.background) {
+    try {
+      // If it's a JSON string that was already stringified, parse it
+      if (typeof cardStyle.background === 'string' && 
+          (cardStyle.background.startsWith('{') || cardStyle.background.includes('gradient'))) {
+        const parsedBackground = JSON.parse(cardStyle.background);
+        backgroundStyle = parsedBackground;
+      } 
+      // If it's already an object
+      else if (typeof cardStyle.background === 'object') {
+        backgroundStyle = cardStyle.background;
+      }
+      // If it's a plain color string
+      else if (typeof cardStyle.background === 'string') {
+        backgroundStyle = { backgroundColor: cardStyle.background };
+      }
+    } catch (e) {
+      console.error("Error parsing background style:", e);
+      // Fallback to treating it as a plain color
+      if (typeof cardStyle.background === 'string') {
+        backgroundStyle = { backgroundColor: cardStyle.background };
+      }
+    }
+  }
+
+  const shadowStyle = cardStyle.shadow ? 
+    { boxShadow: typeof cardStyle.shadow === 'string' ? cardStyle.shadow : 'none' } : 
+    {};
+  
+  const borderStyle = cardStyle.border ? 
+    { border: typeof cardStyle.border === 'string' ? cardStyle.border : 'none' } : 
+    {};
 
   return (
     <>
@@ -51,7 +86,12 @@ const Card = ({ source, index, preferredCurrency }: { source: MoneySource; index
         whileHover={{ scale: 1.02 }}
         onHoverStart={() => setIsHovered(true)}
         onHoverEnd={() => setIsHovered(false)}
-        className="relative w-full p-4 sm:p-6 h-auto rounded-[var(--border-radius)] overflow-hidden group bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)]"
+        className="relative w-full p-4 sm:p-6 h-auto rounded-[var(--border-radius)] overflow-hidden group"
+        style={{
+          ...backgroundStyle,
+          ...shadowStyle,
+          ...borderStyle
+        }}
       >
         <motion.div 
           className="absolute inset-0 bg-black/10"
@@ -123,7 +163,7 @@ const Card = ({ source, index, preferredCurrency }: { source: MoneySource; index
               </p>
               {showPreferredCurrency && (
                 <p className="font-mono text-xs sm:text-sm text-white/70 mt-0.5 sm:mt-1">
-                  {source.balanceInPreferredCurrency.toFixed(2)} {preferredCurrency}
+                  {source?.balanceInPreferredCurrency?.toFixed(2)} {preferredCurrency}
                 </p>
               )}
             </motion.div>
@@ -138,7 +178,7 @@ const Card = ({ source, index, preferredCurrency }: { source: MoneySource; index
               </p>
               {showPreferredCurrency && (
                 <p className="font-mono text-xs sm:text-sm text-white/70 mt-0.5 sm:mt-1">
-                  {source.budgetInPreferredCurrency.toFixed(2)} {preferredCurrency}
+                  {source?.budgetInPreferredCurrency?.toFixed(2)} {preferredCurrency}
                 </p>
               )}
             </motion.div>

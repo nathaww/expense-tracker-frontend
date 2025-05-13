@@ -39,8 +39,8 @@ const CustomTooltip = ({
   payload,
   label,
   currencyType,
-  hideAmount,
-}: TooltipProps<ValueType, NameType> & { currencyType: string; hideAmount: boolean }) => {
+  hideAmount
+}: TooltipProps<ValueType, NameType> & { currencyType: string, hideAmount: boolean }) => {
   if (active && payload && payload.length) {
     try {
       const formattedDate = format(parseISO(label as string), "MMM d, yyyy");
@@ -48,7 +48,7 @@ const CustomTooltip = ({
         <div className="bg-[var(--bg)] p-4 rounded-[var(--border-radius)] shadow-lg border border-[var(--color-secondary)] text-[var(--text)]">
           <p className="text-sm font-semibold">{formattedDate}</p>
           <p className="text-[var(--color-primary)]">
-            {formatCurrency(payload[0].value as number, currencyType, hideAmount)}
+            {formatCurrency(payload[0].value as number, currencyType, hideAmount, true)}
           </p>
         </div>
       );
@@ -74,7 +74,7 @@ const TrendChart = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
+      className="p-4 md:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
     >
       <h3 className="text-lg font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
         {title}
@@ -83,11 +83,11 @@ const TrendChart = ({
           title="Visualizes your spending patterns over time. See how your expenses change weekly and monthly to identify spending patterns."
         />
       </h3>
-      <div className="h-[300px] w-full">
+      <div className="h-[250px] md:h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data}
-            margin={{ top: 10, right: 10, left: 15, bottom: 0 }}
+            margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
           >
             <defs>
               <linearGradient
@@ -119,7 +119,7 @@ const TrendChart = ({
               stroke="var(--text)"
             />
             <YAxis
-              tickFormatter={(value) => formatCurrency(value, currencyType, hideAmount)}
+              tickFormatter={(value) => formatCurrency(value, currencyType, hideAmount, true)}
               stroke="var(--text)"
             />
             <Tooltip content={(props) => <CustomTooltip {...props} currencyType={currencyType} hideAmount={hideAmount} />} />
@@ -137,7 +137,7 @@ const TrendChart = ({
   );
 };
 
-export default function Trends({ currencyType, hideAmount }: TrendsProps) {
+export default function Trends({ currencyType, hideAmount }: TrendsProps & { hideAmount: boolean }) {
   const {
     data: trends,
     isLoading,
@@ -174,13 +174,13 @@ export default function Trends({ currencyType, hideAmount }: TrendsProps) {
         data={trends.weeklyTrends} 
         title="Weekly Expenses"
         currencyType={currencyType}
-        hideAmount={hideAmount} 
+        hideAmount={hideAmount}
       />
       <TrendChart 
         data={trends.monthlyTrends} 
         title="Monthly Expenses"
         currencyType={currencyType}
-        hideAmount={hideAmount} 
+        hideAmount={hideAmount}
       />
     </div>
   );

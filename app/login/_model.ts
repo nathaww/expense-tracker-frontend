@@ -29,3 +29,14 @@ export interface LoginInput {
 export interface RegisterInput extends LoginInput {
   name: string;
 }
+
+export interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+      error?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+}

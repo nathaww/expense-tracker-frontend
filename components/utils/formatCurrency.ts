@@ -20,16 +20,19 @@ const currencyConfigs: Record<string, CurrencyConfig> = {
 export const formatCurrency = (
   value: number,
   currencyType: string = 'USD',
-  hideAmount: boolean = false
+  hideAmount: boolean = false,
+  hideDecimals: boolean = false
 ): string => {
   if (hideAmount) {
     return '•••••';
   }
 
   const config = currencyConfigs[currencyType] || currencyConfigs.USD;
-  
+
   return new Intl.NumberFormat(config.locale, {
     style: 'currency',
-    currency: config.currency
+    currency: config.currency,
+    minimumFractionDigits: hideDecimals ? 0 : 2,
+    maximumFractionDigits: hideDecimals ? 0 : 2
   }).format(value);
 };
