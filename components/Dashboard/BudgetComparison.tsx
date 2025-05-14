@@ -8,6 +8,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, TooltipItem } from "char
 import { formatCurrency } from "../utils/formatCurrency";
 import React, { useEffect } from "react";
 import { FaInfoCircle } from 'react-icons/fa';
+import StyledTooltip from '@/components/UI/StyledTooltip';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -163,14 +164,14 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="p-3 sm:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
-        >
-            <h3 className="text-base sm:text-lg font-semibold text-[var(--text)] mb-2 sm:mb-4 flex items-center gap-2">
-                Budget vs Actual
-                <FaInfoCircle
-                    className="w-4 h-4 text-[var(--text)]/50 cursor-pointer"
-                    title={
-                        "Compares what you planned to spend (budget) against what you actually spent, Under budget (positive variance): You spent less than planned, Over budget (negative variance): You spent more than planned"}
-                />
+        >            <h3 className="text-base sm:text-lg font-semibold text-[var(--text)] mb-2 sm:mb-4 flex items-center gap-2">
+                Budget vs Actual                <StyledTooltip
+                    content="Compares what you planned to spend (budget) against what you actually spent. Under budget (positive variance): You spent less than planned. Over budget (negative variance): You spent more than planned."
+                    position="top-start"
+                    maxWidth={350}
+                >
+                    <FaInfoCircle className="w-4 h-4 text-[var(--text)]/50 cursor-pointer" />
+                </StyledTooltip>
             </h3>
 
             <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 items-center">

@@ -13,7 +13,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
-import { AddCategoryModal } from "@/components/UI/AddCategoryModal";
+import { AddCategoryModal } from "@/components/Categories/AddCategoryModal";
 import { AxiosError } from "axios";
 
 const updateCategorySchema = Yup.object().shape({

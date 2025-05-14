@@ -10,6 +10,7 @@
   --border-radius: 0.5rem;
   --border-color: #cbd5e1;
   --font: system-ui, sans-serif;
+  --bg-tooltip: #2c2c2c;
 }
 
 html,

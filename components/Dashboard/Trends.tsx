@@ -20,6 +20,7 @@ import {
   ValueType,
 } from "recharts/types/component/DefaultTooltipContent";
 import { FaInfoCircle } from 'react-icons/fa';
+import StyledTooltip from '@/components/UI/StyledTooltip';
 
 interface TrendsProps {
   currencyType: string;
@@ -74,14 +75,15 @@ const TrendChart = ({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-4 md:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
-    >
+      className="p-4 md:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"    >
       <h3 className="text-lg font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
-        {title}
-        <FaInfoCircle
-          className="w-4 h-4 text-[var(--text)]/50 cursor-pointer"
-          title="Visualizes your spending patterns over time. See how your expenses change weekly and monthly to identify spending patterns."
-        />
+        {title}        <StyledTooltip 
+          content="Visualizes your spending patterns over time. See how your expenses change weekly and monthly to identify spending patterns."
+          position="top-start"
+          maxWidth={300}
+        >
+          <FaInfoCircle className="w-4 h-4 text-[var(--text)]/50 cursor-pointer" />
+        </StyledTooltip>
       </h3>
       <div className="h-[250px] md:h-[300px] w-full">
         <ResponsiveContainer width="100%" height="100%">

@@ -17,10 +17,12 @@ const CardStylePreview = ({ style, formValues }: {
     name?: string;
     currency?: string;
   }
-}) => {
+}) => {  // Handle style.background that could be a stringified JSON object
   let backgroundStyle = {};
   if (style.background) {
     try {
+      console.log("Original background:", style.background, typeof style.background);
+      
       // If it's a JSON string that was already stringified, parse it
       if (typeof style.background === 'string' &&
         (style.background.startsWith('{') || style.background.includes('gradient'))) {
@@ -31,10 +33,12 @@ const CardStylePreview = ({ style, formValues }: {
       // If it's already an object
       else if (typeof style.background === 'object') {
         backgroundStyle = style.background;
+        console.log("Object background:", backgroundStyle);
       }
       // If it's a plain color string
       else if (typeof style.background === 'string') {
         backgroundStyle = { backgroundColor: style.background };
+        console.log("Plain color background:", backgroundStyle);
       }
     } catch (e) {
       console.error("Error parsing background style:", e);
@@ -121,12 +125,14 @@ const addMoneySourceSchema = Yup.object().shape({
 export const AddMoneySourceModal = () => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
-
   const { data: cardStyles, isLoading } = useQuery({
     queryKey: ["card-styles"],
-    queryFn:  moneySourceRequests.getCardStyles
+    queryFn: async () => {
+      const styles = await moneySourceRequests.getCardStyles();
+      console.log("Card styles from API:", styles);
+      return styles;
+    }
   });
-
   const { mutate: createMoneySource, isPending } = useMutation({
     mutationFn: (values: {
       name: string;
@@ -136,11 +142,17 @@ export const AddMoneySourceModal = () => {
       budget: number;
       cardStyle: string;
       isDefault: boolean;
-    }) => moneySourceRequests.createMoneySource({
-      ...values,
-      balanceInPreferredCurrency: values.balance,
-      budgetInPreferredCurrency: values.budget,
-    }),
+    }) => {
+      // Find the selected card style to check what we're submitting
+      const selectedStyle = cardStyles?.find(style => style.styleId === values.cardStyle);
+      console.log("Selected card style for submission:", selectedStyle);
+      
+      return moneySourceRequests.createMoneySource({
+        ...values,
+        balanceInPreferredCurrency: values.balance,
+        budgetInPreferredCurrency: values.budget,
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["money-sources"] });
       toast.success("Money source added successfully");

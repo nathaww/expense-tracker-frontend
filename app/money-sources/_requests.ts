@@ -50,6 +50,7 @@ export interface MoneySourceApiResponse {
 export interface CardStyle {
   styleId: string;
   name: string;
+  // background can be either a direct string, a stringified JSON, or an object
   background: string | { [key: string]: string };
   textColor: string;
   cardNumberFont: string;
@@ -61,9 +62,26 @@ export interface CardStyle {
   showBgImage: boolean;
 }
 
+export interface MoneySourceFilterParams {
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  filterField?: string;
+  filterValue?: string;
+  rangeField?: string;
+  minValue?: number;
+  maxValue?: number;
+  multiValueField?: string;
+  multiValues?: Array<string | number>;
+  dateField?: string;
+  startDate?: string;
+  endDate?: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export const moneySourceRequests = {
-  getMoneySources: async (): Promise<MoneySourceApiResponse> => {
-    const res = await api.get<MoneySourceApiResponse>('/money-sources');
+  getMoneySources: async (params?: MoneySourceFilterParams): Promise<MoneySourceApiResponse> => {
+    const res = await api.get<MoneySourceApiResponse>('/money-sources', { params });
     return res.data;
   },
   
