@@ -52,7 +52,7 @@ const ComparisonTable = ({
                             <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.budget, currencyType, hideAmount)}</td>
                             <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.actual, currencyType, hideAmount)}</td>
                             <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.variance, currencyType, hideAmount)}</td>
-                            <td className="py-1 sm:py-2 px-1 sm:px-3">{item.variancePercentage.toFixed(1)}%</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3">{item?.variancePercentage?.toFixed(1)}%</td>
                         </tr>
                     ))}
                 </tbody>
