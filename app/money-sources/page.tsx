@@ -120,7 +120,7 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
             <div className="flex items-center gap-1 sm:gap-2">
               <UpdateMoneySourceModal moneySource={source} />              
               <button
-                className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all active:scale-95 cursor-pointer"
                 onClick={handleOpenDeleteModal}
               >
                 <FaTrash className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
@@ -179,7 +179,7 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
         onClose={handleCloseDeleteModal}
         onConfirm={handleConfirmDelete}
         title="Delete Money Source"
-        message={`Are you sure you want to delete "${source.name}"? This action cannot be undone.`}
+        message={`Are you sure you want to delete "${source.name}"? This will also delete all associated expenses and cannot be undone.`}
         isDeleting={isDeleting}
       />
     </>
@@ -413,7 +413,7 @@ const MoneySourcesPage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {moneySourcesResponse?.data?.map((source: MoneySource) => (
             <Card
-              key={source.id}
+              key={source?.id}
               source={source}
               preferredCurrency={appSettings?.preferredCurrency || "USD"}
             />

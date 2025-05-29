@@ -87,11 +87,10 @@ export const Nav = () => {
           selected={selected}
           setSelected={setSelected}
           open={open}
-        />
-        <Option
+        />        <Option
           Icon={TbChartBar}
-          title="Benchmarking"
-          href="/benchmarking/spending-comparison"
+          title="User Insights"
+          href="/user-insights/spending-comparison"
           selected={selected}
           setSelected={setSelected}
           open={open}

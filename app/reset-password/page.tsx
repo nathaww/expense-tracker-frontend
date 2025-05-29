@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { authRequests } from "../login/_requests";
@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FaMoneyBillWave } from "react-icons/fa";
 import Stars from "@/components/UI/Stars";
+import { PasswordInput } from "@/components/UI/PasswordInput";
 
 const resetPasswordSchema = Yup.object().shape({
   password: Yup.string()
@@ -127,13 +128,11 @@ export default function ResetPasswordPage() {
           onSubmit={(values) => resetPassword({ password: values.password })}
         >
           {({ errors, touched }) => (
-            <Form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
-              <div>
-                <Field
+            <Form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">              <div>
+                <PasswordInput
                   name="password"
-                  type="password"
-                  className="input py-2 sm:py-3"
                   placeholder="New password"
+                  autoComplete="new-password"
                 />
                 {errors.password && touched.password && (
                   <p className="text-red-500 text-xs mt-1">{errors.password}</p>
@@ -141,11 +140,10 @@ export default function ResetPasswordPage() {
               </div>
 
               <div>
-                <Field
+                <PasswordInput
                   name="confirmPassword"
-                  type="password"
-                  className="input py-2 sm:py-3"
                   placeholder="Confirm new password"
+                  autoComplete="new-password"
                 />
                 {errors.confirmPassword && touched.confirmPassword && (
                   <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>

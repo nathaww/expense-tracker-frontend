@@ -1,6 +1,6 @@
 'use client';
 
-import { SpendingComparison } from '@/app/benchmarking/_requests';
+import { SpendingComparison } from '@/app/user-insights/_requests';
 import { motion } from 'framer-motion';
 import { formatCurrency } from '../utils/formatCurrency';
 import React from 'react';

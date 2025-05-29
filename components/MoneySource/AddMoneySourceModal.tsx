@@ -132,8 +132,7 @@ export const AddMoneySourceModal = () => {
       console.log("Card styles from API:", styles);
       return styles;
     }
-  });
-  const { mutate: createMoneySource, isPending } = useMutation({
+  });  const { mutate: createMoneySource, isPending } = useMutation({
     mutationFn: (values: {
       name: string;
       balance: number;
@@ -143,7 +142,7 @@ export const AddMoneySourceModal = () => {
       cardStyle: string;
       isDefault: boolean;
     }) => {
-      // Find the selected card style to check what we're submitting
+      // Find the selected card style and store the full style object as JSON
       const selectedStyle = cardStyles?.find(style => style.styleId === values.cardStyle);
       console.log("Selected card style for submission:", selectedStyle);
       
@@ -151,6 +150,7 @@ export const AddMoneySourceModal = () => {
         ...values,
         balanceInPreferredCurrency: values.balance,
         budgetInPreferredCurrency: values.budget,
+        cardStyle: selectedStyle ? JSON.stringify(selectedStyle) : values.cardStyle,
       });
     },
     onSuccess: () => {

@@ -10,6 +10,7 @@ import { AxiosError } from "axios";
 import { useAuth } from "@/providers/AuthProvider";
 import { FaMoneyBillWave } from "react-icons/fa";
 import Stars from "@/components/UI/Stars";
+import { PasswordInput } from "@/components/UI/PasswordInput";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("E-mail is Required"),
@@ -73,12 +74,8 @@ export default function LoginPage() {
               />
               {errors.email && touched.email && (
                 <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-              )}
-
-              <Field
+              )}              <PasswordInput
                 name="password"
-                type="password"
-                className="input py-2 sm:py-3"
                 placeholder="Password"
                 autoComplete="current-password"
               />

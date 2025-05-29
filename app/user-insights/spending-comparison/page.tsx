@@ -1,20 +1,29 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { benchmarkingRequests, SpendingComparison } from '../_requests';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { userInsightsRequests, SpendingComparison } from '../_requests';
 
 import { motion } from 'framer-motion';
+import { FaSync } from 'react-icons/fa';
 
-import { SummaryStatistics } from '@/components/Benchmarking/SummaryStatistics';
+import { SummaryStatistics } from '@/components/UserInsights/SummaryStatistics';
 import React from 'react';
 import Loader from '@/components/UI/Loader';
-import { InsightsCard } from '@/components/Benchmarking/InsightsCardNew';
+import { InsightsCard } from '@/components/UserInsights/InsightsCardNew';
 
 export default function SpendingComparisonPage() {
-    const { data, isLoading, isError } = useQuery<SpendingComparison>({
+    const queryClient = useQueryClient();
+
+    const { data, isLoading, isError, isFetching } = useQuery<SpendingComparison>({
         queryKey: ['spending-comparison'],
-        queryFn: benchmarkingRequests.getSpendingComparison,
+        queryFn: userInsightsRequests.getSpendingComparison,
+        staleTime: Infinity, // Data never becomes stale
+        gcTime: Infinity, // Data never gets garbage collected
     });
+
+    const handleRefresh = () => {
+        queryClient.invalidateQueries({ queryKey: ['spending-comparison'] });
+    };
 
     if (isLoading) {
         return (
@@ -37,11 +46,21 @@ export default function SpendingComparisonPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent mb-8">
-                    Spending Benchmarks
-                </h1>
+                transition={{ duration: 0.5 }}            >
+                <div className="flex justify-between items-center mb-8">
+                    <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
+                        User Insights
+                    </h1>
+                    <button
+                        onClick={handleRefresh}
+                        disabled={isFetching}
+                        className="btn flex items-center gap-2"
+                        title="Refresh data"
+                    >
+                        <FaSync className={`${isFetching ? 'animate-spin' : ''}`} />
+                        {isFetching ? 'Refreshing...' : 'Refresh'}
+                    </button>
+                </div>
 
                 <SummaryStatistics data={data} />
 

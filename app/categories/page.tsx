@@ -90,7 +90,7 @@ const CategoryCard = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsUpdateOpen(true)}
-                className="p-1.5 sm:p-2 bg-[var(--color-secondary)] text-white rounded-full transition-all"
+                className="p-1.5 sm:p-2 bg-[var(--color-secondary)] text-white rounded-full transition-all active:scale-95 cursor-pointer"
               >
                 <FaPencilAlt className="w-3 h-3 sm:w-4 sm:h-4" />
               </motion.button>
@@ -98,7 +98,7 @@ const CategoryCard = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setIsDeleteOpen(true)}
-                className="p-1.5 sm:p-2 bg-red-500 text-white rounded-full transition-all"
+                className="p-1.5 sm:p-2 bg-red-500 text-white rounded-full transition-all active:scale-95 cursor-pointer"
               >
                 <FaTrash className="w-3 h-3 sm:w-4 sm:h-4" />
               </motion.button>

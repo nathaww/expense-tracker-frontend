@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { ProfileSection } from "@/components/Settings/ProfileSection";
 import { ThemeSection } from "@/components/Settings/ThemeSection";
 import { CurrencySection } from "@/components/Settings/CurrencySection";
+import { DangerZone } from "@/components/Settings/DangerZone";
 
 const Settings = () => {
   const { logout, isAuthenticated } = useAuth();
@@ -56,16 +57,15 @@ const Settings = () => {
         className="text-3xl font-bold mb-8 text-[var(--text)]"
       >
         Settings
-      </motion.h1>
-
-      <ProfileSection 
+      </motion.h1>      <ProfileSection 
         profile={profile} 
-        onDeleteAccount={() => setIsDeleteOpen(true)} 
       />
       
       <CurrencySection settings={settings} />
       
       <ThemeSection />
+
+      <DangerZone onDeleteAccount={() => setIsDeleteOpen(true)} />
 
       <DeleteConfirmationModal
         isOpen={isDeleteOpen}

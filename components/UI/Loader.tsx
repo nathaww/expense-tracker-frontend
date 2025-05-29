@@ -1,4 +1,4 @@
-import { BiLoaderCircle } from "react-icons/bi";
+import {RiLoader3Line } from 'react-icons/ri';
 
 export default function Loader() {
   return (
@@ -6,8 +6,8 @@ export default function Loader() {
       className={`fixed inset-0 flex items-center justify-center bg-[var(--bg)] `}
     >
       <div className="relative">
-        <BiLoaderCircle
-          className={`w-12 h-12 rounded-full text-[var(--text)] border-4 animate-spin`}
+        <RiLoader3Line 
+          className={`w-12 h-12 text-[var(--text)] animate-spin`}
         />
       </div>
     </div>

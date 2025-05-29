@@ -18,9 +18,9 @@ export interface SpendingComparison {
   currency: string;
 }
 
-export const benchmarkingRequests = {
+export const userInsightsRequests = {
   getSpendingComparison: async (): Promise<SpendingComparison> => {
-    const res = await api.get<SpendingComparison>('/benchmarking/spending-comparison');
+    const res = await api.get<SpendingComparison>('/user-insights/spending-comparison');
     return res.data;
   }
 };

@@ -1,6 +1,6 @@
 'use client';
 
-import { CategoryComparison } from '@/app/benchmarking/_requests';
+import { CategoryComparison } from '@/app/user-insights/_requests';
 import { motion } from 'framer-motion';
 import { formatCurrency } from '@/components/utils/formatCurrency';
 import React, { useState } from 'react';

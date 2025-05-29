@@ -152,7 +152,7 @@ export const FilterToolbar = React.memo(({
         <div className="flex items-center gap-2">
           <button 
             onClick={useCallback(() => setShowFilters(prev => !prev), [])}
-            className="flex items-center gap-2 px-3 py-2 bg-[var(--bg)] border border-[var(--border-color)] rounded-md hover:bg-[var(--bgSecondary)] transition-colors"
+            className="transition-all active:scale-95 cursor-pointer flex items-center gap-2 px-3 py-2 bg-[var(--bg)] border border-[var(--border-color)] rounded-md hover:bg-[var(--bgSecondary)]"
           >
             <FaFilter className="w-4 h-4" />
             <span>{showFilters ? 'Hide Filters' : 'Show Filters'}</span>
@@ -160,7 +160,7 @@ export const FilterToolbar = React.memo(({
           
           <button
             onClick={handleResetFilters}
-            className="px-3 py-2 bg-transparent border border-[var(--border-color)] rounded-md hover:bg-[var(--bgSecondary)] transition-colors"
+            className="px-3 py-2 bg-transparent border border-[var(--border-color)] rounded-md hover:bg-[var(--bgSecondary)] transition-all active:scale-95 cursor-pointer"
           >
             Reset
           </button>
@@ -182,7 +182,7 @@ export const FilterToolbar = React.memo(({
             <button
               onClick={toggleSortOrder}
               disabled={!sortBy}
-              className="px-3 py-2 bg-[var(--bg)] border-t border-r border-b border-[var(--border-color)] rounded-r-md hover:bg-[var(--bgSecondary)] disabled:opacity-50 transition-colors"
+              className="px-3 py-2 bg-[var(--bg)] border-t border-r border-b border-[var(--border-color)] rounded-r-md hover:bg-[var(--bgSecondary)] disabled:opacity-50 transition-all active:scale-95 cursor-pointer"
             >
               <FaSort className="w-4 h-4" />
               <span className="sr-only">{sortOrder === 'asc' ? 'Ascending' : 'Descending'}</span>
@@ -191,7 +191,7 @@ export const FilterToolbar = React.memo(({
           
           <button
             onClick={handleApplyFilters}
-            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-md hover:opacity-90 transition-opacity"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-md hover:opacity-90 transition-all active:scale-95 cursor-pointer"
           >
             Apply Filters
           </button>
@@ -204,7 +204,7 @@ export const FilterToolbar = React.memo(({
           <div className="flex gap-4 mb-4">
             <button
               onClick={setToBasicFilter}
-              className={`px-3 py-1 rounded-md ${activeFilterType === 'basic' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--bgSecondary)]'}`}
+              className={`px-3 py-1 rounded-md transition-all active:scale-95 cursor-pointer ${activeFilterType === 'basic' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--bgSecondary)]'}`}
             >
               Basic Filter
             </button>
@@ -212,7 +212,7 @@ export const FilterToolbar = React.memo(({
             {rangeFilterFields.length > 0 && (
               <button
                 onClick={setToRangeFilter}
-                className={`px-3 py-1 rounded-md ${activeFilterType === 'range' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--bgSecondary)]'}`}
+                className={`px-3 py-1 rounded-md transition-all active:scale-95 cursor-pointer ${activeFilterType === 'range' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--bgSecondary)]'}`}
               >
                 Range Filter
               </button>
@@ -221,7 +221,7 @@ export const FilterToolbar = React.memo(({
             {dateFilterFields.length > 0 && (
               <button
                 onClick={setToDateFilter}
-                className={`px-3 py-1 rounded-md ${activeFilterType === 'date' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--bgSecondary)]'}`}
+                className={`px-3 py-1 rounded-md transition-all active:scale-95 cursor-pointer ${activeFilterType === 'date' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--bgSecondary)]'}`}
               >
                 Date Filter
               </button>

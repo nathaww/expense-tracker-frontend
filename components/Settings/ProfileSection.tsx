@@ -4,6 +4,7 @@ import { Field, Form, Formik } from "formik";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 import * as Yup from "yup";
+import { AxiosError } from "axios";
 
 import { UpdateProfileInput, UserProfile, userRequests } from "@/app/settings/_requests";
 import { useAuth } from "@/providers/AuthProvider";
@@ -16,13 +17,10 @@ const profileSchema = Yup.object().shape({
 
 interface ProfileSectionProps {
   profile: UserProfile;
-  onDeleteAccount: () => void;
 }
 
-export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps) => {
-  const { user, setUser } = useAuth();
-
-  const { mutate: updateProfile, isPending: isUpdating } = useMutation({
+export const ProfileSection = ({ profile }: ProfileSectionProps) => {
+  const { user, setUser } = useAuth();  const { mutate: updateProfile, isPending: isUpdating } = useMutation({
     mutationFn: userRequests.updateProfile,
     onSuccess: (data) => {
       setUser({
@@ -32,8 +30,13 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
       });
       toast.success("Profile updated successfully");
     },
-    onError: () => {
-      toast.error("Failed to update profile");
+    onError: (error: AxiosError<{ message: string }>) => {
+      console.error("Profile update error:", error);
+      toast.error(
+        error?.response?.data?.message || 
+        error?.message || 
+        "Failed to update profile"
+      );
     },
   });
 
@@ -54,13 +57,18 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
               name: profile?.name,
               email: profile?.email,
             }}
-            validationSchema={profileSchema}
-            onSubmit={(values) => {
+            validationSchema={profileSchema}            onSubmit={(values) => {
               const updates: UpdateProfileInput = {};
               if (values.name !== profile?.name) updates.name = values.name;
               if (values.email !== profile?.email) updates.email = values.email;
+              
+              console.log("Form values:", values);
+              console.log("Updates to send:", updates);
+              
               if (Object.keys(updates).length > 0) {
                 updateProfile(updates);
+              } else {
+                toast.info("No changes detected");
               }
             }}
           >
@@ -89,24 +97,14 @@ export const ProfileSection = ({ profile, onDeleteAccount }: ProfileSectionProps
                   {errors.email && touched.email && (
                     <div className="text-red-500 text-sm mt-1">{errors.email}</div>
                   )}
-                </div>
-
-                <div className="flex items-center gap-2 md:gap-4">
+                </div>                <div>
                   <button
                     type="submit"
                     disabled={isUpdating}
                     className="btn"
-                  >
+                  > 
                     {isUpdating ? "Updating..." : "Update Profile"}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={onDeleteAccount}
-                    className="btn"
-                  >
-                    Delete Account
-                  </button>
-                </div>
+                  </button>                </div>
               </Form>
             )}
           </Formik>

@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { themes, ThemeName } from "@/theme/theme";
 import { useTheme } from "@/theme/ThemeProvider";
-import { AddThemeModal } from '../UI/AddThemeModal';
 
 export const ThemeSection = () => {
   const { theme, setTheme, customTheme } = useTheme();
@@ -17,7 +16,6 @@ export const ThemeSection = () => {
     >
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold text-[var(--text)]">Theme</h2>
-        <AddThemeModal />
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {(Object.keys(themes) as ThemeName[]).map((themeName) => {

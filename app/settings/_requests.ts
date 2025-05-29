@@ -14,7 +14,7 @@ export interface UserProfile {
 export interface UpdateProfileInput {
   name?: string;
   email?: string;
-  profilePicture?: File;
+  profilePicture?: string; // Changed from File to string (URL)
 }
 
 export interface AppSettings {
@@ -36,16 +36,10 @@ export const userRequests = {
     const response: AxiosResponse<UserProfile> = await axiosInstance.get('/users');
     return response.data;
   },
-
   updateProfile: async (data: UpdateProfileInput): Promise<UserProfile> => {
-    const formData = new FormData();
-    if (data.name) formData.append('name', data.name);
-    if (data.email) formData.append('email', data.email);
-    if (data.profilePicture) formData.append('profilePicture', data.profilePicture);
-
-    const response: AxiosResponse<UserProfile> = await axiosInstance.patch('/users', formData, {
+    const response: AxiosResponse<UserProfile> = await axiosInstance.patch('/users', data, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json',
       },
     });
     return response.data;
