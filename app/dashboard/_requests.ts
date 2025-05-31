@@ -20,16 +20,16 @@ export interface DashboardTrends {
 export interface BudgetComparisonItem {
   moneySource: string;
   budget: number;
-  actual: number;
-  variance: number;
-  variancePercentage: number;
+  expense: number;
+  remaining: number;
+  remainingPercentage: number;
 }
 
 export interface BudgetComparison {
   comparisons: BudgetComparisonItem[];
   totalBudget: number;
-  totalActual: number;
-  totalVariance: number;
+  totalExpense: number;
+  totalRemaining: number;
 }
 
 export interface CategoryBreakdownItem {

@@ -11,7 +11,8 @@ export type ThemeName =
   | "crimson"
   | "deepBlue"
   | "christmas"
-  | "custom";
+  | "custom"
+  | "brain";
 
 export interface ThemeDefinition {
   primary: string;
@@ -167,5 +168,16 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderColor: "#5C6F91",
     borderRadius: "0.5rem",
     font: "'Segoe UI', sans-serif",
+  },
+  brain: {
+    primary: "#000000",       
+    secondary: "#FFD18B",           
+    tertiary: "#E1EDFE",            
+    background: "#F6F9FF",          
+    backgroundSecondary: "#FFFFFF", 
+    text: "#1A1A1A",                
+    borderColor: "",        
+    borderRadius: "1.5rem",
+    font: "Inter, sans-serif",
   },
 };

@@ -79,10 +79,9 @@ export const CategoryComparisonChart = ({
 
   return (
     <div className="mb-8">
-      <div className="flex flex-wrap gap-3 mb-4">
-        <motion.button
+      <div className="flex flex-wrap gap-3 mb-4">        <motion.button
           whileTap={{ scale: 0.97 }}
-          className={`px-4 py-2 rounded-[var(--border-radius)] font-medium transition-colors ${
+          className={`px-4 py-2 rounded-[var(--border-radius)] font-medium transition-colors cursor-pointer ${
             activeTab === 'spending'
               ? 'bg-[var(--color-primary)] text-white'
               : 'bg-[var(--bgSecondary)] text-[var(--text)] hover:bg-[var(--color-secondary)]/20'
@@ -93,7 +92,7 @@ export const CategoryComparisonChart = ({
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.97 }}
-          className={`px-4 py-2 rounded-[var(--border-radius)] font-medium transition-colors ${
+          className={`px-4 py-2 rounded-[var(--border-radius)] font-medium transition-colors cursor-pointer ${
             activeTab === 'savings'
               ? 'bg-[var(--color-primary)] text-white'
               : 'bg-[var(--bgSecondary)] text-[var(--text)] hover:bg-[var(--color-secondary)]/20'
@@ -111,12 +110,14 @@ export const CategoryComparisonChart = ({
         transition={{ duration: 0.3 }}
         className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
         whileHover={{ boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)" }}
-      >
-        <h3 className="text-lg font-semibold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent mb-6">
+      >        <h3 className="text-lg font-semibold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent mb-6">
           {activeTab === 'spending' 
             ? 'Categories Where You Spend More' 
             : 'Categories Where You Spend Less'}
         </h3>
+        <p className="text-xs text-[var(--text)]/60 mb-4">
+          Compared to average spending from last 3 months
+        </p>
         
         {activeTab === 'spending' ? (
           positiveCategories.length > 0 ? (

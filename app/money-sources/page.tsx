@@ -10,6 +10,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import Loader from "@/components/UI/Loader";
 import { AddMoneySourceModal } from "@/components/MoneySource/AddMoneySourceModal";
 import { UpdateMoneySourceModal } from "@/components/MoneySource/UpdateMoneySourceModal";
+import { AddFundsModal } from "@/components/MoneySource/AddFundsModal";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
 import { FilterToolbar } from "@/components/UI/FilterToolbar";
 import { Pagination } from "@/components/UI/Pagination";
@@ -99,28 +100,28 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
       
     return { backgroundStyle: bgStyle, shadowStyle: shdwStyle, borderStyle: brdStyle };
   }, [source.cardStyle]);
-
   return (
     <>
       <div
-        className="relative w-full p-4 sm:p-6 h-auto rounded-[var(--border-radius)] overflow-hidden group hover:shadow-lg transition-shadow"
+        className="relative w-full p-4 sm:p-6 h-auto rounded-[var(--border-radius)] overflow-hidden group hover:shadow-xl hover:scale-[1.02] transition-all duration-300 ease-out cursor-pointer"
         style={{
           ...backgroundStyle,
           ...shadowStyle,
           ...borderStyle
         }}
       >
-        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors" />
+        <div className="absolute inset-0 bg-black/10 group-hover:bg-black/15 transition-all duration-300" />
 
         <div className="relative z-10">
           <div className="flex justify-between items-start mb-4 sm:mb-6">
-            <div className="p-2 sm:p-3 bg-white/10 rounded-full">
+            <div className="p-2 sm:p-3 bg-white/10 rounded-full group-hover:bg-white/20 group-hover:scale-110 transition-all duration-300">
               <Icon className="text-white text-xl sm:text-2xl" />
             </div>            
             <div className="flex items-center gap-1 sm:gap-2">
+              <AddFundsModal moneySource={source} />
               <UpdateMoneySourceModal moneySource={source} />              
               <button
-                className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all active:scale-95 cursor-pointer"
+                className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all duration-200 active:scale-95 cursor-pointer hover:scale-110"
                 onClick={handleOpenDeleteModal}
               >
                 <FaTrash className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
@@ -129,10 +130,10 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
           </div>
 
           <div className="mb-4 sm:mb-6">
-            <h3 className="text-white text-lg sm:text-xl font-bold mb-1 sm:mb-2 line-clamp-1 group-hover:translate-x-1 transition-transform">
+            <h3 className="text-white text-lg sm:text-xl font-bold mb-1 sm:mb-2 line-clamp-1 group-hover:translate-x-2 transition-transform duration-300">
               {source.name}
               {source.isDefault && (
-                <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 sm:py-1 bg-white/20 text-white text-xs rounded-full">
+                <span className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 sm:py-1 bg-white/20 text-white text-xs rounded-full group-hover:bg-white/30 transition-colors duration-300">
                   <span className="relative flex h-1.5 w-1.5 sm:h-2 sm:w-2">
                     <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-white"></span>
@@ -141,13 +142,13 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
                 </span>
               )}
             </h3>
-            <p className="text-white/75 text-xs sm:text-sm">
+            <p className="text-white/75 text-xs sm:text-sm group-hover:text-white/90 transition-colors duration-300">
               Last Modified {new Date(source.updatedAt).toLocaleDateString()}
             </p>
           </div>
 
           <div className="grid grid-cols-2 gap-2 sm:gap-6 mb-2 sm:mb-4">
-            <div className="p-3 sm:p-4 bg-white/10 rounded-lg backdrop-blur-sm hover:bg-white/15 transition-colors">
+            <div className="p-3 sm:p-4 bg-white/10 rounded-lg backdrop-blur-sm hover:bg-white/20 group-hover:translate-y-[-2px] transition-all duration-300">
               <p className="text-white/75 text-xs sm:text-sm mb-0.5 sm:mb-1">Balance</p>
               <p className="font-mono text-base sm:text-lg text-white">
                 {source.balance} {source.currency}
@@ -159,7 +160,7 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
               )}
             </div>
 
-            <div className="p-3 sm:p-4 bg-white/10 rounded-lg backdrop-blur-sm hover:bg-white/15 transition-colors">
+            <div className="p-3 sm:p-4 bg-white/10 rounded-lg backdrop-blur-sm hover:bg-white/20 group-hover:translate-y-[-2px] transition-all duration-300">
               <p className="text-white/75 text-xs sm:text-sm mb-0.5 sm:mb-1">Budget</p>
               <p className="font-mono text-base sm:text-lg text-white">
                 {source.budget} {source.currency}
@@ -199,7 +200,7 @@ const Card = React.memo(({ source, preferredCurrency }: CardProps) => {
   );
 });
 
-// Add displayName to fix ESLint "Component definition is missing display name" error
+
 Card.displayName = 'Card';
 
 const MoneySourcesPage = () => {
@@ -222,12 +223,12 @@ const MoneySourcesPage = () => {
     source: null
   });
 
-  // Hooks
+
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
   
-  // Memoized event handlers - right after state
+
   const handleCardViewClick = useCallback(() => setViewMode('card'), []);
   const handleTableViewClick = useCallback(() => setViewMode('table'), []);
   
@@ -254,7 +255,6 @@ const MoneySourcesPage = () => {
   const handleCloseDeleteModal = useCallback(() => {
     setDeleteModalData({ isOpen: false, source: null });
   }, []);
-    // We don't need this function anymore as we use fixedHandleConfirmDelete instead
   
   const handleEditInTableView = useCallback((source: MoneySource) => {
     setViewMode('card');
@@ -375,10 +375,9 @@ const MoneySourcesPage = () => {
         </h1>
 
         <div className="flex items-center gap-3">
-          {/* View toggle */}
-          <div className="flex p-1 bg-[var(--bgSecondary)] rounded-lg">            
+          {/* View toggle */}          <div className="flex p-1 bg-[var(--bgSecondary)] rounded-lg">            
             <button
-              className={`p-2 rounded-md ${viewMode === 'card' ? 'bg-[var(--bg)] shadow-sm' : ''}`}
+              className={`p-2 rounded-md cursor-pointer ${viewMode === 'card' ? 'bg-[var(--bg)] shadow-sm' : ''}`}
               onClick={handleCardViewClick}
               aria-label="Card view"
               title="Card view"
@@ -386,7 +385,7 @@ const MoneySourcesPage = () => {
               <FaTh className="w-4 h-4" />
             </button>
             <button
-              className={`p-2 rounded-md ${viewMode === 'table' ? 'bg-[var(--bg)] shadow-sm' : ''}`}
+              className={`p-2 rounded-md cursor-pointer ${viewMode === 'table' ? 'bg-[var(--bg)] shadow-sm' : ''}`}
               onClick={handleTableViewClick}
               aria-label="Table view"
               title="Table view"

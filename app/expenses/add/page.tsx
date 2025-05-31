@@ -125,10 +125,9 @@ export default function AddExpensePage() {
 
   return (
     <div className="container mx-auto p-8 min-h-screen">
-      <div className="flex items-center gap-4 mb-8">
-        <Link
+      <div className="flex items-center gap-4 mb-8">        <Link
           href="/expenses"
-          className="p-2 hover:bg-[var(--bgSecondary)] rounded-full transition-colors"
+          className="p-2 hover:bg-[var(--bgSecondary)] rounded-full transition-colors cursor-pointer"
         >
           <FaArrowLeft className="w-5 h-5 text-[var(--text)]" />
         </Link>

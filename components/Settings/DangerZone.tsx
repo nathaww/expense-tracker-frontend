@@ -29,7 +29,7 @@ export const DangerZone = ({ onDeleteAccount }: DangerZoneProps) => {
       <button
         type="button"
         onClick={onDeleteAccount}
-        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-[var(--border-radius)] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-[var(--border-radius)] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         Delete Account
       </button>

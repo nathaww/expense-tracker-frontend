@@ -46,11 +46,15 @@ export default function SpendingComparisonPage() {
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}            >
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
-                        User Insights
-                    </h1>
+                transition={{ duration: 0.5 }}            >                <div className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
+                            User Insights
+                        </h1>
+                        <p className="text-sm text-[var(--text)]/60 mt-1">
+                            Average spending comparisons are calculated based on the last 3 months of user data
+                        </p>
+                    </div>
                     <button
                         onClick={handleRefresh}
                         disabled={isFetching}

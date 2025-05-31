@@ -192,7 +192,7 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
             <Dialog.Title className="text-2xl font-bold text-[var(--text)]">
               Update Money Source
             </Dialog.Title>
-            <Dialog.Close className="text-[var(--text)] hover:opacity-70">
+            <Dialog.Close className="text-[var(--text)] hover:opacity-70 cursor-pointer">
               <FaTimes />
             </Dialog.Close>
           </div>          <Formik

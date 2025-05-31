@@ -76,11 +76,10 @@ export const Pagination: React.FC<PaginationProps> = ({
           </div>
         )}
         
-        {/* Previous button */}
-        <button
+        {/* Previous button */}        <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="mr-1 p-2 rounded-md disabled:opacity-50 hover:bg-[var(--bgSecondary)]"
+          className="mr-1 p-2 rounded-md disabled:opacity-50 hover:bg-[var(--bgSecondary)] cursor-pointer"
         >
           <FaChevronLeft className="w-3 h-3" />
         </button>
@@ -91,10 +90,9 @@ export const Pagination: React.FC<PaginationProps> = ({
             <React.Fragment key={index}>
               {page === '...' ? (
                 <span className="px-3 py-1">...</span>
-              ) : (
-                <button
+              ) : (                <button
                   onClick={() => typeof page === 'number' && onPageChange(page)}
-                  className={`mx-1 px-3 py-1 rounded-md ${
+                  className={`mx-1 px-3 py-1 rounded-md cursor-pointer ${
                     page === currentPage
                       ? 'bg-[var(--color-primary)] text-white'
                       : 'hover:bg-[var(--bgSecondary)]'
@@ -107,11 +105,10 @@ export const Pagination: React.FC<PaginationProps> = ({
           ))}
         </div>
         
-        {/* Next button */}
-        <button
+        {/* Next button */}        <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="ml-1 p-2 rounded-md disabled:opacity-50 hover:bg-[var(--bgSecondary)]"
+          className="ml-1 p-2 rounded-md disabled:opacity-50 hover:bg-[var(--bgSecondary)] cursor-pointer"
         >
           <FaChevronRight className="w-3 h-3" />
         </button>

@@ -30,7 +30,7 @@ const OverviewCard = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       whileHover={{ scale: 1.02 }}
-      className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
+      className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)]"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-[var(--text)]">{title}</h3>

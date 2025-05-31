@@ -6,6 +6,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { CardStyle, moneySourceRequests } from "@/app/money-sources/_requests";
+import { exchangeRatesRequests } from "@/app/exchange-rates/_requests";
 import { FaPlus, FaTimes, FaCreditCard } from "react-icons/fa";
 import { toast } from "sonner";
 import { useState } from "react";
@@ -132,7 +133,13 @@ export const AddMoneySourceModal = () => {
       console.log("Card styles from API:", styles);
       return styles;
     }
-  });  const { mutate: createMoneySource, isPending } = useMutation({
+  });
+
+  // Fetch currencies from exchange rates API
+  const { data: exchangeRatesData, isLoading: isLoadingCurrencies } = useQuery({
+    queryKey: ["exchange-rates"],
+    queryFn: exchangeRatesRequests.getExchangeRates,
+  });const { mutate: createMoneySource, isPending } = useMutation({
     mutationFn: (values: {
       name: string;
       balance: number;
@@ -185,7 +192,7 @@ export const AddMoneySourceModal = () => {
             <Dialog.Title className="text-xl sm:text-2xl font-bold text-[var(--text)]">
               Add Money Source
             </Dialog.Title>
-            <Dialog.Close className="text-[var(--text)] hover:opacity-70 p-1">
+            <Dialog.Close className="text-[var(--text)] hover:opacity-70 p-1 cursor-pointer">
               <FaTimes />
             </Dialog.Close>
           </div>          <Formik
@@ -257,15 +264,18 @@ export const AddMoneySourceModal = () => {
                   <div>
                     <label htmlFor="currency" className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base">
                       Currency
-                    </label>
-                    <Field
+                    </label>                    <Field
                       as="select"
                       name="currency"
                       className="input w-full appearance-none"
+                      disabled={isLoadingCurrencies}
                     >
-                      <option value="USD">USD</option>
-                      <option value="ETB">ETB</option>
-                      <option value="EUR">EUR</option>
+                      <option value="">Select Currency</option>
+                      {exchangeRatesData?.currencies?.map((currency) => (
+                        <option key={currency.code} value={currency.code}>
+                          {currency.code} - {currency.name}
+                        </option>
+                      ))}
                     </Field>
                     {errors.currency && touched.currency && (
                       <div className="text-red-500 text-xs sm:text-sm mt-1">{errors.currency}</div>

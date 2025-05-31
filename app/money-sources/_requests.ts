@@ -98,9 +98,13 @@ export const moneySourceRequests = {
   deleteMoneySource: async (id: string): Promise<void> => {
     await api.delete(`/money-sources/${id}`);
   },
-
   getCardStyles: async (): Promise<CardStyle[]> => {
     const res = await api.get<CardStyle[]>('/money-sources/card-styles');
+    return res.data;
+  },
+
+  addFunds: async (id: string, amount: number): Promise<MoneySource> => {
+    const res = await api.patch<MoneySource>(`/money-sources/add-funds/${id}`, { amount });
     return res.data;
   },
 };

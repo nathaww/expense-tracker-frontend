@@ -15,10 +15,9 @@ const Navbar = () => {
 
   return (
     <nav className="flex justify-between items-center p-4 bg-[var(--bg)] border-b border-[var(--border-color)]">
-      <div className="text-lg font-bold text-[var(--text)]">Expense Tracker</div>
-      <button
+      <div className="text-lg font-bold text-[var(--text)]">Expense Tracker</div>      <button
         onClick={handleLogout}
-        className="flex items-center gap-2 px-4 py-2 text-[var(--text)] hover:bg-[var(--bgSecondary)] rounded-[var(--border-radius)] transition-colors"
+        className="flex items-center gap-2 px-4 py-2 text-[var(--text)] hover:bg-[var(--bgSecondary)] rounded-[var(--border-radius)] transition-colors cursor-pointer"
       >
         <FiLogOut />
         Logout

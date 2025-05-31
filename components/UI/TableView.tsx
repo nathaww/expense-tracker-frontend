@@ -148,18 +148,16 @@ export const TableView = <T extends object>({
                 {(onView || onEdit || onDelete) && (
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end space-x-2">
-                      {onView && (
-                        <button 
+                      {onView && (                        <button 
                           onClick={() => onView(item)}
-                          className="p-1.5 text-gray-500 hover:text-blue-500 hover:bg-blue-100 rounded-full"
+                          className="p-1.5 text-gray-500 hover:text-blue-500 hover:bg-blue-100 rounded-full cursor-pointer"
                         >
                           <FaEye className="w-4 h-4" />
                         </button>
-                      )}
-                      {onEdit && (
+                      )}                      {onEdit && (
                         <button 
                           onClick={() => onEdit(item)}
-                          className="p-1.5 text-gray-500 hover:text-green-500 hover:bg-green-100 rounded-full"
+                          className="p-1.5 text-gray-500 hover:text-green-500 hover:bg-green-100 rounded-full cursor-pointer"
                         >
                           <FaEdit className="w-4 h-4" />
                         </button>
@@ -167,7 +165,7 @@ export const TableView = <T extends object>({
                       {onDelete && (
                         <button 
                           onClick={() => onDelete(item)}
-                          className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-100 rounded-full"
+                          className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-100 rounded-full cursor-pointer"
                         >
                           <FaTrash className="w-4 h-4" />
                         </button>

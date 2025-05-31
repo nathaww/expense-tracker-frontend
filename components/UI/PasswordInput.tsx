@@ -31,11 +31,10 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({
         className={`${className} pr-10`}
         placeholder={placeholder}
         autoComplete={autoComplete}
-      />
-      <button
+      />      <button
         type="button"
         onClick={togglePasswordVisibility}
-        className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text)]/60 hover:text-[var(--text)] transition-colors"
+        className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text)]/60 hover:text-[var(--text)] transition-colors cursor-pointer"
         aria-label={showPassword ? "Hide password" : "Show password"}
       >
         {showPassword ? (

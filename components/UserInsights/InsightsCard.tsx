@@ -107,10 +107,9 @@ export const InsightsCard = ({ insights }: { insights: string }) => {
         <h3 className="relative flex items-center font-bold text-xl md:text-2xl mb-2 text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)]">
           <span className="mr-2">✨</span>
           Personalized Insights
-        </h3>
-        <button 
+        </h3>        <button 
           onClick={() => setIsExpanded(!isExpanded)} 
-          className="px-3 py-1 text-sm rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white hover:opacity-90 transition-opacity flex items-center gap-1 shadow-sm"
+          className="px-3 py-1 text-sm rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] text-white hover:opacity-90 transition-opacity flex items-center gap-1 shadow-sm cursor-pointer"
         >
           {isExpanded ? (
             <>

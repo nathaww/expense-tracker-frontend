@@ -29,22 +29,21 @@ export const DeleteConfirmationModal = ({
             <Dialog.Title className="text-2xl font-bold text-[var(--text)]">
               {title}
             </Dialog.Title>
-            <Dialog.Close className="text-[var(--text)] hover:opacity-70">
+            <Dialog.Close className="text-[var(--text)] hover:opacity-70 cursor-pointer">
               <FaTimes />
             </Dialog.Close>
           </div>
 
           <p className="text-[var(--text)] mb-6">{message}</p>
 
-          <div className="flex gap-4">
-            <button
+          <div className="flex gap-4">            <button
               onClick={onConfirm}
               disabled={isDeleting}
-              className="px-4 py-2 bg-red-500 text-white rounded-[var(--border-radius)] hover:bg-red-600 transition-colors flex-1"
+              className="px-4 py-2 bg-red-500 text-white rounded-[var(--border-radius)] hover:bg-red-600 transition-colors flex-1 cursor-pointer"
             >
               {isDeleting ? "Deleting..." : "Delete"}
             </button>
-            <Dialog.Close className="px-4 py-2 bg-[var(--bgSecondary)] border border-[var(--border-color)] text-[var(--text)] rounded-[var(--border-radius)] hover:opacity-90 transition-opacity">
+            <Dialog.Close className="px-4 py-2 bg-[var(--bgSecondary)] border border-[var(--border-color)] text-[var(--text)] rounded-[var(--border-radius)] hover:opacity-90 transition-opacity cursor-pointer">
               Cancel
             </Dialog.Close>
           </div>

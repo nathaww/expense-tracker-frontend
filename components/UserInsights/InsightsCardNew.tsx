@@ -50,10 +50,9 @@ export const InsightsCard = ({ insights }: InsightsCardProps) => {
           <span className="bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] bg-clip-text text-transparent">
             Personalized Insights
           </span>
-        </h3>
-        <button 
+        </h3>        <button 
           onClick={() => setIsExpanded(!isExpanded)} 
-          className="text-xs px-3 py-1 rounded-md bg-[var(--bgSecondary)] text-[var(--text)] hover:bg-[var(--bgSecondary)]/80 transition-colors flex items-center gap-1"
+          className="text-xs px-3 py-1 rounded-md bg-[var(--bgSecondary)] text-[var(--text)] hover:bg-[var(--bgSecondary)]/80 transition-colors flex items-center gap-1 cursor-pointer"
         >
           {isExpanded ? (
             <>

@@ -86,9 +86,8 @@ const LandingPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
-          >
-            <Link href="/register"
-              className="group relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-6 py-3 text-[var(--text)] font-medium hover:shadow-lg hover:shadow-[var(--color-primary)]/20 hover:scale-105 active:scale-95 transition-all duration-300"
+          >            <Link href="/register"
+              className="group relative flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-6 py-3 text-[var(--text)] font-medium hover:shadow-lg hover:shadow-[var(--color-primary)]/20 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer"
             >
               Start for free
               <FiArrowRight className="transition-transform group-hover:translate-x-1 group-hover:-rotate-45" />

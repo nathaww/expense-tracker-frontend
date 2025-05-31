@@ -55,7 +55,7 @@ export const AddThemeModal = () => {
             <Dialog.Title className="text-xl md:text-2xl font-bold text-[var(--text)]">
               Create Custom Theme
             </Dialog.Title>
-            <Dialog.Close className="text-[var(--text)] hover:opacity-70">
+            <Dialog.Close className="text-[var(--text)] hover:opacity-70 cursor-pointer">
               <FaTimes />
             </Dialog.Close>
           </div>

@@ -204,10 +204,9 @@ export default function ExpensesPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm">
-                      <div className="flex justify-center">
-                        <button
+                      <div className="flex justify-center">                        <button
                           onClick={() => handleDelete(expense.id)}
-                          className="p-2 text-red-500 rounded-full transition-colors hover:bg-red-50 dark:hover:bg-red-900/20"
+                          className="p-2 text-red-500 rounded-full transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
                         >
                           <FaTrash size={14} />
                         </button>
@@ -224,15 +223,14 @@ export default function ExpensesPage() {
                     </div>
                   </td>
                 </tr>
-              )}
-              {!isLoading && expensesResponse?.data.length === 0 && (
+              )}              {!isLoading && expensesResponse?.data.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-8 text-center">
                     <div className="flex flex-col items-center space-y-2">
                       <p className="text-[var(--text)] opacity-70">No expenses found</p>
                       <Link href="/expenses/add">
                         <button
-                          className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary)]/80 transition-colors"
+                          className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary)]/80 transition-colors cursor-pointer"
                         >
                           Add your first expense
                         </button>
@@ -256,10 +254,9 @@ export default function ExpensesPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{expense.category.icon}</span>
                     <span className="text-[var(--text)] font-medium">{expense.category.name}</span>
-                  </div>
-                  <button
+                  </div>                  <button
                     onClick={() => handleDelete(expense.id)}
-                    className="p-2 text-red-500 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                    className="p-2 text-red-500 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
                   >
                     <FaTrash size={14} />
                   </button>
@@ -303,13 +300,12 @@ export default function ExpensesPage() {
             </div>
           )}
           
-          {!isLoading && expensesResponse?.data.length === 0 && (
-            <div className="px-6 py-8 text-center">
+          {!isLoading && expensesResponse?.data.length === 0 && (            <div className="px-6 py-8 text-center">
               <div className="flex flex-col items-center space-y-2">
                 <p className="text-[var(--text)] opacity-70">No expenses found</p>
                 <Link href="/expenses/add">
                   <button
-                    className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary)]/80 transition-colors"
+                    className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary)]/80 transition-colors cursor-pointer"
                   >
                     Add your first expense
                   </button>
@@ -331,18 +327,16 @@ export default function ExpensesPage() {
                 ({expensesResponse.data.length} of {expensesResponse.totalCount} expenses)
               </span>
             </div>
-            <div className="flex gap-2 w-full sm:w-auto">
-              <button
+            <div className="flex gap-2 w-full sm:w-auto">              <button
                 onClick={() => handlePageChange(Math.max(1, (filterParams.page || 1) - 1))}
                 disabled={(filterParams.page || 1) === 1}
-                className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors"
+                className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
               >
                 Previous
-              </button>
-              <button
+              </button>              <button
                 onClick={() => handlePageChange((filterParams.page || 1) + 1)}
                 disabled={(filterParams.page || 1) >= (expensesResponse?.totalPages || 1)}
-                className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors"
+                className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
               >
                 Next
               </button>

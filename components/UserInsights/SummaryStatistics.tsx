@@ -21,9 +21,7 @@ export const SummaryStatistics = ({ data }: { data: SpendingComparison }) => {
         <p className="text-2xl font-bold text-[var(--text)]">
           {formatCurrency(data.userMonthlySpending, data.currency)}
         </p>
-      </motion.div>
-
-      <motion.div
+      </motion.div>      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.2 }}
@@ -35,6 +33,7 @@ export const SummaryStatistics = ({ data }: { data: SpendingComparison }) => {
           {formatCurrency(data.averageMonthlySpending, data.currency)}
           <span className="text-sm font-normal ml-2 text-[var(--text)]/70">({data.comparisonUserCount} users)</span>
         </p>
+        <p className="text-xs text-[var(--text)]/60 mt-1">Based on last 3 months</p>
       </motion.div>
 
       <motion.div
