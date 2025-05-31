@@ -4,24 +4,26 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { expenseRequests } from "./_requests";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { format } from "date-fns";
-import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
+import { FaPlus, FaSearch, FaTrash, FaTrashAlt } from "react-icons/fa";
 import { toast } from "sonner";
 import Link from "next/link";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
+import { UpdateExpenseModal } from "@/components/Expenses/UpdateExpenseModal";
 import LoadingSpinner from "@/components/UI/LoadingSpinner";
 import debounce from "lodash/debounce";
 import { useAppSettings } from "@/providers/AppSettingsProvider";
 import { FilterToolbar, type BaseFilterParams } from "@/components/UI/FilterToolbar";
 import { Pagination } from "@/components/UI/Pagination";
+import { motion } from "framer-motion";
 
 export default function ExpensesPage() {
   const { preferredCurrency } = useAppSettings();
-  const queryClient = useQueryClient();  const [searchInput, setSearchInput] = useState("");
+  const queryClient = useQueryClient(); const [searchInput, setSearchInput] = useState("");
   const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedExpenseIds, setSelectedExpenseIds] = useState<string[]>([]);
   const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
-    // Filter state
+  // Filter state
   const [filterParams, setFilterParams] = useState<BaseFilterParams>({
     page: 1,
     pageSize: 10,
@@ -92,8 +94,8 @@ export default function ExpensesPage() {
   };
 
   const handleSelectExpense = (expenseId: string) => {
-    setSelectedExpenseIds(prev => 
-      prev.includes(expenseId) 
+    setSelectedExpenseIds(prev =>
+      prev.includes(expenseId)
         ? prev.filter(id => id !== expenseId)
         : [...prev, expenseId]
     );
@@ -149,7 +151,8 @@ export default function ExpensesPage() {
             <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text)] opacity-50 pointer-events-none" />
           </div>
         </div>
-          {/* Filter toolbar */}        <FilterToolbar
+        {/* Filter toolbar */}        
+        <FilterToolbar
           onFilterChange={handleFilterChange}
           sortOptions={[
             { label: 'Date', value: 'date' },
@@ -175,7 +178,7 @@ export default function ExpensesPage() {
               </button>
             </div>
           )}
-          
+
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[var(--bgSecondary)] transition-colors">
@@ -207,63 +210,67 @@ export default function ExpensesPage() {
                 </th>
               </tr>
             </thead>            <tbody>
-                {expensesResponse?.data.map((expense) => (
-                  <tr
-                    key={expense.id}
-                    className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
-                  >
-                    <td className="px-6 py-4 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={selectedExpenseIds.includes(expense.id)}
-                        onChange={() => handleSelectExpense(expense.id)}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                    </td>
-                    <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      <div className="transition-all hover:translate-x-1">
-                        {format(new Date(expense.date), "MMM d, yyyy")}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <div className="flex items-center gap-2 hover:scale-105 transition-transform">
-                        <span className="text-xl">{expense.category.icon}</span>
-                        <span className="text-[var(--text)]">
-                          {expense.category.name}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-[var(--text)]">
-                      <div className="line-clamp-2 hover:line-clamp-none">
-                        {expense.notes}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <div className="flex flex-col hover:scale-105 transition-transform">
-                        <span className="text-[var(--text)] font-medium">
-                          {expense.amount} {expense.moneySource.currency}
-                        </span>
-                        <span className="text-xs opacity-60">
-                          {expense.amountInPreferredCurrency && expense.amountInPreferredCurrency.toFixed(2) + " " + preferredCurrency}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <div className="hover:scale-105 transition-transform text-[var(--text)]">
-                        {expense.moneySource.name}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm">
-                      <div className="flex justify-center">                        <button
-                          onClick={() => handleDelete(expense.id)}
-                          className="p-2 text-red-500 rounded-full transition-colors hover:bg-red-50 dark:hover:bg-red-900/20 cursor-pointer"
-                        >
-                          <FaTrash size={14} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}              {isLoading && (
+              {expensesResponse?.data.map((expense) => (
+                <tr
+                  key={expense.id}
+                  className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
+                >
+                  <td className="px-6 py-4 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selectedExpenseIds.includes(expense.id)}
+                      onChange={() => handleSelectExpense(expense.id)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                  </td>
+                  <td className="px-6 py-4 text-sm text-[var(--text)]">
+                    <div className="transition-all hover:translate-x-1">
+                      {format(new Date(expense.date), "MMM d, yyyy")}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex items-center gap-2 hover:scale-105 transition-transform">
+                      <span className="text-xl">{expense.category.icon}</span>
+                      <span className="text-[var(--text)]">
+                        {expense.category.name}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-[var(--text)]">
+                    <div className="line-clamp-2 hover:line-clamp-none">
+                      {expense.notes}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="flex flex-col hover:scale-105 transition-transform">
+                      <span className="text-[var(--text)] font-medium">
+                        {expense.amount} {expense.moneySource.currency}
+                      </span>
+                      <span className="text-xs opacity-60">
+                        {expense.amountInPreferredCurrency && expense.amountInPreferredCurrency.toFixed(2) + " " + preferredCurrency}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-sm">
+                    <div className="hover:scale-105 transition-transform text-[var(--text)]">
+                      {expense.moneySource.name}
+                    </div>
+                  </td>                    <td className="px-6 py-4 text-sm">
+                    <div className="flex justify-center gap-2">
+                      <UpdateExpenseModal expense={expense} />
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleDelete(expense.id)}
+                        className="p-2 bg-red-500/10 hover:bg-red-500/20 rounded-full transition-all cursor-pointer"
+                        title="Edit Expense"
+                      >
+                        <FaTrashAlt className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
+                      </motion.button>
+                    </div>
+                  </td>
+                </tr>
+              ))}              {isLoading && (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center">
                     <LoadingSpinner size="md" text="Loading expenses..." />
@@ -343,53 +350,53 @@ export default function ExpensesPage() {
                   <FaTrash size={14} />
                 </button>
               </div>
-                
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[var(--text)] text-sm opacity-70">
-                    {format(new Date(expense.date), "MMM d, yyyy")}
-                  </span>
-                  <div className="text-right">
-                    <div className="text-[var(--text)] font-medium">
-                      {expense.amount} {expense.moneySource.currency}
+
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[var(--text)] text-sm opacity-70">
+                  {format(new Date(expense.date), "MMM d, yyyy")}
+                </span>
+                <div className="text-right">
+                  <div className="text-[var(--text)] font-medium">
+                    {expense.amount} {expense.moneySource.currency}
+                  </div>
+                  {expense.amountInPreferredCurrency && (
+                    <div className="text-xs opacity-60">
+                      {expense.amountInPreferredCurrency.toFixed(2)} {preferredCurrency}
                     </div>
-                    {expense.amountInPreferredCurrency && (
-                      <div className="text-xs opacity-60">
-                        {expense.amountInPreferredCurrency.toFixed(2)} {preferredCurrency}
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
-                
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[var(--text)] text-sm">Source:</span>
-                  <span className="text-[var(--text)]">{expense.moneySource.name}</span>
-                </div>
-                
-                {expense.notes && (
-                  <div className="text-[var(--text)] text-sm mt-2 py-2 border-t border-[var(--border-color)] opacity-80">
-                    {expense.notes}
-                  </div>
-                )}
               </div>
-            ))}
-            {isLoading && (
+
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[var(--text)] text-sm">Source:</span>
+                <span className="text-[var(--text)]">{expense.moneySource.name}</span>
+              </div>
+
+              {expense.notes && (
+                <div className="text-[var(--text)] text-sm mt-2 py-2 border-t border-[var(--border-color)] opacity-80">
+                  {expense.notes}
+                </div>
+              )}
+            </div>
+          ))}
+          {isLoading && (
             <div className="px-6 py-8 text-center">
               <LoadingSpinner size="md" text="Loading expenses..." />
             </div>
           )}
-          
-          {!isLoading && expensesResponse?.data.length === 0 && (            <div className="px-6 py-8 text-center">
-              <div className="flex flex-col items-center space-y-2">
-                <p className="text-[var(--text)] opacity-70">No expenses found</p>
-                <Link href="/expenses/add">
-                  <button
-                    className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary)]/80 transition-colors cursor-pointer"
-                  >
-                    Add your first expense
-                  </button>
-                </Link>
-              </div>
+
+          {!isLoading && expensesResponse?.data.length === 0 && (<div className="px-6 py-8 text-center">
+            <div className="flex flex-col items-center space-y-2">
+              <p className="text-[var(--text)] opacity-70">No expenses found</p>
+              <Link href="/expenses/add">
+                <button
+                  className="text-sm px-4 py-2 bg-[var(--color-primary)] text-white rounded-full hover:bg-[var(--color-primary)]/80 transition-colors cursor-pointer"
+                >
+                  Add your first expense
+                </button>
+              </Link>
             </div>
+          </div>
           )}
         </div>
 
@@ -406,16 +413,16 @@ export default function ExpensesPage() {
               </span>
             </div>
             <div className="flex gap-2 w-full sm:w-auto">              <button
-                onClick={() => handlePageChange(Math.max(1, (filterParams.page || 1) - 1))}
-                disabled={(filterParams.page || 1) === 1}
-                className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
-              >
-                Previous
-              </button>              <button
-                onClick={() => handlePageChange((filterParams.page || 1) + 1)}
-                disabled={(filterParams.page || 1) >= (expensesResponse?.totalPages || 1)}
-                className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
-              >
+              onClick={() => handlePageChange(Math.max(1, (filterParams.page || 1) - 1))}
+              disabled={(filterParams.page || 1) === 1}
+              className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
+            >
+              Previous
+            </button>              <button
+              onClick={() => handlePageChange((filterParams.page || 1) + 1)}
+              disabled={(filterParams.page || 1) >= (expensesResponse?.totalPages || 1)}
+              className="px-4 py-2 flex-1 sm:flex-initial disabled:opacity-50 disabled:cursor-not-allowed bg-[var(--bgSecondary)] text-[var(--text)] rounded-[var(--border-radius)] border border-[var(--border-color)] hover:bg-[var(--bg)] transition-colors cursor-pointer"
+            >
                 Next
               </button>
             </div>

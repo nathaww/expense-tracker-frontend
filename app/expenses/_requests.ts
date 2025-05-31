@@ -96,10 +96,10 @@ export const expenseRequests = {
     const res = await api.get<Category[]>("/categories");
     return res.data;
   },
-
   getMoneySources: async (): Promise<MoneySourceApiResponse> => {
     const res = await api.get<MoneySourceApiResponse>("/money-sources");
-    return res.data;  },
+    return res.data;
+  },
   getExpenses: async (filters: BaseFilterParams = { page: 1 }): Promise<ExpenseApiResponse> => {
     const params = new URLSearchParams();
     
@@ -111,9 +111,13 @@ export const expenseRequests = {
     const res = await api.get<ExpenseApiResponse>(`/expenses?${params.toString()}`);
     return res.data;
   },
-
   createExpense: async (data: PostCategory) => {
     const res = await api.post("/expenses", data);
+    return res.data;
+  },
+
+  updateExpense: async (id: string, data: PostCategory): Promise<Expense> => {
+    const res = await api.patch<Expense>(`/expenses/${id}`, data);
     return res.data;
   },
 

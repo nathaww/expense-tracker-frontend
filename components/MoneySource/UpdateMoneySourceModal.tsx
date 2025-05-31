@@ -141,7 +141,7 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
   // Extract styleId from the stored cardStyle
   const getCurrentStyleId = () => {
     if (!moneySource.cardStyle) return "futuristic-holographic";
-    
+
     try {
       // If cardStyle is a JSON string, parse it and extract styleId
       if (typeof moneySource.cardStyle === 'string') {
@@ -154,7 +154,7 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
     } catch (e) {
       console.error("Error parsing cardStyle:", e);
     }
-    
+
     return "futuristic-holographic";
   };
 
@@ -168,7 +168,7 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
         budgetInPreferredCurrency: values.budget,
         cardStyle: selectedStyle ? JSON.stringify(selectedStyle) : values.cardStyle,
       };
-      
+
       return moneySourceRequests.updateMoneySource(moneySource.id, updateData);
     },
     onSuccess: () => {
@@ -190,9 +190,10 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
           whileTap={{ scale: 0.95 }}
           className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all active:scale-95 cursor-pointer"
         >
-          <FaPencilAlt className="w-4 h-4 text-white" />
+          <FaPencilAlt className="w-3 h-3 sm:w-4 sm:h-4 text-[var(--text)]" />
         </motion.button>
-      </Dialog.Trigger>      <Dialog.Portal>
+      </Dialog.Trigger>
+      <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50 backdrop-blur-sm z-20" />
         <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] sm:w-full max-w-4xl bg-[var(--bg)] rounded-[var(--border-radius)] shadow-xl p-4 sm:p-8 z-20 max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-4 sm:mb-6">
@@ -315,7 +316,7 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
                           <div className="text-center text-xs py-1">{style.name}</div>
                         </div>
                       ))}
-                    </div>                  )}
+                    </div>)}
                   {errors.cardStyle && touched.cardStyle && (
                     <div className="text-red-500 text-sm mt-1">{String(errors.cardStyle)}</div>
                   )}

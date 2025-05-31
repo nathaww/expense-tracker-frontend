@@ -57,7 +57,7 @@ export const FilterToolbar = React.memo(({
     };
 
     onFilterChange(filters);
-  }, [sortBy, sortOrder, onFilterChange]);  const handleSortChange = (field: string) => {
+  }, [sortBy, sortOrder, onFilterChange]); const handleSortChange = (field: string) => {
     const newOrder = sortBy === field && sortOrder === 'desc' ? 'asc' : 'desc';
     const params = new URLSearchParams(searchParams.toString());
     params.set('sortBy', field);
@@ -80,19 +80,17 @@ export const FilterToolbar = React.memo(({
   };
 
   return (
-    <div className="p-4">
-      {/* Quick Sort Buttons */}
+    <div className="py-4 px-2">
       <div>
-        <h4 className="text-sm font-medium text-[var(--text)] mb-3">Quick Sort</h4>        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2">
           {sortOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => handleSortChange(option.value)}
-              className={`px-3 py-2 rounded-lg border transition-all duration-200 flex items-center gap-2 hover:scale-105 cursor-pointer ${
-                sortBy === option.value
-                  ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-md'
-                  : 'bg-[var(--bg)] border-[var(--border-color)] hover:bg-[var(--bgSecondary)] hover:border-[var(--color-primary)]'
-              }`}
+              className={`px-3 py-2 rounded-lg border transition-all duration-200 flex items-center gap-2 hover:scale-105 cursor-pointer ${sortBy === option.value
+                ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)] shadow-md'
+                : 'bg-[var(--bg)] border-[var(--border-color)] hover:bg-[var(--bgSecondary)] hover:border-[var(--color-primary)]'
+                }`}
             >
               <span className="text-sm font-medium">{option.label}</span>
               {getSortIcon(option.value)}
