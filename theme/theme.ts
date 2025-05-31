@@ -170,7 +170,7 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     font: "'Segoe UI', sans-serif",
   },
   brain: {
-    primary: "#000000",       
+    primary: "#4E94DB",       
     secondary: "#FFD18B",           
     tertiary: "#E1EDFE",            
     background: "#F6F9FF",          

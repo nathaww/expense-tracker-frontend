@@ -6,10 +6,12 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { moneySourceRequests, MoneySource, CardStyle } from "@/app/money-sources/_requests";
+import { exchangeRatesRequests } from "@/app/exchange-rates/_requests";
 import { FaPencilAlt, FaTimes, FaCreditCard } from "react-icons/fa";
 import { toast } from "sonner";
 import { useState } from "react";
 import { AxiosError } from "axios";
+import { CurrencySelect } from "@/components/UI/CurrencySelect";
 
 const CardStylePreview = ({ style, formValues }: {
   style: CardStyle;
@@ -123,13 +125,18 @@ interface UpdateMoneySourceModalProps {
 export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalProps) => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
-
   const { data: cardStyles, isLoading: cardStylesLoading } = useQuery({
     queryKey: ["card-styles"],
     queryFn: async () => {
       const styles = await moneySourceRequests.getCardStyles();
       return styles;
     }
+  });
+
+  // Fetch currencies from exchange rates API
+  const { data: exchangeRatesData, isLoading: isLoadingCurrencies } = useQuery({
+    queryKey: ["exchange-rates"],
+    queryFn: exchangeRatesRequests.getExchangeRates,
   });
   // Extract styleId from the stored cardStyle
   const getCurrentStyleId = () => {
@@ -259,24 +266,17 @@ export const UpdateMoneySourceModal = ({ moneySource }: UpdateMoneySourceModalPr
                     {errors.balance && touched.balance && (
                       <div className="text-red-500 text-sm mt-1">{errors.balance}</div>
                     )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="currency" className="block text-[var(--text)] mb-2">
-                      Currency
-                    </label>
-                    <Field
-                      as="select"
-                      name="currency"
-                      className="input w-full appearance-none"
-                    >
-                      <option value="USD">USD</option>
-                      <option value="ETB">ETB</option>
-                      <option value="EUR">EUR</option>
-                    </Field>
-                    {errors.currency && touched.currency && (
-                      <div className="text-red-500 text-sm mt-1">{errors.currency}</div>
-                    )}
+                  </div>                  <div>
+                    <CurrencySelect
+                      label="Currency"
+                      value={values.currency}
+                      onValueChange={(value) => setFieldValue("currency", value)}
+                      currencies={exchangeRatesData?.currencies || []}
+                      placeholder="Select Currency"
+                      isLoading={isLoadingCurrencies}
+                      error={errors.currency && touched.currency ? String(errors.currency) : undefined}
+                      searchable={true}
+                    />
                   </div>
                 </div>                <div>
                   <label htmlFor="budget" className="block text-[var(--text)] mb-2">

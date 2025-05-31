@@ -302,24 +302,7 @@ const MoneySourcesPage = () => {
     { label: 'Balance', value: 'balance' },
     { label: 'Budget', value: 'budget' },
     { label: 'Created Date', value: 'createdAt' },
-    { label: 'Updated Date', value: 'updatedAt' }
-  ], []);
-  
-  const filterFieldOptions = useMemo(() => [
-    { label: 'Name', value: 'name' },
-    { label: 'Currency', value: 'currency' },
-    { label: 'Is Default', value: 'isDefault' }
-  ], []);
-  
-  const rangeFilterFields = useMemo(() => [
-    { label: 'Balance', value: 'balance' },
-    { label: 'Budget', value: 'budget' }
-  ], []);
-  
-  const dateFilterFields = useMemo(() => [
-    { label: 'Created At', value: 'createdAt' },
-    { label: 'Updated At', value: 'updatedAt' }
-  ], []);
+    { label: 'Updated Date', value: 'updatedAt' }  ], []);
   
   // Effects
   useEffect(() => {
@@ -396,15 +379,9 @@ const MoneySourcesPage = () => {
           <AddMoneySourceModal />
         </div>
       </div>
-      
-      {/* Filter toolbar */}
-      <FilterToolbar
+        {/* Filter toolbar */}      <FilterToolbar
         onFilterChange={handleFilterChange}
         sortOptions={sortOptions}
-        filterFieldOptions={filterFieldOptions}
-        dateFilterFields={dateFilterFields}
-        rangeFilterFields={rangeFilterFields}
-        defaultPageSize={filterParams.pageSize || 10}
       />
 
       {/* Card View */}

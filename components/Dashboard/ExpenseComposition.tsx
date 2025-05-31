@@ -144,7 +144,7 @@ export default function ExpenseComposition({ currencyType, hideAmount }: Expense
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
+      className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)]"
     >      <h3 className="text-lg font-semibold text-[var(--text)] mb-4 flex items-center gap-2">
         Expense Composition        <StyledTooltip 
           content="Breaks down where your money goes by category (like food, transportation, entertainment). Shows both amounts and percentages to highlight your top spending areas."

@@ -49,7 +49,8 @@ const ComparisonTable = ({
                                 }`}
                         >
                             <td className="py-1 sm:py-2 px-1 sm:px-3 font-medium whitespace-nowrap">{item.moneySource}</td>
-                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.budget, currencyType, hideAmount)}</td>                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.expense, currencyType, hideAmount)}</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.budget, currencyType, hideAmount)}</td>
+                            <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.expense, currencyType, hideAmount)}</td>
                             <td className="py-1 sm:py-2 px-1 sm:px-3 whitespace-nowrap">{formatCurrency(item.remaining, currencyType, hideAmount)}</td>
                             <td className="py-1 sm:py-2 px-1 sm:px-3">{item?.remainingPercentage?.toFixed(1)}%</td>
                         </tr>
@@ -113,7 +114,7 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
                 <p className="text-[var(--text)]">Failed to load budget comparison data</p>
             </div>
         );
-    }    const pieData = {
+    } const pieData = {
         labels: comparison.comparisons.map((item) => item.moneySource),
         datasets: [
             {
@@ -144,7 +145,8 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
                 },
             },
             tooltip: {
-                callbacks: {                    label: function (context: TooltipItem<"pie">) {
+                callbacks: {
+                    label: function (context: TooltipItem<"pie">) {
                         const label = context.label || "";
                         const value = Number(context.raw);
                         const percentage = ((Number(context.raw) / comparison.totalExpense) * 100).toFixed(1);
@@ -159,7 +161,7 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="p-3 sm:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)] shadow-md"
+            className="p-3 sm:p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bg)]"
         >            <h3 className="text-base sm:text-lg font-semibold text-[var(--text)] mb-2 sm:mb-4 flex items-center gap-2">
                 Budget vs Expense                <StyledTooltip
                     content="Compares what you planned to spend (budget) against what you actually spent. Under budget (positive remaining): You spent less than planned. Over budget (negative remaining): You spent more than planned."

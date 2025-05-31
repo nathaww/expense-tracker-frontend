@@ -1,4 +1,5 @@
 import api from "../lib/Axios";
+import { BaseFilterParams } from "@/components/UI/FilterToolbar";
 
 export interface Category {
   id: string;
@@ -98,30 +99,15 @@ export const expenseRequests = {
 
   getMoneySources: async (): Promise<MoneySourceApiResponse> => {
     const res = await api.get<MoneySourceApiResponse>("/money-sources");
-    return res.data;
-  },
-  getExpenses: async (filters: ExpenseFilterParams = { page: 1 }): Promise<ExpenseApiResponse> => {
+    return res.data;  },
+  getExpenses: async (filters: BaseFilterParams = { page: 1 }): Promise<ExpenseApiResponse> => {
     const params = new URLSearchParams();
     
-    // Add all filter parameters
     if (filters.page) params.append('page', filters.page.toString());
     if (filters.pageSize) params.append('pageSize', filters.pageSize.toString());
     if (filters.search) params.append('search', filters.search);
     if (filters.sortBy) params.append('sortBy', filters.sortBy);
     if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
-    if (filters.filterField) params.append('filterField', filters.filterField);
-    if (filters.filterValue) params.append('filterValue', filters.filterValue);
-    if (filters.rangeField) params.append('rangeField', filters.rangeField);
-    if (filters.minValue !== undefined) params.append('minValue', filters.minValue.toString());
-    if (filters.maxValue !== undefined) params.append('maxValue', filters.maxValue.toString());
-    if (filters.multiValueField) params.append('multiValueField', filters.multiValueField);
-    if (filters.multiValues) {
-      filters.multiValues.forEach(value => params.append('multiValues', value.toString()));
-    }
-    if (filters.dateField) params.append('dateField', filters.dateField);
-    if (filters.startDate) params.append('startDate', filters.startDate);
-    if (filters.endDate) params.append('endDate', filters.endDate);
-    
     const res = await api.get<ExpenseApiResponse>(`/expenses?${params.toString()}`);
     return res.data;
   },
@@ -138,5 +124,9 @@ export const expenseRequests = {
 
   deleteExpense: async (id: string): Promise<void> => {
     await api.delete(`/expenses/${id}`);
+  },
+
+  bulkDeleteExpenses: async (ids: string[]): Promise<void> => {
+    await api.delete("/expenses/bulk", { data: { ids } });
   }
 };

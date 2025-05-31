@@ -1,35 +1,35 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { expenseRequests, ExpenseFilterParams } from "./_requests";
+import { expenseRequests } from "./_requests";
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { format } from "date-fns";
 import { FaPlus, FaSearch, FaTrash } from "react-icons/fa";
 import { toast } from "sonner";
 import Link from "next/link";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
+import LoadingSpinner from "@/components/UI/LoadingSpinner";
 import debounce from "lodash/debounce";
 import { useAppSettings } from "@/providers/AppSettingsProvider";
-import { FilterToolbar } from "@/components/UI/FilterToolbar";
+import { FilterToolbar, type BaseFilterParams } from "@/components/UI/FilterToolbar";
 import { Pagination } from "@/components/UI/Pagination";
 
 export default function ExpensesPage() {
   const { preferredCurrency } = useAppSettings();
-  const queryClient = useQueryClient();
-  const [searchInput, setSearchInput] = useState("");
+  const queryClient = useQueryClient();  const [searchInput, setSearchInput] = useState("");
   const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  
-  // Filter state
-  const [filterParams, setFilterParams] = useState<ExpenseFilterParams>({
+  const [selectedExpenseIds, setSelectedExpenseIds] = useState<string[]>([]);
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
+    // Filter state
+  const [filterParams, setFilterParams] = useState<BaseFilterParams>({
     page: 1,
     pageSize: 10,
     search: ""
   });
-
   const debouncedSetSearch = useMemo(
     () => debounce((value: string) => {
-      setFilterParams(prev => ({ ...prev, search: value, page: 1 }));
+      setFilterParams((prev: BaseFilterParams) => ({ ...prev, search: value, page: 1 }));
     }, 500),
     []
   );
@@ -43,27 +43,24 @@ export default function ExpensesPage() {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchInput(e.target.value);
     debouncedSetSearch(e.target.value);
-  };
-
-  // Handler for filter changes from FilterToolbar
-  const handleFilterChange = useCallback((newFilters: ExpenseFilterParams) => {
-    setFilterParams(prev => ({ ...prev, ...newFilters }));
+  };  // Handler for filter changes from FilterToolbar
+  const handleFilterChange = useCallback((newFilters: BaseFilterParams) => {
+    setFilterParams((prev: BaseFilterParams) => ({ ...prev, ...newFilters }));
   }, []);
 
   // Handler for pagination
   const handlePageChange = useCallback((page: number) => {
-    setFilterParams(prev => ({ ...prev, page }));
+    setFilterParams((prev: BaseFilterParams) => ({ ...prev, page }));
   }, []);
 
   const handlePageSizeChange = useCallback((pageSize: number) => {
-    setFilterParams(prev => ({ ...prev, pageSize, page: 1 }));
+    setFilterParams((prev: BaseFilterParams) => ({ ...prev, pageSize, page: 1 }));
   }, []);
 
   const { data: expensesResponse, isLoading } = useQuery({
     queryKey: ["expenses", filterParams],
     queryFn: () => expenseRequests.getExpenses(filterParams),
   });
-
   const { mutate: deleteExpense, isPending: isDeleting } = useMutation({
     mutationFn: expenseRequests.deleteExpense,
     onSuccess: () => {
@@ -77,9 +74,49 @@ export default function ExpensesPage() {
     },
   });
 
+  const { mutate: bulkDeleteExpenses, isPending: isBulkDeleting } = useMutation({
+    mutationFn: expenseRequests.bulkDeleteExpenses,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["expenses"] });
+      toast.success(`${selectedExpenseIds.length} expenses deleted successfully`);
+      setIsBulkDeleteModalOpen(false);
+      setSelectedExpenseIds([]);
+    },
+    onError: () => {
+      toast.error("Failed to delete expenses");
+    },
+  });
   const handleDelete = (id: string) => {
     setSelectedExpenseId(id);
     setIsDeleteModalOpen(true);
+  };
+
+  const handleSelectExpense = (expenseId: string) => {
+    setSelectedExpenseIds(prev => 
+      prev.includes(expenseId) 
+        ? prev.filter(id => id !== expenseId)
+        : [...prev, expenseId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    if (selectedExpenseIds.length === expensesResponse?.data.length) {
+      setSelectedExpenseIds([]);
+    } else {
+      setSelectedExpenseIds(expensesResponse?.data.map(expense => expense.id) || []);
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedExpenseIds.length > 0) {
+      setIsBulkDeleteModalOpen(true);
+    }
+  };
+
+  const confirmBulkDelete = () => {
+    if (selectedExpenseIds.length > 0) {
+      bulkDeleteExpenses(selectedExpenseIds);
+    }
   };
 
   return (
@@ -100,7 +137,7 @@ export default function ExpensesPage() {
       </div>
 
       <div className="bg-[var(--bg)] rounded-[var(--border-radius)] border border-[var(--border-color)] overflow-hidden shadow-lg">
-        <div className="p-4 border-b border-[var(--border-color)] bg-[var(--bgSecondary)]">
+        <div className="p-4 border-b border-[var(--border-color)] ">
           <div className="relative max-w-full sm:max-w-md">
             <input
               type="text"
@@ -112,9 +149,7 @@ export default function ExpensesPage() {
             <FaSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text)] opacity-50 pointer-events-none" />
           </div>
         </div>
-        
-        {/* Filter toolbar */}
-        <FilterToolbar
+          {/* Filter toolbar */}        <FilterToolbar
           onFilterChange={handleFilterChange}
           sortOptions={[
             { label: 'Date', value: 'date' },
@@ -123,27 +158,35 @@ export default function ExpensesPage() {
             { label: 'Money Source', value: 'moneySource.name' },
             { label: 'Created At', value: 'createdAt' }
           ]}
-          filterFieldOptions={[
-            { label: 'Category', value: 'category.name' },
-            { label: 'Money Source', value: 'moneySource.name' },
-            { label: 'Notes', value: 'notes' }
-          ]}
-          dateFilterFields={[
-            { label: 'Date', value: 'date' },
-            { label: 'Created At', value: 'createdAt' },
-            { label: 'Updated At', value: 'updatedAt' }
-          ]}
-          rangeFilterFields={[
-            { label: 'Amount', value: 'amount' }
-          ]}
-          defaultPageSize={filterParams.pageSize || 10}
-        />
-
-        {/* Desktop view - Table */}
+        />{/* Desktop view - Table */}
         <div className="hidden md:block overflow-x-auto">
+          {/* Bulk Actions Bar */}
+          {selectedExpenseIds.length > 0 && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-[var(--border-color)] px-6 py-3 flex items-center justify-between">
+              <span className="text-sm text-blue-600 dark:text-blue-400">
+                {selectedExpenseIds.length} expense{selectedExpenseIds.length !== 1 ? 's' : ''} selected
+              </span>
+              <button
+                onClick={handleBulkDelete}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+              >
+                <FaTrash size={12} />
+                Delete Selected
+              </button>
+            </div>
+          )}
+          
           <table className="w-full border-collapse">
             <thead>
               <tr className="bg-[var(--bgSecondary)] transition-colors">
+                <th className="w-[5%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
+                  <input
+                    type="checkbox"
+                    checked={selectedExpenseIds.length === expensesResponse?.data.length && expensesResponse?.data.length > 0}
+                    onChange={handleSelectAll}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  />
+                </th>
                 <th className="w-[15%] px-6 py-4 text-left text-sm font-semibold text-[var(--text)] border-b border-[var(--border-color)]">
                   Date
                 </th>
@@ -163,13 +206,20 @@ export default function ExpensesPage() {
                   Actions
                 </th>
               </tr>
-            </thead>
-            <tbody>
+            </thead>            <tbody>
                 {expensesResponse?.data.map((expense) => (
                   <tr
                     key={expense.id}
                     className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
                   >
+                    <td className="px-6 py-4 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={selectedExpenseIds.includes(expense.id)}
+                        onChange={() => handleSelectExpense(expense.id)}
+                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      />
+                    </td>
                     <td className="px-6 py-4 text-sm text-[var(--text)]">
                       <div className="transition-all hover:translate-x-1">
                         {format(new Date(expense.date), "MMM d, yyyy")}
@@ -213,19 +263,15 @@ export default function ExpensesPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
-              {isLoading && (
+                ))}              {isLoading && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center">
-                    <div className="flex justify-center items-center space-x-2">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--color-primary)]"></div>
-                      <span className="text-[var(--text)] opacity-70">Loading expenses...</span>
-                    </div>
+                  <td colSpan={7} className="px-6 py-8 text-center">
+                    <LoadingSpinner size="md" text="Loading expenses..." />
                   </td>
                 </tr>
               )}              {!isLoading && expensesResponse?.data.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center">
+                  <td colSpan={7} className="px-6 py-8 text-center">
                     <div className="flex flex-col items-center space-y-2">
                       <p className="text-[var(--text)] opacity-70">No expenses found</p>
                       <Link href="/expenses/add">
@@ -241,26 +287,62 @@ export default function ExpensesPage() {
               )}
             </tbody>
           </table>
-        </div>
-
-        {/* Mobile view - Cards */}
+        </div>        {/* Mobile view - Cards */}
         <div className="md:hidden">
-            {expensesResponse?.data.map((expense) => (
-              <div
-                key={expense.id}
-                className="border-b border-[var(--border-color)] p-4 hover:bg-[var(--bgSecondary)] transition-colors"
+          {/* Mobile Bulk Actions Bar */}
+          {selectedExpenseIds.length > 0 && (
+            <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-[var(--border-color)] px-4 py-3 flex items-center justify-between">
+              <span className="text-sm text-blue-600 dark:text-blue-400">
+                {selectedExpenseIds.length} expense{selectedExpenseIds.length !== 1 ? 's' : ''} selected
+              </span>
+              <button
+                onClick={handleBulkDelete}
+                className="px-3 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2 text-sm"
               >
-                <div className="flex justify-between items-start mb-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{expense.category.icon}</span>
-                    <span className="text-[var(--text)] font-medium">{expense.category.name}</span>
-                  </div>                  <button
-                    onClick={() => handleDelete(expense.id)}
-                    className="p-2 text-red-500 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
-                  >
-                    <FaTrash size={14} />
-                  </button>
+                <FaTrash size={10} />
+                Delete
+              </button>
+            </div>
+          )}
+
+          {/* Mobile Select All */}
+          {expensesResponse?.data && expensesResponse.data.length > 0 && (
+            <div className="px-4 py-3 border-b border-[var(--border-color)] bg-[var(--bgSecondary)]">
+              <label className="flex items-center gap-2 text-sm text-[var(--text)]">
+                <input
+                  type="checkbox"
+                  checked={selectedExpenseIds.length === expensesResponse?.data.length && expensesResponse?.data.length > 0}
+                  onChange={handleSelectAll}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                Select all expenses
+              </label>
+            </div>
+          )}
+
+          {expensesResponse?.data.map((expense) => (
+            <div
+              key={expense.id}
+              className="border-b border-[var(--border-color)] p-4 hover:bg-[var(--bgSecondary)] transition-colors"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <div className="flex items-center gap-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedExpenseIds.includes(expense.id)}
+                    onChange={() => handleSelectExpense(expense.id)}
+                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 mt-1"
+                  />
+                  <span className="text-xl">{expense.category.icon}</span>
+                  <span className="text-[var(--text)] font-medium">{expense.category.name}</span>
                 </div>
+                <button
+                  onClick={() => handleDelete(expense.id)}
+                  className="p-2 text-red-500 rounded-full hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                >
+                  <FaTrash size={14} />
+                </button>
+              </div>
                 
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-[var(--text)] text-sm opacity-70">
@@ -290,13 +372,9 @@ export default function ExpensesPage() {
                 )}
               </div>
             ))}
-          
-          {isLoading && (
+            {isLoading && (
             <div className="px-6 py-8 text-center">
-              <div className="flex justify-center items-center space-x-2">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--color-primary)]"></div>
-                <span className="text-[var(--text)] opacity-70">Loading expenses...</span>
-              </div>
+              <LoadingSpinner size="md" text="Loading expenses..." />
             </div>
           )}
           
@@ -357,15 +435,22 @@ export default function ExpensesPage() {
             onPageSizeChange={handlePageSizeChange}
           />
         </div>
-      )}
-
-      <DeleteConfirmationModal
+      )}      <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={() => selectedExpenseId && deleteExpense(selectedExpenseId)}
         title="Delete Expense"
         message="Are you sure you want to delete this expense? This action cannot be undone."
         isDeleting={isDeleting}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={isBulkDeleteModalOpen}
+        onClose={() => setIsBulkDeleteModalOpen(false)}
+        onConfirm={confirmBulkDelete}
+        title="Delete Multiple Expenses"
+        message={`Are you sure you want to delete ${selectedExpenseIds.length} expense${selectedExpenseIds.length !== 1 ? 's' : ''}? This action cannot be undone.`}
+        isDeleting={isBulkDeleting}
       />
     </div>
   );

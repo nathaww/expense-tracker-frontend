@@ -46,7 +46,7 @@ const CustomTooltip = ({
     try {
       const formattedDate = format(parseISO(label as string), "MMM d, yyyy");
       return (
-        <div className="bg-[var(--bg)] p-4 rounded-[var(--border-radius)] shadow-lg border border-[var(--color-secondary)] text-[var(--text)]">
+        <div className="bg-[var(--bg)] p-4 rounded-[var(--border-radius)] border border-[var(--color-secondary)] text-[var(--text)]">
           <p className="text-sm font-semibold">{formattedDate}</p>
           <p className="text-[var(--color-primary)]">
             {formatCurrency(payload[0].value as number, currencyType, hideAmount, true)}

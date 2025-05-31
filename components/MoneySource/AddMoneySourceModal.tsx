@@ -11,6 +11,7 @@ import { FaPlus, FaTimes, FaCreditCard } from "react-icons/fa";
 import { toast } from "sonner";
 import { useState } from "react";
 import { AxiosError } from "axios";
+import { CurrencySelect } from "@/components/UI/CurrencySelect";
 
 const CardStylePreview = ({ style, formValues }: {
   style: CardStyle;
@@ -259,27 +260,17 @@ export const AddMoneySourceModal = () => {
                     {errors.balance && touched.balance && (
                       <div className="text-red-500 text-xs sm:text-sm mt-1">{errors.balance}</div>
                     )}
-                  </div>
-
-                  <div>
-                    <label htmlFor="currency" className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base">
-                      Currency
-                    </label>                    <Field
-                      as="select"
-                      name="currency"
-                      className="input w-full appearance-none"
-                      disabled={isLoadingCurrencies}
-                    >
-                      <option value="">Select Currency</option>
-                      {exchangeRatesData?.currencies?.map((currency) => (
-                        <option key={currency.code} value={currency.code}>
-                          {currency.code} - {currency.name}
-                        </option>
-                      ))}
-                    </Field>
-                    {errors.currency && touched.currency && (
-                      <div className="text-red-500 text-xs sm:text-sm mt-1">{errors.currency}</div>
-                    )}
+                  </div>                  <div>
+                    <CurrencySelect
+                      label="Currency"
+                      value={values.currency}
+                      onValueChange={(value) => setFieldValue("currency", value)}
+                      currencies={exchangeRatesData?.currencies || []}
+                      placeholder="Select Currency"
+                      isLoading={isLoadingCurrencies}
+                      error={errors.currency && touched.currency ? errors.currency : undefined}
+                      searchable={true}
+                    />
                   </div>
                 </div>                <div>
                   <label htmlFor="budget" className="block text-[var(--text)] mb-1 sm:mb-2 text-sm sm:text-base">
