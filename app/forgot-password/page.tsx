@@ -7,8 +7,7 @@ import { authRequests } from "../login/_requests";
 import { ApiError } from "../login/_model";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { FaMoneyBillWave } from "react-icons/fa";
-import Stars from "@/components/UI/Stars";
+import AuthLayout from "@/components/Layout/AuthLayout";
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("E-mail is Required"),
@@ -30,19 +29,16 @@ export default function ForgotPasswordPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] text-[var(--text)] transition-colors duration-300 px-4 py-6">
-      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bgSecondary)] text-[var(--text)] shadow-xl rounded-[var(--border-radius)] z-10 relative">
-        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center text-lg md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-4 sm:mb-6">
-          <FaMoneyBillWave className="w-6 h-6 sm:w-8 sm:h-8" />
-          Expense tracker
-        </h1>
-        <h2 className="text-center text-xl sm:text-2xl md:text-4xl font-extrabold">
-          Forgot Password
-        </h2>
-
-        <p className="text-center text-sm text-[var(--text)]/75">
-          Enter your email address and we&lsquo;ll send you instructions to reset your password.
-        </p>
+    <AuthLayout 
+      title="Reset Password" 
+      subtitle="Enter your email to receive reset instructions"
+    >
+      <div className="space-y-6">
+        <div className="text-center bg-[var(--color-primary)]/10 p-4 rounded-lg border border-[var(--color-primary)]/20">
+          <p className="text-sm text-[var(--text)]/75 leading-relaxed">
+            Enter your email address and we&lsquo;ll send you instructions to reset your password.
+          </p>
+        </div>
 
         <Formik
           initialValues={{ email: "" }}
@@ -50,35 +46,41 @@ export default function ForgotPasswordPage() {
           onSubmit={(values) => requestReset(values.email)}
         >
           {({ errors, touched }) => (
-            <Form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
-              <Field
-                name="email"
-                type="email"
-                className="input py-2 sm:py-3"
-                placeholder="Email address"
-                autoComplete="email"
-              />
-              {errors.email && touched.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-              )}
+            <Form className="space-y-6">
+              <div>
+                <Field
+                  name="email"
+                  type="email"
+                  className="input py-3"
+                  placeholder="Email address"
+                  autoComplete="email"
+                />
+                {errors.email && touched.email && (
+                  <p className="text-red-500 text-xs mt-2">{errors.email}</p>
+                )}
+              </div>
 
-              <button type="submit" disabled={isPending} className="btn w-full py-2 sm:py-3">
+              <button 
+                type="submit" 
+                disabled={isPending} 
+                className="btn w-full py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] hover:from-[var(--color-primary)]/90 hover:to-[var(--color-secondary)]/90 text-white font-medium transition-all duration-300"
+              >
                 {isPending ? "Sending..." : "Send Reset Instructions"}
               </button>
             </Form>
           )}
         </Formik>
 
-        <div className="text-center">
+        <div className="text-center pt-4 border-t border-[var(--border-color)]">
           <a
             href="/login"
-            className="text-center text-xs sm:text-sm underline text-[var(--text)] hover:opacity-80"
+            className="text-sm text-[var(--text)]/70 hover:text-[var(--color-primary)] transition-colors"
           >
-            Back to Login
+            ← Back to Login
           </a>
         </div>
       </div>
-      <Stars />
-    </div>
+    </AuthLayout>
   );
 }
+

@@ -7,9 +7,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { authRequests } from "../login/_requests";
-import { FaMoneyBillWave } from "react-icons/fa";
-import Stars from "@/components/UI/Stars";
 import { PasswordInput } from "@/components/UI/PasswordInput";
+import AuthLayout from "@/components/Layout/AuthLayout";
 
 const registerSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("E-mail is Required"),
@@ -18,7 +17,9 @@ const registerSchema = Yup.object().shape({
 });
 
 export default function RegisterPage() {
-  const router = useRouter();  const { mutate: register, isPending } = useMutation({
+  const router = useRouter();
+
+  const { mutate: register, isPending } = useMutation({
     mutationFn: authRequests.register,
     onSuccess: () => {
       router.replace("/verify-code");
@@ -30,21 +31,19 @@ export default function RegisterPage() {
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[var(--bg)] px-4 py-6">
-      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bgSecondary)] rounded-[var(--border-radius)] shadow-lg z-10 relative">
-        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center text-lg md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-4 sm:mb-6">
-          <FaMoneyBillWave className="w-6 h-6 sm:w-8 sm:h-8" />
-          Expense tracker
-        </h1>
-        <h2 className="text-center text-xl sm:text-2xl md:text-4xl font-extrabold text-[var(--text)]">
-          Sign up
-        </h2>
-        <a
-          href="/login"
-          className="block text-center text-xs sm:text-sm underline text-[var(--text)] hover:opacity-80"
-        >
-          Already have an account? Sign in
-        </a>
+    <AuthLayout 
+      title="Create Account" 
+      subtitle="Join thousands of users managing their finances"
+    >
+      <div className="space-y-6">
+        <div className="text-center">
+          <a
+            href="/login"
+            className="text-sm text-[var(--color-primary)] hover:text-[var(--color-secondary)] font-medium transition-colors"
+          >
+            Already have an account? <span className="underline">Sign in</span>
+          </a>
+        </div>
 
         <Formik
           initialValues={{ email: "", name: "", password: "" }}
@@ -52,50 +51,64 @@ export default function RegisterPage() {
           onSubmit={(values) => register(values)}
         >
           {({ errors, touched }) => (
-            <Form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
-              <Field
-                name="email"
-                type="email"
-                className="input py-2 sm:py-3"
-                placeholder="Email address"
-                autoComplete="email"
-              />
-              {errors.email && touched.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-              )}
+            <Form className="space-y-6">
+              <div>
+                <Field
+                  name="email"
+                  type="email"
+                  className="input py-3"
+                  placeholder="Email address"
+                  autoComplete="email"
+                />
+                {errors.email && touched.email && (
+                  <p className="text-red-500 text-xs mt-2">{errors.email}</p>
+                )}
+              </div>
 
-              <Field
-                name="name"
-                type="text"
-                className="input py-2 sm:py-3"
-                placeholder="Full Name"
-                autoComplete="full-name"
-              />
-              {errors.name && touched.name && (
-                <p className="text-red-500 text-xs mt-1">{errors.name}</p>
-              )}              <PasswordInput
-                name="password"
-                placeholder="Password"
-                autoComplete="new-password"
-              />
-              {errors.password && touched.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-              )}
+              <div>
+                <Field
+                  name="name"
+                  type="text"
+                  className="input py-3"
+                  placeholder="Full Name"
+                  autoComplete="full-name"
+                />
+                {errors.name && touched.name && (
+                  <p className="text-red-500 text-xs mt-2">{errors.name}</p>
+                )}
+              </div>
 
-              <button type="submit" disabled={isPending} className="btn w-full py-2 sm:py-3">
-                {isPending ? "Registering..." : "Register"}
+              <div>
+                <PasswordInput
+                  name="password"
+                  placeholder="Password"
+                  autoComplete="new-password"
+                />
+                {errors.password && touched.password && (
+                  <p className="text-red-500 text-xs mt-2">{errors.password}</p>
+                )}
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isPending} 
+                className="btn w-full py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] hover:from-[var(--color-primary)]/90 hover:to-[var(--color-secondary)]/90 text-white font-medium transition-all duration-300"
+              >
+                {isPending ? "Creating Account..." : "Create Account"}
               </button>
             </Form>
           )}
         </Formik>
-        <a
-          href="/verify-email"
-          className="block text-center text-xs sm:text-sm underline text-[var(--text)] hover:opacity-80"
-        >
-          Verify email
-        </a>
+
+        <div className="text-center pt-4 border-t border-[var(--border-color)]">
+          <a
+            href="/verify-email"
+            className="text-sm text-[var(--text)]/70 hover:text-[var(--color-primary)] transition-colors"
+          >
+            Need to verify your email?
+          </a>
+        </div>
       </div>
-      <Stars />
-    </div>
+    </AuthLayout>
   );
 }

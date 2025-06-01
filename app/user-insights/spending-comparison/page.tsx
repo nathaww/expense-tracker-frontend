@@ -13,19 +13,24 @@ import { InsightsCard } from '@/components/UserInsights/InsightsCardNew';
 
 export default function SpendingComparisonPage() {
     const queryClient = useQueryClient();
+    
+    // Check if we already have data in cache
+    const existingData = queryClient.getQueryData<SpendingComparison>(['spending-comparison']);
 
     const { data, isLoading, isError, isFetching } = useQuery<SpendingComparison>({
         queryKey: ['spending-comparison'],
         queryFn: userInsightsRequests.getSpendingComparison,
         staleTime: Infinity, // Data never becomes stale
         gcTime: Infinity, // Data never gets garbage collected
+        enabled: !existingData, // Only fetch if we don't have existing data
     });
 
     const handleRefresh = () => {
         queryClient.invalidateQueries({ queryKey: ['spending-comparison'] });
     };
 
-    if (isLoading) {
+    // Use existing data if available, otherwise use newly fetched data
+    const currentData = existingData || data;    if (isLoading && !existingData) {
         return (
             <div className="flex items-center justify-center h-screen">
                 <Loader />
@@ -33,7 +38,7 @@ export default function SpendingComparisonPage() {
         );
     }
 
-    if (isError || !data) {
+    if (isError && !currentData) {
         return (
             <div className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bgSecondary)]">
                 <p className="text-[var(--text)]">Failed to load spending comparison data</p>
@@ -64,9 +69,7 @@ export default function SpendingComparisonPage() {
                         <FaSync className={`${isFetching ? 'animate-spin' : ''}`} />
                         {isFetching ? 'Refreshing...' : 'Refresh'}
                     </button>
-                </div>
-
-                <SummaryStatistics data={data} />
+                </div>                <SummaryStatistics data={currentData!} />
 
                 <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
                     <motion.div
@@ -75,7 +78,7 @@ export default function SpendingComparisonPage() {
                         transition={{ duration: 0.5, delay: 0.2 }}
                         className="col-span-1"
                     >
-                        <InsightsCard insights={data.insights} />
+                        <InsightsCard insights={currentData!.insights} />
                     </motion.div>
 
                     {/* <motion.div

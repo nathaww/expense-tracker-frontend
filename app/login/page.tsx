@@ -8,9 +8,8 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { useAuth } from "@/providers/AuthProvider";
-import { FaMoneyBillWave } from "react-icons/fa";
-import Stars from "@/components/UI/Stars";
 import { PasswordInput } from "@/components/UI/PasswordInput";
+import AuthLayout from "@/components/Layout/AuthLayout";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string().email("Invalid email").required("E-mail is Required"),
@@ -41,22 +40,19 @@ export default function LoginPage() {
   });
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[var(--bg)] text-[var(--text)] transition-colors duration-300 px-4 py-6">
-      <div className="max-w-lg w-full space-y-6 sm:space-y-8 p-4 sm:p-8 bg-[var(--bgSecondary)]  text-[var(--text)] shadow-xl rounded-[var(--border-radius)] z-10 relative">
-        <h1 className="inline-flex justify-center w-full items-center gap-2 text-center text-lg md:text-xl uppercase text-[var(--color-secondary)] font-extrabold mb-4 sm:mb-6">
-          <FaMoneyBillWave className="w-6 h-6 sm:w-8 sm:h-8" />
-          Expense tracker
-        </h1>
-        <h2 className="text-center text-xl sm:text-2xl md:text-4xl font-extrabold">
-          Sign in
-        </h2>
-
-        <a
-          href="/register"
-          className="block text-center text-xs sm:text-sm underline text-[var(--text)] hover:opacity-80"
-        >
-          Don&lsquo;t have an account? Sign up
-        </a>
+    <AuthLayout 
+      title="Welcome Back" 
+      subtitle="Sign in to your account to continue"
+    >
+      <div className="space-y-6">
+        <div className="text-center">
+          <a
+            href="/register"
+            className="text-sm text-[var(--color-primary)] hover:text-[var(--color-secondary)] font-medium transition-colors"
+          >
+            Don&lsquo;t have an account? <span className="underline">Sign up</span>
+          </a>
+        </div>
 
         <Formik
           initialValues={{ email: "", password: "" }}
@@ -64,46 +60,57 @@ export default function LoginPage() {
           onSubmit={(values) => login(values)}
         >
           {({ errors, touched }) => (
-            <Form className="mt-6 sm:mt-8 space-y-4 sm:space-y-6">
-              <Field
-                name="email"
-                type="email"
-                className="input py-2 sm:py-3"
-                placeholder="Email address"
-                autoComplete="email"
-              />
-              {errors.email && touched.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email}</p>
-              )}              <PasswordInput
-                name="password"
-                placeholder="Password"
-                autoComplete="current-password"
-              />
-              {errors.password && touched.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password}</p>
-              )}
+            <Form className="space-y-6">
+              <div>
+                <Field
+                  name="email"
+                  type="email"
+                  className="input py-3"
+                  placeholder="Email address"
+                  autoComplete="email"
+                />
+                {errors.email && touched.email && (
+                  <p className="text-red-500 text-xs mt-2">{errors.email}</p>
+                )}
+              </div>
 
-              <button type="submit" disabled={isPending} className="btn w-full py-2 sm:py-3">
+              <div>
+                <PasswordInput
+                  name="password"
+                  placeholder="Password"
+                  autoComplete="current-password"
+                />
+                {errors.password && touched.password && (
+                  <p className="text-red-500 text-xs mt-2">{errors.password}</p>
+                )}
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isPending} 
+                className="btn w-full py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] hover:from-[var(--color-primary)]/90 hover:to-[var(--color-secondary)]/90 text-white font-medium transition-all duration-300"
+              >
                 {isPending ? "Signing in..." : "Sign in"}
               </button>
             </Form>
           )}
         </Formik>
-        <div className="inline-flex flex-col sm:flex-row items-center justify-center sm:gap-10 w-full space-y-2 sm:space-y-0">          <a
+
+        <div className="flex flex-col sm:flex-row items-center justify-center sm:gap-8 w-full space-y-3 sm:space-y-0 pt-4 border-t border-[var(--border-color)]">
+          <a
             href="/forgot-password"
-            className="block text-center underline text-xs sm:text-sm text-[var(--text)] hover:opacity-80"
+            className="text-sm text-[var(--text)]/70 hover:text-[var(--color-primary)] transition-colors"
           >
             Forgot password?
           </a>
           <a
             href="/verify-email"
-            className="block text-center text-xs sm:text-sm text-[var(--text)] hover:opacity-80"
+            className="text-sm text-[var(--text)]/70 hover:text-[var(--color-primary)] transition-colors"
           >
             Verify email
           </a>
         </div>
       </div>
-      <Stars />
-    </div>
+    </AuthLayout>
   );
 }
