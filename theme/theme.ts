@@ -49,14 +49,14 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     font: "Arial, sans-serif",
   },
   dark: {
-    primary: "#000000",
+    primary: "#7F7F7F",
     secondary: "#0a0a0a",
     tertiary: "#1a1a1a",
     background: "#000000",
     backgroundSecondary: "#0d0d0d",
     text: "#e5e5e5",
     borderColor: "#2e2e2e",
-    borderRadius: "0.5rem",
+    borderRadius: "1rem",
     font: "Arial, sans-serif",
   },
   coffee: {

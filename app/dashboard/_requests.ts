@@ -42,6 +42,18 @@ export interface ExpenseComposition {
   categoryBreakdown: CategoryBreakdownItem[];
 }
 
+export interface ExportData {
+  user: {
+    email: string;
+    name: string;
+  };
+  expenses: unknown[];
+  categories: unknown[];
+  moneySources: unknown[];
+  balanceHistories: unknown[];
+  appSettings: Record<string, unknown>;
+}
+
 export const dashboardRequests = {
   getOverview: async (): Promise<DashboardOverview> => {
     const res = await api.get<DashboardOverview>('/dashboard/overview');
@@ -61,5 +73,14 @@ export const dashboardRequests = {
   getExpenseComposition: async (): Promise<ExpenseComposition> => {
     const res = await api.get<ExpenseComposition>('/dashboard/expense-composition');
     return res.data;
+  },
+
+  exportData: async (): Promise<ExportData> => {
+    const res = await api.get<ExportData>('/data/export');
+    return res.data;
+  },
+
+  importData: async (data: ExportData): Promise<void> => {
+    await api.post('/data/import', data);
   },
 };

@@ -9,6 +9,7 @@ import { AxiosError } from "axios";
 import { UpdateProfileInput, UserProfile, userRequests } from "@/app/settings/_requests";
 import { useAuth } from "@/providers/AuthProvider";
 import { useMutation } from "@tanstack/react-query";
+import { RiProfileFill } from "react-icons/ri";
 
 const profileSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -20,7 +21,7 @@ interface ProfileSectionProps {
 }
 
 export const ProfileSection = ({ profile }: ProfileSectionProps) => {
-  const { user, setUser } = useAuth();  const { mutate: updateProfile, isPending: isUpdating } = useMutation({
+  const { user, setUser } = useAuth(); const { mutate: updateProfile, isPending: isUpdating } = useMutation({
     mutationFn: userRequests.updateProfile,
     onSuccess: (data) => {
       setUser({
@@ -33,8 +34,8 @@ export const ProfileSection = ({ profile }: ProfileSectionProps) => {
     onError: (error: AxiosError<{ message: string }>) => {
       console.error("Profile update error:", error);
       toast.error(
-        error?.response?.data?.message || 
-        error?.message || 
+        error?.response?.data?.message ||
+        error?.message ||
         "Failed to update profile"
       );
     },
@@ -57,14 +58,12 @@ export const ProfileSection = ({ profile }: ProfileSectionProps) => {
               name: profile?.name,
               email: profile?.email,
             }}
-            validationSchema={profileSchema}            onSubmit={(values) => {
+            validationSchema={profileSchema}
+            onSubmit={(values) => {
               const updates: UpdateProfileInput = {};
               if (values.name !== profile?.name) updates.name = values.name;
               if (values.email !== profile?.email) updates.email = values.email;
-              
-              console.log("Form values:", values);
-              console.log("Updates to send:", updates);
-              
+
               if (Object.keys(updates).length > 0) {
                 updateProfile(updates);
               } else {
@@ -101,10 +100,12 @@ export const ProfileSection = ({ profile }: ProfileSectionProps) => {
                   <button
                     type="submit"
                     disabled={isUpdating}
-                    className="btn"
-                  > 
+                    className="btn inline-flex items-center gap-1"
+                  >
+                    <RiProfileFill/>
                     {isUpdating ? "Updating..." : "Update Profile"}
-                  </button>                </div>
+                  </button>
+                </div>
               </Form>
             )}
           </Formik>

@@ -29,7 +29,7 @@ export const ThemeSection = () => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setTheme(themeName)}
-              className={`p-4 rounded-[var(--border-radius)] transition-all ${
+              className={`p-4 rounded-[var(--border-radius)] cursor-pointer transition-all ${
                 theme === themeName 
                   ? "ring-2 ring-[var(--color-primary)] bg-[var(--color-secondary)]" 
                   : "bg-[var(--bg)] hover:bg-[var(--color-secondary)]"

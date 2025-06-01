@@ -15,9 +15,9 @@ import { DangerZone } from "@/components/Settings/DangerZone";
 import { useOnboarding } from "@/providers/OnboardingProvider";
 
 const Settings = () => {
-  const { logout, isAuthenticated } = useAuth();
-  const { resetOnboarding } = useOnboarding();
   const router = useRouter();
+  const { resetOnboarding } = useOnboarding();
+  const { logout, isAuthenticated } = useAuth();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
   const { data: profile } = useQuery({
@@ -53,18 +53,20 @@ const Settings = () => {
 
   return (
     <div className="p-8 max-w-4xl mx-auto min-h-screen">
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold mb-8 text-[var(--text)]"
       >
         Settings
-      </motion.h1>      <ProfileSection 
-        profile={profile} 
+      </motion.h1>
+      
+      <ProfileSection
+        profile={profile}
       />
-      
+
       <CurrencySection settings={settings} />
-      
+
       <ThemeSection />
 
       {/* Onboarding Section */}
@@ -88,7 +90,7 @@ const Settings = () => {
                 router.push('/dashboard');
                 toast.success('Tour reset! Redirecting to dashboard...');
               }}
-              className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-[var(--border-radius)] transition-colors duration-200 flex items-center gap-2"
+              className="btn"
             >
               <span>🎯</span>
               Restart App Tour
