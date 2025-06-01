@@ -1,15 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
-import { dashboardRequests } from '@/app/dashboard/_requests';
 import { formatCurrency } from '@/components/utils/formatCurrency';
 import AnimatedStatsCard from './AnimatedStatsCard';
 import { FaWallet, FaPiggyBank, FaChartLine, FaPercentage } from 'react-icons/fa';
+import { DashboardOverview } from '@/app/dashboard/_requests';
 
 interface EnhancedOverviewProps {
   currencyType: string;
   hideAmount: boolean;
+  overview: DashboardOverview | undefined;
+  isLoading?: boolean;
 }
 
 const StatIllustration = ({ type }: { type: string }) => {
@@ -102,12 +103,7 @@ const StatIllustration = ({ type }: { type: string }) => {
   return illustrations[type as keyof typeof illustrations] || null;
 };
 
-export default function EnhancedOverview({ currencyType, hideAmount }: EnhancedOverviewProps) {
-  const { data: overview, isLoading, isError } = useQuery({
-    queryKey: ['dashboard-overview'],
-    queryFn: dashboardRequests.getOverview,
-  });
-
+export default function EnhancedOverview({ currencyType, hideAmount, overview, isLoading }: EnhancedOverviewProps) {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -130,7 +126,7 @@ export default function EnhancedOverview({ currencyType, hideAmount }: EnhancedO
     );
   }
 
-  if (isError || !overview) {
+  if (!overview) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -140,11 +136,23 @@ export default function EnhancedOverview({ currencyType, hideAmount }: EnhancedO
         <p>Unable to load overview data</p>
       </motion.div>
     );
-  }
-
-  const formatValue = (value: number) => {
+  }  const formatValue = (value: number) => {
     return hideAmount ? '****' : formatCurrency(value, currencyType);
   };
+
+  // Calculate budget utilization percentage correctly
+  // If budgetUtilization comes as a decimal (0.355), convert to percentage
+  // If it comes as a percentage (355), cap it appropriately
+  let budgetUsage = overview.budgetUtilization || 0;
+  
+  // If the value is greater than 10, assume it's already a percentage
+  // If it's less than 10, assume it's a decimal that needs to be converted
+  if (budgetUsage <= 10) {
+    budgetUsage = budgetUsage * 100; // Convert decimal to percentage
+  }
+  
+  // Cap at reasonable maximum for display
+  budgetUsage = Math.min(budgetUsage, 999);
 
   const cards = [
     {
@@ -152,31 +160,31 @@ export default function EnhancedOverview({ currencyType, hideAmount }: EnhancedO
       value: formatValue(overview.totalBalance),
       icon: FaWallet,
       gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      trend: { value: 12.5, isPositive: true },
+      trend: { value: 0, isPositive: true }, // Can be calculated if historical data is available
       illustration: <StatIllustration type="wallet" />
     },
     {
-      title: 'Monthly Income',
-      value: formatValue(overview.totalBalance),
+      title: 'Total Budget',
+      value: formatValue(overview.totalBudget),
       icon: FaPiggyBank,
       gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
-      trend: { value: 8.2, isPositive: true },
+      trend: { value: 0, isPositive: true }, // Can be calculated if historical data is available
       illustration: <StatIllustration type="savings" />
     },
     {
-      title: 'Monthly Expenses',
+      title: 'Total Expenses',
       value: formatValue(overview.totalExpenses),
       icon: FaChartLine,
       gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-      trend: { value: 3.1, isPositive: false },
+      trend: { value: 0, isPositive: false }, // Can be calculated if historical data is available
       illustration: <StatIllustration type="expenses" />
     },
     {
-      title: 'Budget Usage',
-      value: `${Math.round((overview.totalExpenses / overview.totalBalance) * 100)}%`,
+      title: 'Budget Utilization',
+      value: `${budgetUsage.toFixed(1)}%`,
       icon: FaPercentage,
       gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
-      trend: { value: 15.3, isPositive: false },
+      trend: { value: parseFloat((budgetUsage > 80 ? budgetUsage - 80 : 80 - budgetUsage).toFixed(2)), isPositive: budgetUsage <= 80 },
       illustration: <StatIllustration type="budget" />
     }
   ];

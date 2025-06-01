@@ -12,12 +12,44 @@ import { useOnboarding } from '@/providers/OnboardingProvider';
 import { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { useQuery } from '@tanstack/react-query';
+import { dashboardRequests } from './_requests';
+import { AnalyticsService } from '@/lib/analytics';
 
 export default function DashboardPage() {
   const { preferredCurrency } = useAppSettings();
   const { isNewUser, markOnboardingCompleted } = useOnboarding();
 
   const [hideAmounts, setHideAmounts] = useState(false);
+
+  // Fetch all dashboard data for analytics
+  const { data: overview, isLoading: overviewLoading } = useQuery({
+    queryKey: ['dashboard-overview'],
+    queryFn: dashboardRequests.getOverview,
+  });
+
+  const { data: trends, isLoading: trendsLoading } = useQuery({
+    queryKey: ['dashboard-trends'],
+    queryFn: dashboardRequests.getTrends,
+  });
+
+  const { data: budgetComparison, isLoading: budgetLoading } = useQuery({
+    queryKey: ['dashboard-budget-comparison'],
+    queryFn: dashboardRequests.getBudgetComparison,
+  });
+
+  const { data: expenseComposition, isLoading: compositionLoading } = useQuery({
+    queryKey: ['dashboard-expense-composition'],
+    queryFn: dashboardRequests.getExpenseComposition,
+  });
+
+  // Check if any data is still loading
+  const isAnalyticsLoading = overviewLoading || trendsLoading || budgetLoading || compositionLoading;
+
+  // Compute analytics when all data is available
+  const computedAnalytics = overview && trends && budgetComparison && expenseComposition
+    ? AnalyticsService.computeAnalytics(overview, trends, budgetComparison, expenseComposition)
+    : null;
 
   const toggleHideAmounts = () => {
     setHideAmounts((prev: boolean) => !prev);
@@ -70,10 +102,13 @@ export default function DashboardPage() {
             {hideAmounts ? <FaEyeSlash size={16} /> : <FaEye size={16} />}
           </motion.button>
         </motion.div>
-      </motion.div>
-
-      <div className="dashboard-overview">
-        <EnhancedOverview currencyType={preferredCurrency} hideAmount={hideAmounts} />
+      </motion.div>      <div className="dashboard-overview">
+        <EnhancedOverview 
+          currencyType={preferredCurrency} 
+          hideAmount={hideAmounts} 
+          overview={overview}
+          isLoading={overviewLoading}
+        />
       </div>
 
       {/* Data Management Section */}
@@ -98,7 +133,9 @@ export default function DashboardPage() {
             type="import"
           />
         </div>
-      </motion.div>      {/* Analytics Section */}
+      </motion.div>    
+      
+        {/* Analytics Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -109,41 +146,45 @@ export default function DashboardPage() {
           <div className="flex-1 h-px bg-gradient-to-r from-[var(--border-color)] to-transparent"></div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <AnalyticsCard
-            title="Monthly Trends"
-            data={[65, 45, 78, 52, 67, 43, 89]}
-            value="12.5%"
-            change={{
-              value: 12.5,
-              isPositive: true,
-              period: "vs last month"
-            }}
-            delay={0}
-          />
-          <AnalyticsCard
-            title="Category Distribution"
-            data={[30, 25, 20, 15, 10]}
-            value="5 Categories"
-            change={{
-              value: 5,
-              isPositive: true,
-              period: "active"
-            }}
-            delay={0.1}
-          />
-          <AnalyticsCard
-            title="Budget Health"
-            data={[85]}
-            value="85%"
-            change={{
-              value: 15,
-              isPositive: false,
-              period: "over budget"
-            }}
-            delay={0.2}
-          />
+          {isAnalyticsLoading ? (
+            <>
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="animate-pulse p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] h-40" />
+              ))}
+            </>
+          ) : computedAnalytics ? (
+            <>
+              <AnalyticsCard
+                title={computedAnalytics.monthlyTrends.title}
+                data={computedAnalytics.monthlyTrends.data}
+                value={computedAnalytics.monthlyTrends.value}
+                change={computedAnalytics.monthlyTrends.change}
+                delay={0}
+              />
+              <AnalyticsCard
+                title={computedAnalytics.categoryDistribution.title}
+                data={computedAnalytics.categoryDistribution.data}
+                value={computedAnalytics.categoryDistribution.value}
+                change={computedAnalytics.categoryDistribution.change}
+                delay={0.1}
+              />
+              <AnalyticsCard
+                title={computedAnalytics.budgetHealth.title}
+                data={computedAnalytics.budgetHealth.data}
+                value={computedAnalytics.budgetHealth.value}
+                change={computedAnalytics.budgetHealth.change}
+                delay={0.2}
+              />
+            </>
+          ) : (
+            <div className="col-span-3 p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bgSecondary)]">
+              <p className="text-[var(--text)]/60 text-center">Unable to load analytics data</p>
+            </div>
+          )}
         </div>
-      </motion.div>      {/* Detailed Analytics Section */}
+      </motion.div>
+      
+      {/* Detailed Analytics Section */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
