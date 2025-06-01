@@ -144,7 +144,7 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     backgroundSecondary: "#2E1111",
     text: "#FFE4E1",
     borderColor: "#462424",
-    borderRadius: "0.5rem",
+    borderRadius: "1.2rem",
     font: "'Segoe UI', sans-serif",
   },
   christmas: {

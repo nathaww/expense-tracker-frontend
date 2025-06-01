@@ -1,11 +1,13 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
-import { FiChevronsRight, FiDollarSign, FiHome } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { FiDollarSign, FiHome } from "react-icons/fi";
 import { BsFillGearFill } from "react-icons/bs";
 import { BiMoney, BiPieChart } from "react-icons/bi";
-import { usePathname } from 'next/navigation';
-import { IconType } from 'react-icons';
 import { TbChartBar } from "react-icons/tb";
+import { usePathname } from "next/navigation";
+import { IconType } from "react-icons";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface OptionProps {
   Icon: IconType;
@@ -16,164 +18,170 @@ interface OptionProps {
   open: boolean;
 }
 
-interface ToggleCloseProps {
-  open: boolean;
-  setOpen: (value: boolean | ((prev: boolean) => boolean)) => void;
-  isMobile: boolean;
+interface BottomNavOptionProps {
+  Icon: IconType;
+  title: string;
+  href: string;
+  selected: string;
+  setSelected: (title: string) => void;
 }
 
+// Navigation items data
+const navItems = [
+  { Icon: FiHome, title: "Dashboard", href: "/dashboard" },
+  { Icon: FiDollarSign, title: "Expenses", href: "/expenses" },
+  { Icon: BiMoney, title: "Money Sources", href: "/money-sources" },
+  { Icon: BiPieChart, title: "Categories", href: "/categories" },
+  { Icon: TbChartBar, title: "User Insights", href: "/user-insights/spending-comparison" },
+  { Icon: BsFillGearFill, title: "Settings", href: "/settings" },
+];
+
 export const Nav = () => {
-  const [open, setOpen] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
   const [selected, setSelected] = useState(pathname);
 
+  const handleMouseEnter = () => setIsHovered(true);
+  const handleMouseLeave = () => setIsHovered(false);
   useEffect(() => {
-    // Check if we're on mobile and update state
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      setOpen(window.innerWidth >= 768);
+      setIsMobile(window.innerWidth < 1024); // lg breakpoint - tablets and smaller use bottom nav
     };
-
-    // Initial check
     checkMobile();
-
-    // Add event listener for window resize
     window.addEventListener('resize', checkMobile);
-
-    // Cleanup
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
   return (
-    <motion.nav
-      layout
-      className="sticky top-0 h-screen shrink-0 border-r border-[var(--border-color)] bg-[var(--bg)] p-2 pt-8"
-      initial={false}
-      animate={{ 
-        width: open ? "225px" : "fit-content",
-        transition: { duration: 0.3, ease: "easeInOut" }
-      }}
-    >
-      <div>
-        <Option
-          Icon={FiHome}
-          title="Dashboard"
-          href="/dashboard"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={FiDollarSign}
-          title="Expenses"
-          href="/expenses"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={BiMoney}
-          title="Money Sources"
-          href="/money-sources"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={BiPieChart}
-          title="Categories"
-          href="/categories"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />        <Option
-          Icon={TbChartBar}
-          title="User Insights"
-          href="/user-insights/spending-comparison"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-        <Option
-          Icon={BsFillGearFill}
-          title="Settings"
-          href="/settings"
-          selected={selected}
-          setSelected={setSelected}
-          open={open}
-        />
-      </div>
+    <>
+      {/* Desktop Sidebar - Hidden on mobile */}      <motion.nav
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        initial={false}
+        animate={{ width: isHovered ? 225 : 56 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={`nav-sidebar sticky top-0 h-screen shrink-0 border-r border-[var(--border-color)] bg-[var(--bg)] p-2 pt-8 z-20 overflow-hidden ${
+          isMobile ? 'hidden' : 'flex flex-col'
+        }`}
+      >
+        <div>
+          {navItems.map((item) => (
+            <Option
+              key={item.href}
+              Icon={item.Icon}
+              title={item.title}
+              href={item.href}
+              selected={selected}
+              setSelected={setSelected}
+              open={isHovered}
+            />
+          ))}
+        </div>
+      </motion.nav>
 
-      <ToggleClose open={open} setOpen={setOpen} isMobile={isMobile} />
-    </motion.nav>
+      {/* Mobile Bottom Navigation - Hidden on desktop */}
+      <div className={isMobile ? 'flex' : 'hidden'}>
+        <BottomNavigation selected={selected} setSelected={setSelected} />
+      </div>
+    </>
   );
 };
 
 const Option = ({ Icon, title, href, selected, setSelected, open }: OptionProps) => {
+  const isActive = selected === href;
+
   return (
     <motion.a
       href={href}
-      layout
       onClick={() => setSelected(href)}
-      className={`relative cursor-pointer mb-6 flex h-12 w-full items-center rounded-[var(--border-radius)] transition-all active:scale-95 ${
-        selected === href
+      initial={false}
+      layout
+      className={`relative cursor-pointer mb-2 flex h-12 w-full items-center rounded-[var(--border-radius)] transition-colors duration-300 ease-in-out active:scale-95 ${
+        isActive
           ? "bg-[var(--bgSecondary)] text-[var(--text)]"
           : "hover:bg-[var(--color-secondary)]"
       }`}
     >
-      <motion.div
-        layout
-        className="grid h-full w-10 place-content-center text-2xl"
+      <div
+        className={`flex items-center justify-center text-2xl transition-all duration-300 ease-in-out ${
+          open ? "w-10 ml-2 mr-2" : "w-full"
+        }`}
       >
         <Icon />
-      </motion.div>
-
-      {open && (
-        <motion.span
-          layout
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.125 }}
-          className="text-sm font-medium"
-        >
-          {title}
-        </motion.span>
-      )}
+      </div>
+      <AnimatePresence>
+        {open && (
+          <motion.span
+            key="text"
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -10 }}
+            transition={{ duration: 0.2 }}
+            className="text-sm font-medium whitespace-nowrap overflow-hidden"
+          >
+            {title}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </motion.a>
   );
 };
 
-const ToggleClose = ({ open, setOpen, isMobile }: ToggleCloseProps) => {
-  if (isMobile) return null;
+// Bottom Navigation for Mobile/Tablet
+const BottomNavigation = ({ selected, setSelected }: { selected: string; setSelected: (title: string) => void }) => {
+  // Show main navigation items for mobile - exclude User Insights to keep it cleaner
+  const mobileNavItems = [
+    { Icon: FiHome, title: "Dashboard", href: "/dashboard" },
+    { Icon: FiDollarSign, title: "Expenses", href: "/expenses" },
+    { Icon: BiMoney, title: "Sources", href: "/money-sources" },
+    { Icon: BiPieChart, title: "Categories", href: "/categories" },
+    { Icon: BsFillGearFill, title: "Settings", href: "/settings" },
+  ];
+
+  return (    <motion.nav
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="nav-sidebar fixed bottom-0 left-0 right-0 bg-[var(--bg)] border-t border-[var(--border-color)] z-50 px-1 py-2 safe-area-pb lg:hidden"
+    >
+      <div className="flex justify-around items-center max-w-lg mx-auto">
+        {mobileNavItems.map((item) => (
+          <BottomNavOption
+            key={item.href}
+            Icon={item.Icon}
+            title={item.title}
+            href={item.href}
+            selected={selected}
+            setSelected={setSelected}
+          />
+        ))}
+      </div>
+    </motion.nav>
+  );
+};
+
+const BottomNavOption = ({ Icon, title, href, selected, setSelected }: BottomNavOptionProps) => {
+  const isActive = selected === href;
 
   return (
-    <motion.button
-      layout
-      onClick={() => setOpen((pv) => !pv)}
-      className="absolute bottom-0 left-0 right-0 border-t border-[var(--border-color)] transition-colors hover:bg-[var(--color-secondary)]"
+    <motion.a
+      href={href}
+      onClick={() => setSelected(href)}
+      whileTap={{ scale: 0.9 }}
+      className={`flex flex-col items-center justify-center py-2 px-2 min-w-[60px] rounded-lg transition-colors duration-200 ${
+        isActive
+          ? "text-[var(--color-primary)] bg-[var(--bgSecondary)]"
+          : "text-[var(--text-secondary)] hover:text-[var(--text)] hover:bg-[var(--color-secondary)]"
+      }`}
     >
-      <div className="flex items-center p-2">
-        <motion.div
-          layout
-          className="grid size-10 place-content-center text-lg"
-        >
-          <FiChevronsRight
-            className={`transition-transform ${open && "rotate-180"}`}
-          />
-        </motion.div>
-        {open && (
-          <motion.span
-            layout
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.125 }}
-            className="text-xs font-medium"
-          >
-            Hide
-          </motion.span>
-        )}
+      <div className={`text-xl mb-1 transition-colors duration-200 ${isActive ? 'text-[var(--color-primary)]' : ''}`}>
+        <Icon />
       </div>
-    </motion.button>
+      <span className={`text-xs font-medium text-center leading-tight transition-colors duration-200 ${
+        isActive ? 'text-[var(--color-primary)]' : ''
+      }`}>
+        {title}
+      </span>
+    </motion.a>
   );
 };

@@ -12,9 +12,11 @@ import { ProfileSection } from "@/components/Settings/ProfileSection";
 import { ThemeSection } from "@/components/Settings/ThemeSection";
 import { CurrencySection } from "@/components/Settings/CurrencySection";
 import { DangerZone } from "@/components/Settings/DangerZone";
+import { useOnboarding } from "@/providers/OnboardingProvider";
 
 const Settings = () => {
   const { logout, isAuthenticated } = useAuth();
+  const { resetOnboarding } = useOnboarding();
   const router = useRouter();
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
@@ -64,6 +66,36 @@ const Settings = () => {
       <CurrencySection settings={settings} />
       
       <ThemeSection />
+
+      {/* Onboarding Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="bg-[var(--bg)] border border-[var(--border-color)] rounded-[var(--border-radius)] p-6 mb-8"
+      >
+        <h2 className="text-xl font-semibold mb-4 text-[var(--text)]">
+          App Tour & Help
+        </h2>
+        <div className="space-y-4">
+          <div>
+            <p className="text-[var(--text)]/70 text-sm mb-3">
+              Need a refresher on how to use the app? Restart the interactive tour to walk through all features again.
+            </p>
+            <button
+              onClick={() => {
+                resetOnboarding();
+                router.push('/dashboard');
+                toast.success('Tour reset! Redirecting to dashboard...');
+              }}
+              className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2 rounded-[var(--border-radius)] transition-colors duration-200 flex items-center gap-2"
+            >
+              <span>🎯</span>
+              Restart App Tour
+            </button>
+          </div>
+        </div>
+      </motion.div>
 
       <DangerZone onDeleteAccount={() => setIsDeleteOpen(true)} />
 

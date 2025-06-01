@@ -5,6 +5,7 @@ import { PropsWithChildren, useEffect, useState } from "react";
 import { useAuth } from "./AuthProvider";
 import { ThemeProvider } from "@/theme/ThemeProvider";
 import { AppSettingsProvider } from "./AppSettingsProvider";
+import { OnboardingProvider } from "./OnboardingProvider";
 import { usePathname, useRouter } from "next/navigation";
 import Navbar from "@/components/Layout/Navbar";
 import Footer from "@/components/Layout/Footer";
@@ -55,24 +56,25 @@ export default function Providers({ children }: PropsWithChildren) {
       </ThemeProvider>
     );
   }
-
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
         <AppSettingsProvider>
-          <Toaster position="bottom-right" richColors duration={4000} />
-          {isAuthenticated && !isPublicRoute ? (
-            <div className="min-h-screen flex">
-              <Nav />
-              <main className="w-full">
-                <Navbar />
-                {children}
-                <Footer />
-              </main>
-            </div>
-          ) : (
-            children
-          )}
+          <OnboardingProvider>
+            <Toaster position="bottom-right" richColors duration={4000} />
+            {isAuthenticated && !isPublicRoute ? (
+              <div className="min-h-screen flex">
+                <Nav />
+                <main className="w-full">
+                  <Navbar />
+                  {children}
+                  <Footer />
+                </main>
+              </div>
+            ) : (
+              children
+            )}
+          </OnboardingProvider>
         </AppSettingsProvider>
       </QueryClientProvider>
     </ThemeProvider>

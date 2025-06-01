@@ -24,9 +24,9 @@ export const authRequests = {
   requestEmailVerification: async (email: string): Promise<void> => {
     await api.post('/auth/email-verification/request', {email});
   },
-
-  verifyEmailCode: async (otp: string): Promise<void> => {
-    await api.post('/auth/email-verification/verify', { otp });
+  verifyEmailCode: async (otp: string): Promise<AuthResponse> => {
+    const res = await api.post<AuthResponse>('/auth/email-verification/verify', { otp });
+    return res.data;
   },
 
   // Password reset functions

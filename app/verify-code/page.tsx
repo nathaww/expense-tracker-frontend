@@ -4,9 +4,11 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { authRequests } from "../login/_requests";
+import { AuthResponse } from "../login/_model";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
+import { useAuth } from "@/providers/AuthProvider";
 import { FaMoneyBillWave } from "react-icons/fa";
 import Stars from "@/components/UI/Stars";
 
@@ -16,12 +18,18 @@ const verifyCodeSchema = Yup.object().shape({
 
 export default function VerifyCodePage() {
   const router = useRouter();
+  const { setUser } = useAuth();
 
   const { mutate: verifyCode, isPending } = useMutation({
     mutationFn: authRequests.verifyEmailCode,
-    onSuccess: () => {
-      toast.success("Email verified successfully! Please login.");
-      router.replace("/login");
+    onSuccess: (response: AuthResponse) => {
+      const { accessToken, refreshToken, user } = response;
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("user", JSON.stringify(user));
+      setUser(user);
+      toast.success("Email verified successfully! Welcome!");
+      router.replace("/dashboard");
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || "Verification failed");

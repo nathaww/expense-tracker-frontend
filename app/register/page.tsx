@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 import { authRequests } from "../login/_requests";
-import { RegisterResponse } from "../login/_model";
 import { FaMoneyBillWave } from "react-icons/fa";
 import Stars from "@/components/UI/Stars";
 import { PasswordInput } from "@/components/UI/PasswordInput";
@@ -19,16 +18,11 @@ const registerSchema = Yup.object().shape({
 });
 
 export default function RegisterPage() {
-  const router = useRouter();
-
-  const { mutate: register, isPending } = useMutation({
+  const router = useRouter();  const { mutate: register, isPending } = useMutation({
     mutationFn: authRequests.register,
-    onSuccess: async (response: RegisterResponse) => {
-
-      await authRequests.requestEmailVerification(response.email);
+    onSuccess: () => {
       router.replace("/verify-code");
       toast.success("Registration successful! Please verify your email.");
-
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data?.message || "Registration failed");
