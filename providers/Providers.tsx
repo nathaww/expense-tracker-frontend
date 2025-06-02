@@ -61,7 +61,7 @@ export default function Providers({ children }: PropsWithChildren) {
       <QueryClientProvider client={queryClient}>
         <AppSettingsProvider>
           <OnboardingProvider>
-            <Toaster position="bottom-right" richColors duration={4000} />
+            <Toaster position="top-center" richColors duration={4000} />
             {isAuthenticated && !isPublicRoute ? (
               <div className="min-h-screen flex">
                 <Nav />

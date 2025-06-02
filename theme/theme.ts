@@ -12,7 +12,9 @@ export type ThemeName =
   | "deepBlue"
   | "christmas"
   | "custom"
-  | "brain";
+  | "brain"
+  | "wiseLight"
+  | "wiseDark";
 
 export interface ThemeDefinition {
   primary: string;
@@ -170,14 +172,36 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     font: "'Segoe UI', sans-serif",
   },
   brain: {
-    primary: "#4E94DB",       
-    secondary: "#FFD18B",           
-    tertiary: "#E1EDFE",            
-    background: "#F6F9FF",          
-    backgroundSecondary: "#FFFFFF", 
-    text: "#1A1A1A",                
-    borderColor: "",        
+    primary: "#4E94DB",
+    secondary: "#FFD18B",
+    tertiary: "#E1EDFE",
+    background: "#F6F9FF",
+    backgroundSecondary: "#FFFFFF",
+    text: "#1A1A1A",
+    borderColor: "",
     borderRadius: "1.5rem",
     font: "Inter, sans-serif",
   },
+  wiseLight: {
+    primary: "#163300", // Forest Green (Wise Interactive Primary)
+    secondary: "#9FE870", // Bright Green (Wise Interactive Accent)
+    tertiary: "#D1D5DB", // Light neutral grey (Could also be Wise Bright Blue #A0E1E1 for a hint of color)
+    background: "#FFFFFF", // White
+    backgroundSecondary: "#F9FAFB", // Very light grey
+    text: "#0E0F0C", // Wise Content Primary (Darkest Grey)
+    borderColor: "#868685", // Wise Interactive Secondary (Grey)
+    borderRadius: "0.5rem",
+    font: "Inter, sans-serif",
+  },
+  wiseDark: {
+    primary: "#9FE870", // Bright Green (Wise Interactive Accent)
+    secondary: "#163300", // Forest Green (Can be button with light text, or other interactive elements)
+    tertiary: "#454745", // Wise Content Secondary (Dark Grey, for muted elements/text)
+    background: "#21231D", // Wise Dark Charcoal
+    backgroundSecondary: "#33352D", // Darker earthy tone, step up from Dark Charcoal
+    text: "#E5E7EB", // Light Grey
+    borderColor: "#454745", // Wise Content Secondary (Subtle border on dark)
+    borderRadius: "0.5rem",
+    font: "Inter, sans-serif",
+  }
 };
