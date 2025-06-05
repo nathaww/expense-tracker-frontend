@@ -14,7 +14,8 @@ export type ThemeName =
   | "custom"
   | "brain"
   | "wiseLight"
-  | "wiseDark";
+  | "wiseDark"
+  | "modern";
 
 export interface ThemeDefinition {
   primary: string;
@@ -39,6 +40,17 @@ export const getCustomTheme = (): ThemeDefinition | null => {
 };
 
 export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
+  modern: {
+    primary: "#2D3436",    // Sophisticated charcoal
+    secondary: "#636E72",  // Refined gray
+    tertiary: "#B2BEC3",   // Subtle accent
+    background: "#FFFFFF",  // Clean white
+    backgroundSecondary: "#F7F9FA", // Soft off-white
+    text: "#2D3436",       // Clear, readable text
+    borderColor: "#DFE6E9", // Delicate border
+    borderRadius: "1rem",   // Smooth corners
+    font: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+  },
   light: {
     primary: "#6366f1",
     secondary: "#a5b4fc",
@@ -183,25 +195,27 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     font: "Inter, sans-serif",
   },
   wiseLight: {
-    primary: "#163300", // Forest Green (Wise Interactive Primary)
-    secondary: "#9FE870", // Bright Green (Wise Interactive Accent)
-    tertiary: "#D1D5DB", // Light neutral grey (Could also be Wise Bright Blue #A0E1E1 for a hint of color)
-    background: "#FFFFFF", // White
-    backgroundSecondary: "#F9FAFB", // Very light grey
-    text: "#0E0F0C", // Wise Content Primary (Darkest Grey)
-    borderColor: "#868685", // Wise Interactive Secondary (Grey)
+    primary: "#163300",
+    secondary: "#9FE870",
+    tertiary: "#D1D5DB",
+    background: "#FFFFFF",
+    backgroundSecondary: "#F9FAFB",
+    text: "#0E0F0C",
+    borderColor: "#868685",
     borderRadius: "0.5rem",
     font: "Inter, sans-serif",
   },
   wiseDark: {
-    primary: "#9FE870", // Bright Green (Wise Interactive Accent)
-    secondary: "#163300", // Forest Green (Can be button with light text, or other interactive elements)
-    tertiary: "#454745", // Wise Content Secondary (Dark Grey, for muted elements/text)
-    background: "#21231D", // Wise Dark Charcoal
-    backgroundSecondary: "#33352D", // Darker earthy tone, step up from Dark Charcoal
-    text: "#E5E7EB", // Light Grey
-    borderColor: "#454745", // Wise Content Secondary (Subtle border on dark)
+    primary: "#9FE870",
+    secondary: "#163300",
+    tertiary: "#454745",
+    background: "#21231D",
+    backgroundSecondary: "#33352D",
+    text: "#E5E7EB",
+    borderColor: "#454745",
     borderRadius: "0.5rem",
     font: "Inter, sans-serif",
   }
 };
+
+export { themes }
