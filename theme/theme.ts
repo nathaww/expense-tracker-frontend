@@ -216,6 +216,4 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderRadius: "0.5rem",
     font: "Inter, sans-serif",
   }
-};
-
-export { themes }
+}
