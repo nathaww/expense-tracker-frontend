@@ -41,14 +41,14 @@ export const getCustomTheme = (): ThemeDefinition | null => {
 
 export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
   modern: {
-    primary: "#2D3436",    // Sophisticated charcoal
-    secondary: "#636E72",  // Refined gray
-    tertiary: "#B2BEC3",   // Subtle accent
-    background: "#FFFFFF",  // Clean white
-    backgroundSecondary: "#F7F9FA", // Soft off-white
-    text: "#2D3436",       // Clear, readable text
-    borderColor: "#DFE6E9", // Delicate border
-    borderRadius: "1rem",   // Smooth corners
+    primary: "#00B9FF",     // Wise brand blue - clear, trustworthy
+    secondary: "#37517E",   // Deep blue for stability
+    tertiary: "#9FE870",    // Wise accent green for success states
+    background: "#FFFFFF",   // Clean white for readability
+    backgroundSecondary: "#F9FAFB", // Subtle distinction for hierarchy
+    text: "#2D4B6B",        // Accessible, professional text color
+    borderColor: "#E5E9F0",  // Subtle borders for structure
+    borderRadius: "0.75rem", // Modern, friendly corners
     font: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
   },
   light: {
