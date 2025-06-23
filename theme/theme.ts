@@ -1,4 +1,5 @@
 export type ThemeName =
+  "modern"
   | "haftom"
   | "dark"
   | "coffee"
@@ -15,7 +16,7 @@ export type ThemeName =
   | "brain"
   | "wiseLight"
   | "wiseDark"
-  | "modern";
+  | "neon";
 
 export interface ThemeDefinition {
   primary: string;
@@ -215,5 +216,16 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderColor: "#454745",
     borderRadius: "0.5rem",
     font: "Inter, sans-serif",
-  }
+  },
+  neon: {
+    primary: "#B3FE49",             
+    secondary: "#8AA230",           
+    tertiary: "#39FF14",       
+    background: "#000000",          
+    backgroundSecondary: "#232717", 
+    text: "#F0FFF0",               
+    borderColor: "#222",        
+    borderRadius: "0.7rem",        
+    font: "'Orbitron', sans-serif", 
+  },
 }
