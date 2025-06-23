@@ -14,6 +14,7 @@ import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
 import { AddCategoryModal } from "@/components/Categories/AddCategoryModal";
+import { CategoriesPageSkeleton } from "@/components/UI/SkeletonLoaders";
 import { AxiosError } from "axios";
 
 const updateCategorySchema = Yup.object().shape({
@@ -251,20 +252,8 @@ const CategoriesPage = () => {
   if (!isAuthenticated) {
     return <Loader />;
   }
-
   if (isLoading) {
-    return (
-      <div className="min-h-screen p-4 sm:p-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div
-              key={i}
-              className="animate-pulse bg-[var(--bgSecondary)] h-32 sm:h-36 rounded-[var(--border-radius)]"
-            />
-          ))}
-        </div>
-      </div>
-    );
+    return <CategoriesPageSkeleton />;
   }
 
   return (

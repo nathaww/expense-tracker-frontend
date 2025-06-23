@@ -15,6 +15,7 @@ import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal
 import { FilterToolbar } from "@/components/UI/FilterToolbar";
 import { Pagination } from "@/components/UI/Pagination";
 import { MoneySourcesTableView } from "@/components/MoneySource/MoneySourcesTableView";
+import { MoneySourcesPageSkeleton } from "@/components/UI/SkeletonLoaders";
 import { toast } from "sonner";
 
 // Icon mapping function - not a React component, so don't use memo here
@@ -316,37 +317,13 @@ const MoneySourcesPage = () => {
       router.replace("/login");
     }
   }, [isAuthenticated, router]);
-
   // Rendering with early returns
   if (!isAuthenticated) {
     return <Loader />;
   }
   
   if (isLoading || isLoadingSettings) {
-    return (
-      <div className="min-h-screen p-4 sm:p-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 sm:mb-8 sm:gap-0">
-          <div className="w-48 h-8 bg-[var(--bgSecondary)] rounded animate-pulse" />
-          <div className="flex items-center gap-3">
-            <div className="w-24 h-10 bg-[var(--bgSecondary)] rounded animate-pulse" />
-            <div className="w-36 h-10 bg-[var(--bgSecondary)] rounded animate-pulse" />
-          </div>
-        </div>
-        
-        {viewMode === 'card' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div
-                key={i}
-                className="animate-pulse bg-[var(--bgSecondary)] h-48 sm:h-64 rounded-[var(--border-radius)]"
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="animate-pulse bg-[var(--bgSecondary)] h-96 rounded-[var(--border-radius)]" />
-        )}
-      </div>
-    );
+    return <MoneySourcesPageSkeleton />;
   }
   
   // Main UI render

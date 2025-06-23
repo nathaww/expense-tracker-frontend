@@ -11,12 +11,7 @@ export type ThemeName =
   | "light"
   | "crimson"
   | "deepBlue"
-  | "christmas"
-  | "custom"
-  | "brain"
-  | "wiseLight"
-  | "wiseDark"
-  | "neon";
+  | "custom";
 
 export interface ThemeDefinition {
   primary: string;
@@ -162,17 +157,6 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderRadius: "1.2rem",
     font: "'Segoe UI', sans-serif",
   },
-  christmas: {
-    primary: "#008000",
-    secondary: "#FF0000",
-    tertiary: "#FFD700",
-    background: "#0F1A0F",
-    backgroundSecondary: "#1F2F1F",
-    text: "#FFFFFF",
-    borderColor: "#A9BFA9",
-    borderRadius: "0.5rem",
-    font: "'Segoe UI', sans-serif",
-  },
   deepBlue: {
     primary: "#0D47A1",
     secondary: "#1565C0",
@@ -183,49 +167,5 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderColor: "#5C6F91",
     borderRadius: "0.5rem",
     font: "'Segoe UI', sans-serif",
-  },
-  brain: {
-    primary: "#4E94DB",
-    secondary: "#FFD18B",
-    tertiary: "#E1EDFE",
-    background: "#F6F9FF",
-    backgroundSecondary: "#FFFFFF",
-    text: "#1A1A1A",
-    borderColor: "",
-    borderRadius: "1.5rem",
-    font: "Inter, sans-serif",
-  },
-  wiseLight: {
-    primary: "#163300",
-    secondary: "#9FE870",
-    tertiary: "#D1D5DB",
-    background: "#FFFFFF",
-    backgroundSecondary: "#F9FAFB",
-    text: "#0E0F0C",
-    borderColor: "#868685",
-    borderRadius: "0.5rem",
-    font: "Inter, sans-serif",
-  },
-  wiseDark: {
-    primary: "#9FE870",
-    secondary: "#163300",
-    tertiary: "#454745",
-    background: "#21231D",
-    backgroundSecondary: "#33352D",
-    text: "#E5E7EB",
-    borderColor: "#454745",
-    borderRadius: "0.5rem",
-    font: "Inter, sans-serif",
-  },
-  neon: {
-    primary: "#B3FE49",             
-    secondary: "#8AA230",           
-    tertiary: "#39FF14",       
-    background: "#000000",          
-    backgroundSecondary: "#232717", 
-    text: "#F0FFF0",               
-    borderColor: "#222",        
-    borderRadius: "0.7rem",        
-    font: "'Orbitron', sans-serif", 
   },
 }

@@ -66,10 +66,8 @@ interface BudgetComparisonProps {
     hideAmount: boolean;
 }
 
-export default function BudgetComparison({ currencyType, hideAmount }: BudgetComparisonProps) {
-    const {
+export default function BudgetComparison({ currencyType, hideAmount }: BudgetComparisonProps) {    const {
         data: comparison,
-        isLoading,
         isError,
         refetch
     } = useQuery({
@@ -100,21 +98,13 @@ export default function BudgetComparison({ currencyType, hideAmount }: BudgetCom
     const textColor = typeof window !== 'undefined' ?
         getComputedStyle(document.documentElement).getPropertyValue('--text').trim() : '#1f2937';
     const bgColor = typeof window !== 'undefined' ?
-        getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() : '#ffffff';
-
-    if (isLoading) {
-        return (
-            <div className="animate-pulse p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] h-[400px]" />
-        );
-    }
-
-    if (isError || !comparison) {
+        getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() : '#ffffff';    if (isError || !comparison) {
         return (
             <div className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bgSecondary)]">
                 <p className="text-[var(--text)]">Failed to load budget comparison data</p>
             </div>
         );
-    } const pieData = {
+    }const pieData = {
         labels: comparison.comparisons.map((item) => item.moneySource),
         datasets: [
             {

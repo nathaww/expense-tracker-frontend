@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import Link from "next/link";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
 import { UpdateExpenseModal } from "@/components/Expenses/UpdateExpenseModal";
-import LoadingSpinner from "@/components/UI/LoadingSpinner";
+import { ExpensesPageSkeleton } from "@/components/UI/SkeletonLoaders";
 import debounce from "lodash/debounce";
 import { useAppSettings } from "@/providers/AppSettingsProvider";
 import { FilterToolbar, type BaseFilterParams } from "@/components/UI/FilterToolbar";
@@ -120,7 +120,10 @@ export default function ExpensesPage() {
       bulkDeleteExpenses(selectedExpenseIds);
     }
   };
-
+  if (isLoading) {
+    return <ExpensesPageSkeleton />;
+  }
+  
   return (
     <div className="container mx-auto p-4 md:p-8 min-h-screen">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-4 sm:gap-0">
@@ -209,8 +212,7 @@ export default function ExpensesPage() {
                   Actions
                 </th>
               </tr>
-            </thead>            <tbody>
-              {expensesResponse?.data.map((expense) => (
+            </thead>            <tbody>              {expensesResponse?.data.map((expense) => (
                 <tr
                   key={expense.id}
                   className="border-b border-[var(--border-color)] hover:bg-[var(--bgSecondary)] transition-colors"
@@ -270,13 +272,7 @@ export default function ExpensesPage() {
                     </div>
                   </td>
                 </tr>
-              ))}              {isLoading && (
-                <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center">
-                    <LoadingSpinner size="md" text="Loading expenses..." />
-                  </td>
-                </tr>
-              )}              {!isLoading && expensesResponse?.data.length === 0 && (
+              ))}              {expensesResponse?.data.length === 0 && (
                 <tr>
                   <td colSpan={7} className="px-6 py-8 text-center">
                     <div className="flex flex-col items-center space-y-2">
@@ -325,9 +321,7 @@ export default function ExpensesPage() {
                 Select all expenses
               </label>
             </div>
-          )}
-
-          {expensesResponse?.data.map((expense) => (
+          )}          {expensesResponse?.data.map((expense) => (
             <div
               key={expense.id}
               className="border-b border-[var(--border-color)] p-4 hover:bg-[var(--bgSecondary)] transition-colors"
@@ -379,13 +373,8 @@ export default function ExpensesPage() {
               )}
             </div>
           ))}
-          {isLoading && (
-            <div className="px-6 py-8 text-center">
-              <LoadingSpinner size="md" text="Loading expenses..." />
-            </div>
-          )}
 
-          {!isLoading && expensesResponse?.data.length === 0 && (<div className="px-6 py-8 text-center">
+          {expensesResponse?.data.length === 0 && (<div className="px-6 py-8 text-center">
             <div className="flex flex-col items-center space-y-2">
               <p className="text-[var(--text)] opacity-70">No expenses found</p>
               <Link href="/expenses/add">

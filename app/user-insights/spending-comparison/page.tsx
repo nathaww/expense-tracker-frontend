@@ -8,7 +8,7 @@ import { FaSync } from 'react-icons/fa';
 
 import { SummaryStatistics } from '@/components/UserInsights/SummaryStatistics';
 import React from 'react';
-import Loader from '@/components/UI/Loader';
+import { UserInsightsPageSkeleton } from '@/components/UI/SkeletonLoaders';
 import { InsightsCard } from '@/components/UserInsights/InsightsCardNew';
 
 export default function SpendingComparisonPage() {
@@ -27,15 +27,11 @@ export default function SpendingComparisonPage() {
 
     const handleRefresh = () => {
         queryClient.invalidateQueries({ queryKey: ['spending-comparison'] });
-    };
-
-    // Use existing data if available, otherwise use newly fetched data
-    const currentData = existingData || data;    if (isLoading && !existingData) {
-        return (
-            <div className="flex items-center justify-center h-screen">
-                <Loader />
-            </div>
-        );
+    };    // Use existing data if available, otherwise use newly fetched data
+    const currentData = existingData || data;
+    
+    if (isLoading && !existingData) {
+        return <UserInsightsPageSkeleton />;
     }
 
     if (isError && !currentData) {

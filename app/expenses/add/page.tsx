@@ -9,6 +9,7 @@ import { expenseRequests } from "../_requests";
 import { useRouter } from "next/navigation";
 import { FaArrowLeft } from "react-icons/fa";
 import Link from "next/link";
+import { AddExpensePageSkeleton } from "@/components/UI/SkeletonLoaders";
 
 interface AnimatedFieldProps extends React.HTMLAttributes<HTMLElement> {
   shouldAnimate: boolean;
@@ -122,6 +123,10 @@ export default function AddExpensePage() {
   );
 
   const regularFormRef = React.useRef<FormikProps<ExpenseFormValues>>(null);
+  // Show skeleton loader if data is loading
+  if (categoriesLoading || moneySourcesLoading) {
+    return <AddExpensePageSkeleton />;
+  }
 
   return (
     <div className="container mx-auto p-8 min-h-screen">

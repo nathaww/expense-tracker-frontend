@@ -65,7 +65,6 @@ const CategoryTable = ({
 export default function ExpenseComposition({ currencyType, hideAmount }: ExpenseCompositionProps) {
   const {
     data: composition,
-    isLoading,
     isError,
   } = useQuery({
     queryKey: ["dashboard-expense-composition"],
@@ -77,13 +76,6 @@ export default function ExpenseComposition({ currencyType, hideAmount }: Expense
     getComputedStyle(document.documentElement).getPropertyValue('--text').trim() : '#1f2937';
   const bgColor = typeof window !== 'undefined' ? 
     getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() : '#ffffff';
-
-  if (isLoading) {
-    return (
-      <div className="animate-pulse p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] h-[400px]" />
-    );
-  }
-
   if (isError || !composition) {
     return (
       <div className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bgSecondary)]">

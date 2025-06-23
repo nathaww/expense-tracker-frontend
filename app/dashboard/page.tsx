@@ -15,12 +15,20 @@ import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { dashboardRequests } from './_requests';
 import { AnalyticsService } from '@/lib/analytics';
+import { 
+  DashboardSkeleton, 
+  AnalyticsSectionSkeleton,
+  BudgetComparisonSkeleton,
+  ExpenseCompositionSkeleton,
+  ChartSkeleton
+} from '@/components/UI/SkeletonLoaders';
 
 export default function DashboardPage() {
   const { preferredCurrency } = useAppSettings();
   const { isNewUser, markOnboardingCompleted } = useOnboarding();
 
   const [hideAmounts, setHideAmounts] = useState(false);
+  const [isPageLoading, setIsPageLoading] = useState(true);
 
   // Fetch all dashboard data for analytics
   const { data: overview, isLoading: overviewLoading } = useQuery({
@@ -46,6 +54,15 @@ export default function DashboardPage() {
   // Check if any data is still loading
   const isAnalyticsLoading = overviewLoading || trendsLoading || budgetLoading || compositionLoading;
 
+  // Show main skeleton loader while initial data loads
+  useEffect(() => {
+    if (!isAnalyticsLoading) {
+      // Add a small delay for smoother transition
+      const timer = setTimeout(() => setIsPageLoading(false), 300);
+      return () => clearTimeout(timer);
+    }
+  }, [isAnalyticsLoading]);
+
   // Compute analytics when all data is available
   const computedAnalytics = overview && trends && budgetComparison && expenseComposition
     ? AnalyticsService.computeAnalytics(overview, trends, budgetComparison, expenseComposition)
@@ -63,6 +80,10 @@ export default function DashboardPage() {
     }
   }, [hideAmounts]);
 
+  // Show full-page skeleton during initial load
+  if (isPageLoading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <div className="container min-h-screen mx-auto px-4 py-8 bg-[var(--bg)] text-[var(--text)] transition-colors duration-300 space-y-8">
@@ -144,14 +165,9 @@ export default function DashboardPage() {
         <div className="flex items-center gap-3 mb-6">
           <h3 className="text-lg font-semibold text-[var(--text)]">Analytics Overview</h3>
           <div className="flex-1 h-px bg-gradient-to-r from-[var(--border-color)] to-transparent"></div>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        </div>        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {isAnalyticsLoading ? (
-            <>
-              {[...Array(3)].map((_, i) => (
-                <div key={i} className="animate-pulse p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] h-40" />
-              ))}
-            </>
+            <AnalyticsSectionSkeleton />
           ) : computedAnalytics ? (
             <>
               <AnalyticsCard
@@ -195,29 +211,35 @@ export default function DashboardPage() {
           <div className="flex-1 h-px bg-gradient-to-r from-[var(--border-color)] to-transparent"></div>
         </div>
 
-        <div className="grid grid-cols-1 gap-8">
-          <motion.div
-            className="budget-comparison"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 1.6 }}
-          >
-            <BudgetComparison currencyType={preferredCurrency} hideAmount={hideAmounts} />
-          </motion.div>
+        <div className="grid grid-cols-1 gap-8">          {budgetLoading ? (
+            <BudgetComparisonSkeleton />
+          ) : (
+            <motion.div
+              className="budget-comparison"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 1.6 }}
+            >
+              <BudgetComparison currencyType={preferredCurrency} hideAmount={hideAmounts} />
+            </motion.div>
+          )}
 
-          <motion.div
-            className="expense-composition"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 1.8 }}
-          >
-            <ExpenseComposition currencyType={preferredCurrency} hideAmount={hideAmounts} />
-          </motion.div>
+          {compositionLoading ? (
+            <ExpenseCompositionSkeleton />
+          ) : (
+            <motion.div
+              className="expense-composition"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 1.8 }}
+            >
+              <ExpenseComposition currencyType={preferredCurrency} hideAmount={hideAmounts} />
+            </motion.div>
+          )}
         </div>
       </motion.div>
 
-      {/* Trends Section */}
-      <motion.div
+      {/* Trends Section */}      <motion.div
         className="trends-section"
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -227,7 +249,11 @@ export default function DashboardPage() {
           <h3 className="text-lg font-semibold text-[var(--text)]">Spending Trends</h3>
           <div className="flex-1 h-px bg-gradient-to-r from-[var(--border-color)] to-transparent"></div>
         </div>
-        <Trends currencyType={preferredCurrency} hideAmount={hideAmounts} />
+        {trendsLoading ? (
+          <ChartSkeleton height="400px" />
+        ) : (
+          <Trends currencyType={preferredCurrency} hideAmount={hideAmounts} />
+        )}
       </motion.div>
     </div>
   );

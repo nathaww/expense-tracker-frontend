@@ -294,7 +294,6 @@ const TrendChart = ({
 export default function Trends({ currencyType, hideAmount }: TrendsProps & { hideAmount: boolean }) {
   const {
     data: trends,
-    isLoading,
     isError,
   } = useQuery({
     queryKey: ["dashboard-trends"],
@@ -306,20 +305,6 @@ export default function Trends({ currencyType, hideAmount }: TrendsProps & { hid
     queryKey: ["exchange-rates"],
     queryFn: exchangeRatesRequests.getExchangeRates,
   });
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {[...Array(2)].map((_, i) => (
-          <div
-            key={i}
-            className="animate-pulse p-6 rounded-[var(--border-radius)] bg-[var(--bgSecondary)] h-[400px]"
-          />
-        ))}
-      </div>
-    );
-  }
-
   if (isError || !trends) {
     return (
       <div className="p-6 rounded-[var(--border-radius)] border border-[var(--border-color)] bg-[var(--bgSecondary)]">

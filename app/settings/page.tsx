@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import Loader from "@/components/UI/Loader";
+import { SettingsPageSkeleton } from "@/components/UI/SkeletonLoaders";
 import { DeleteConfirmationModal } from "@/components/UI/DeleteConfirmationModal";
 import { userRequests, appSettingsRequests } from "./_requests";
 import { toast } from "sonner";
@@ -46,9 +47,12 @@ const Settings = () => {
       router.replace("/login");
     }
   }, [isAuthenticated, router]);
-
-  if (!isAuthenticated || !profile || !settings || isLoadingSettings) {
+  if (!isAuthenticated) {
     return <Loader />;
+  }
+
+  if (!profile || !settings || isLoadingSettings) {
+    return <SettingsPageSkeleton />;
   }
 
   return (
