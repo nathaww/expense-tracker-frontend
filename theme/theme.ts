@@ -1,5 +1,5 @@
 export type ThemeName =
-  "modern"
+  | "modern"
   | "haftom"
   | "dark"
   | "coffee"
@@ -10,8 +10,9 @@ export type ThemeName =
   | "purple"
   | "light"
   | "crimson"
-  | "deepBlue"
-  | "custom";
+  | "sunset"
+  | "midnight";
+
 
 export interface ThemeDefinition {
   primary: string;
@@ -157,14 +158,25 @@ export const themes: Record<Exclude<ThemeName, "custom">, ThemeDefinition> = {
     borderRadius: "1.2rem",
     font: "'Segoe UI', sans-serif",
   },
-  deepBlue: {
-    primary: "#0D47A1",
-    secondary: "#1565C0",
-    tertiary: "#42A5F5",
-    background: "#0A0F1A",
-    backgroundSecondary: "#121B2A",
-    text: "#E3F2FD",
-    borderColor: "#5C6F91",
+  sunset: {
+    primary: "#FF6B35",              // Fiery orange (main call-to-action color)
+    secondary: "#FFB627",            // Warm golden tone for highlights/badges
+    tertiary: "#FF8966",             // Soft coral/orange-pink blend
+    background: "#2B1B1A",           // Deep reddish-brown (evening sky)
+    backgroundSecondary: "#3A2B28",  // Slightly lighter for surfaces/cards
+    text: "#FFF4E6",                 // Warm creamy white for contrast
+    borderColor: "#A45A44",          // Sunset brown-orange for borders
+    borderRadius: "0.75rem",         // Soft and cozy curves
+    font: "'Segoe UI', sans-serif",  // Clean and readable, fits all modern use
+  },
+  midnight: {
+    primary: "#0A0F29",               // Almost-black navy
+    secondary: "#1E3A8A",             // Deep indigo blue
+    tertiary: "#4B5563",              // Muted slate for accents
+    background: "#060B1A",            // Rich midnight black-blue
+    backgroundSecondary: "#101524",   // Slightly lighter navy surface
+    text: "#E5E7EB",                  // Cool light gray
+    borderColor: "#2D3748",           // Soft neutral border
     borderRadius: "0.5rem",
     font: "'Segoe UI', sans-serif",
   },
