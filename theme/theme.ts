@@ -11,7 +11,8 @@ export type ThemeName =
   | "light"
   | "crimson"
   | "sunset"
-  | "midnight";
+  | "midnight"
+  | "custom";
 
 
 export interface ThemeDefinition {
